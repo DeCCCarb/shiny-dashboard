@@ -14,7 +14,9 @@ sidebar <- dashboardSidebar(
     # sidebarMenu ---
     sidebarMenu(
         menuItem(text = 'Project Overview', tabName = 'overview', icon = icon('star')),
-        menuItem(text = 'Workforce Tool', tabName = 'dashboard', icon = icon('gauge'))
+        menuItem(text = 'Workforce Tool', tabName = 'dashboard', icon = icon('gauge')),
+        menuItem(text = 'Ensuring A Just Transition', tabName = 'equity', icon = icon('gauge')),
+        menuItem(text = 'Tool Documentation', tabName = 'documentation', icon = icon('cog'))
         
         
     ) #  END sidebar Menu
@@ -66,7 +68,7 @@ body <- dashboardBody(
                        # citation box ----
                        box(width = NULL,
                            
-                           title= tagList(icon('source-tree'),
+                           title= tagList(icon('sourcetree'),
                                           tags$strong('Data Source')),
                            column(1),
                            column(10, includeMarkdown('text/citation.md')),
@@ -80,8 +82,8 @@ body <- dashboardBody(
                        
                        # # # disclaimer box ----
                        box(width = NULL,
-                           title = tagList(icon('triangle-exclamation'),
-                                           tags$strong('Disclaimer')),
+                           title = tagList(icon('user'),
+                                           tags$strong('Hosted By')),
                            column(1),
                            column(10, includeMarkdown('text/disclaimer.md')),
                            column(1)
@@ -89,7 +91,23 @@ body <- dashboardBody(
                        ) # END disclaimer box
                        
                        
-                   ) # END 2nd fluidRow
+                   ), # END 2nd fluidRow
+                   # Begin third fluidRow with counties map
+                   fluidRow( 
+                       # Add Box for TMap
+                       box( 
+                           width = NULL,
+                           tags$img(src = "california_counties_map1.png",
+                                    alt = 'Map of California with SLO, Santa Barbara, and Ventura Counties highlighted',
+                                    style = 'max-width: 100%',
+                                    height = '525px',
+                                    width = '525px',
+                                    tags$h6('Made using TMap',
+                                            tags$a(href = 'Made using TMap and USData.')))
+                       ) # End CCC TMap box
+                      
+                       
+                   ) # End third fluidRow ---
                    
                    
             ) # END right hand column

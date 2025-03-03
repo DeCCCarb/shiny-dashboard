@@ -10,7 +10,7 @@ output$county_map_output <- renderLeaflet({
         
         # sample California Central Coast map using leaflet ----
         leaflet() |>
-            addProviderTiles(providers$OpenStreetMap) |>
+            addProviderTiles(providers$Stadia.StamenTerrain) |>
             setView(lng = -119.698189,
                     lat = 34.420830,
                     zoom = 7) |>
