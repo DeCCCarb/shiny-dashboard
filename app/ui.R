@@ -100,8 +100,8 @@ body <- dashboardBody(
                            tags$img(src = "california_counties_map1.png",
                                     alt = 'Map of California with SLO, Santa Barbara, and Ventura Counties highlighted',
                                     style = 'max-width: 100%',
-                                    height = '525px',
-                                    width = '525px',
+                                    height = '500px',
+                                    width = '500px',
                                     tags$h6('Made using TMap',
                                             tags$a(href = 'Made using TMap and USData.')))
                        ) # End CCC TMap box
@@ -130,20 +130,33 @@ body <- dashboardBody(
                         pickerInput(inputId = 'county_input',
                                     label = 'Select your County',
                                     choices = unique(counties$County),
-                                    selected = c('Santa Barbara', 'San Luis Obispo'),
+                                    selected = c('Ventura'),
                                     multiple = TRUE,
-                                    options = pickerOptions(actionsBox = TRUE))
-                        # pickerGroupServer(inputId = 'elevation_slider_input',
-                        #             label = 'Elevation (meters above SL)',
-                        #             min = min(lake_data$Elevation),
-                        #             max = max(lake_data$Elevation),
-                        #             value = c(min(lake_data$Elevation), 
-                        #                       max(lake_data$Elevation)))
+                                    options = pickerOptions(actionsBox = TRUE)),
+                        # Select technology input ----
+                        pickerInput(inputId = 'technology_input',
+                                    label = 'Select Technology',
+                                    choices = c('Floating Offshore Wind', 
+                                                'Onshore Wind',
+                                                'PV Solar - Residential',
+                                                'PV Solar - Commercial',
+                                                'Utility PV',
+                                                'Oil Wells - Capping',
+                                                'Oil Wells - Phase Out'),
+                                    multiple = TRUE,
+                                    options = pickerOptions(actionsBox = TRUE)),
+                        # Select Ambition Scenario ---
+                        checkboxGroupButtons(inputId = 'ambition_input',
+                                        label = 'Select Ambition Scenario',
+                                        choices = c('Low', 'High'),
+                                        selected = c('High'),
+                                        justified = TRUE)
+
                         
                     ), # END input box
                     
                     #leaflet box ----
-                    box(width = 8,
+                    box(width = 6,
                         
                         # title 
                         title = tags$strong('California Central Coast Counties'),
@@ -151,7 +164,17 @@ body <- dashboardBody(
                         leafletOutput(outputId = 'county_map_output') |> 
                             withSpinner(type = 1, color = 'forestgreen')
                         
-                    ) # END leaflet box
+                        
+                        
+                    ), # END leaflet box
+                    
+                    # model jobs box ----
+                    box(width = 8,
+                        # Plot outputs based on selection
+                        title = tags$strong('Labor Impact'),
+                        plotOutput(outputId = 'model_jobs_output') |>
+                            withSpinner(type = 1, color = 'forestgreen')
+                    ) # model jobs box end 
                     
                 )# END  1st fluidRow 
                 
