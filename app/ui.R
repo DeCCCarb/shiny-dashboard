@@ -154,11 +154,11 @@ body <- dashboardBody(
                                      value = 15,
                                      min = 0), 
                         # Select Ambition Scenario ---
-                        checkboxGroupButtons(inputId = 'ambition_input',
-                                        label = 'Select Ambition Scenario',
-                                        choices = c('Low', 'High'),
-                                        selected = c('High'),
-                                        justified = TRUE),
+                        # checkboxGroupButtons(inputId = 'ambition_input',
+                        #                 label = 'Select Ambition Scenario',
+                        #                 choices = c('Low', 'High'),
+                        #                 selected = c('High'),
+                        #                 justified = TRUE),
                         # Select Port/No Port
                         pickerInput(inputId = 'port_input',
                                     label = 'Offshore Wind Port Location:',
@@ -190,7 +190,7 @@ body <- dashboardBody(
                     #         withSpinner(type = 1, color = 'forestgreen')
                     # ), # model jobs box end 
                     # Projections table box -----
-                    box(width = 8,
+                    box(width = 12,
                         # Create a table based on input
                         title = tags$strong('Labor Impact'),
                         tableOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
