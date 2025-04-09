@@ -1,0 +1,52 @@
+```{r}
+library(tidyverse)
+```
+
+
+
+```{r}
+
+test <- data.frame(
+    port_name = c("Hueneme", "Morro Bay"),
+    address = c(
+        "Port of Hueneme, Port Hueneme, CA 93041",
+        "699 Embarcadero #11, Morro Bay, CA 93442"
+    )
+) %>%
+    tidygeocoder::geocode(address = address,
+                          method = "osm") %>%
+    sf::st_as_sf(coords = c("long", "lat"), crs = 4326) 
+
+test_raw <- data.frame(
+    port_name = c("Hueneme", "Morro Bay"),
+    address = c(
+        "Port of Hueneme, Port Hueneme, CA 93041",
+        "699 Embarcadero, Morro Bay, CA 93442"
+    )
+) %>%
+    tidygeocoder::geocode(address = address, method = "osm")
+  #  tidyr::drop_na(lat, long) %>%
+    #sf::st_as_sf(coords = c("long", "lat"), crs = 4326)
+# 
+# # List of icons for ports 
+# port_icons <- awesomeIconList(
+#     "hueneme" = makeAwesomeIcon(
+#         icon = "helmet-safety",
+#         markerColor = "blue",
+#         library = "fa"
+#     ),
+#     "slo" = makeAwesomeIcon(
+#         icon = "helmet-safety",
+#         markerColor = "green",
+#         library = "fa"
+#     )
+# )
+# 
+# Make port icon
+awesome <- makeAwesomeIcon(
+    icon = "helmet-safety",
+    iconColor = "black",
+    markerColor = "orange",
+    library = "fa"
+)
+```

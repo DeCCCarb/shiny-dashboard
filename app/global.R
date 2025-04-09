@@ -12,13 +12,380 @@ library(shinyWidgets)
 
 counties <- readxl::read_xlsx('data/ccc-coords.xlsx')
 
-
+# faculty review df ----- 
 pv_all_plot <- read_csv(here::here('app', 'data', 'pv_all_plot.csv'))
 
-
+# shapefile for leaflet map in server ---
 ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties.shp')) %>%
     sf::st_transform('+proj=longlat +datum=WGS84') |> 
     janitor::clean_names() |> 
     filter(namelsad %in% c('Santa Barbara County', 'Ventura County', 'San Luis Obispo County'))
 
+
+# faculty review df ----
 osw <- read_csv(here::here('app', 'data', 'osw.csv'))
+
+
+###################### PV O&M Jobs Function ######################
+#' Calculate PV Operations and Maintenance jobs and annual capacity
+#'
+#' @param county Character string. Name of the county.
+#' @param start_year Integer. The year that you are starting with. E.g., 2025 for a 2025-2045 analysis.
+#' @param end_year Integer. The year you are ending with. E.g., 2045 for a 2025-2045 analysis.
+#' @param technology Character string. Name of the technology. E.g., "Utility PV" or "Rooftop PV".
+#' @param ambition Character string, either "High" or "Low".
+#' @param initial_capacity Numeric. Starting capacity in Megawatts. E.g., 100 for 100MW of solar already installed in 2025.
+#' @param final_capacity Numeric. Target capacity in Megawatts. E.g., 500 for 500MW goal in 2045.
+#' @param direct_jobs Numeric. JEDI output representing number of direct O&M jobs per MW of solar.
+#' @param indirect_jobs Numeric. JEDI output representing number of indirect O&M jobs per MW of solar.
+#' @param induced_jobs Numeric. JEDI output representing number of induced O&M jobs per MW of solar.
+#'
+#' @return Data Frame projecting total O&M jobs each year and energy capacity over designated time period
+#'
+#' @examples
+#' Santa Barbara Utility Solar O&M Jobs from 2025-2045, starting with 111 MW in 2025 and increasing to 722 MW by 2045:
+#' sb_utility_pv_om_jobs <- calculate_pv_om_jobs(county = "SB",
+#'                                            start_year = 2025,
+#'                                            end_year = 2045,
+#'                                            technology = "Utility PV",
+#'                                            ambition = "High"
+#'                                            initial_capacity = 111,
+#'                                            final_capacity = 722,
+#'                                            direct_jobs = 0.5,
+#'                                            indirect_jobs = 0.1,
+#'                                            induced_jobs = 0.2)
+#' print(sb_utility_pv_om_jobs) 
+
+calculate_pv_om_jobs <- function(county, start_year, end_year, technology, ambition, initial_capacity,
+                                 final_capacity, direct_jobs, indirect_jobs, induced_jobs) {
+    
+    # Calculate the annual growth rate
+    growth_rate <- (final_capacity / initial_capacity)^(1 / (end_year - start_year)) - 1
+    
+    # Create variables to store the results
+    year <- start_year:end_year
+    capacity <- numeric(length(year))
+    new_capacity <- numeric(length(year))
+    
+    # Calculate the total capacity for each year
+    for (i in 1:length(year)) {
+        capacity[i] <- initial_capacity * (1 + growth_rate)^(year[i] - start_year)
+        if (i == 1) {
+            new_capacity[i] <- capacity[i] - initial_capacity
+        } else {
+            new_capacity[i] <- capacity[i] - capacity[i-1]
+        }
+    }
+    
+    # Create a data frame with the results
+    df <- data.frame(county = county, 
+                     year = year, 
+                     technology = technology,
+                     ambition = ambition,
+                     new_capacity_mw = round(new_capacity, 2),
+                     total_capacity_mw = round(capacity, 2),
+                     new_capacity_gw = round(new_capacity / 1000, 2),
+                     total_capacity_gw = round(capacity / 1000, 2))
+    
+    # Direct jobs
+    df_direct <- df %>%
+        mutate(occupation = "O&M", 
+               type = "direct", 
+               n_jobs = round(total_capacity_mw * direct_jobs, 2))
+    
+    # Indirect jobs
+    df_indirect <- df %>%
+        mutate(occupation = "O&M",
+               type = "indirect", 
+               n_jobs = round(total_capacity_mw * indirect_jobs, 2))
+    
+    # Induced jobs
+    df_induced <- df %>%
+        mutate(occupation = "O&M",
+               type = "induced", 
+               n_jobs = round(total_capacity_mw * induced_jobs, 2))
+    
+    # Stack them together for total jobs
+    df_final <- rbind(df_direct, df_indirect, df_induced)
+    
+    return(df_final)
+}
+
+#################### PV Construction Jobs Function ####################
+#' Calculate PV Construction jobs and annual capacity
+#'
+#' @param county Character string. Name of the county.
+#' @param start_year Integer. The year that you are starting with. E.g., 2025 for a 2025-2045 analysis.
+#' @param end_year Integer. The year you are ending with. E.g., 2045 for a 2025-2045 analysis.
+#' @param technology Character string. Name of the technology. E.g., "Utility PV" or "Rooftop PV".
+#' @param ambition Character string, either "High" or "Low".
+#' @param initial_capacity Numeric. Starting capacity in Megawatts. E.g., 100 for 100MW of solar already installed in 2025.
+#' @param final_capacity Numeric. Target capacity in Megawatts. E.g., 500 for 500MW goal in 2045.
+#' @param direct_jobs Numeric. JEDI output representing number of direct construction jobs per MW of solar.
+#' @param indirect_jobs Numeric. JEDI output representing number of indirect construction jobs per MW of solar.
+#' @param induced_jobs Numeric. JEDI output representing number of induced construction jobs per MW of solar.
+#'
+#' @return Data Frame projecting total construction jobs each year and energy capacity over designated time period
+#'
+#' @examples
+#' Santa Barbara Utility Solar construction Jobs from 2025-2045, starting with 111 MW in 2025 and increasing to 722 MW by 2045:
+#' sb_utility_pv_const_jobs <- calculate_pv_construction_jobs(county = "SB",
+#'                                            start_year = 2025,
+#'                                            end_year = 2045,
+#'                                            technology = "Utility PV",
+#'                                            ambition = "High",
+#'                                            initial_capacity = 111,
+#'                                            final_capacity = 722,
+#'                                            direct_jobs = 0.5,
+#'                                            indirect_jobs = 0.1,
+#'                                            induced_jobs = 0.2)
+#' print(sb_utility_pv_const_jobs) 
+
+calculate_pv_construction_jobs <- function(county, start_year, end_year, technology, ambition, initial_capacity, final_capacity, direct_jobs, indirect_jobs, induced_jobs) {
+    
+    # Calculate the annual growth rate
+    growth_rate <- (final_capacity / initial_capacity)^(1 / (end_year - start_year)) - 1
+    
+    # Create variables to store the results
+    year <- start_year:end_year
+    capacity <- numeric(length(year))
+    new_capacity <- numeric(length(year))
+    
+    # Calculate the total capacity for each year
+    for (i in 1:length(year)) {
+        capacity[i] <- initial_capacity * (1 + growth_rate)^(year[i] - start_year)
+        if (i == 1) {
+            new_capacity[i] <- capacity[i] - initial_capacity
+        } else {
+            new_capacity[i] <- capacity[i] - capacity[i-1]
+        }
+    }
+    
+    # Create a data frame with the results
+    df <- data.frame(county = county, 
+                     year = year, 
+                     technology = technology,
+                     ambition = ambition,
+                     new_capacity_mw = round(new_capacity, 2),
+                     total_capacity_mw = round(capacity, 2),
+                     new_capacity_gw = round(new_capacity / 1000, 2),
+                     total_capacity_gw = round(capacity / 1000, 2))
+    
+    # Direct jobs
+    df_direct <- df %>%
+        mutate(occupation = "Construction", 
+               type = "direct", 
+               n_jobs = round(new_capacity_mw * direct_jobs, 2))   # Assuming that construction jobs only last the year, jobs/mw year will multiply by the new capacity
+    
+    # Indirect jobs
+    df_indirect <- df %>%
+        mutate(occupation = "Construction",
+               type = "indirect", 
+               n_jobs = round(new_capacity_mw * indirect_jobs, 2))
+    
+    # Induced jobs
+    df_induced <- df %>%
+        mutate(occupation = "Construction",
+               type = "induced", 
+               n_jobs = round(new_capacity_mw * induced_jobs, 2))
+    
+    # Stack them together for total jobs
+    df_final <- rbind(df_direct, df_indirect, df_induced)
+    
+    return(df_final)
+}
+
+###################### OSW Construction Jobs Function ######################  
+#' Calculate OSW Construction jobs and annual capacity
+#'
+#' @param county Character string. Name of the county.
+#' @param start_year Integer. The year that you are starting with. E.g., 2025 for a 2025-2045 analysis.
+#' @param end_year Integer. The year you are ending with. E.g., 2045 for a 2025-2045 analysis.
+#' @param ambition Character string, either "High" or "Low".
+#' @param initial_capacity Numeric. Starting capacity in Gigawatts. E.g., 5 for 5 GW of wind to begin constructing at the start year
+#' @param target_capacity Numeric. Target capacity in Gigawatts. E.g., 15 for 15 GW goal in end year.
+#' @param direct_jobs Numeric. JEDI output representing number of direct construction jobs per GW of OSW.
+#' @param indirect_jobs Numeric. JEDI output representing number of indirect construction jobs per GW of OSW.
+#' @param induced_jobs Numeric. JEDI output representing number of induced construction jobs per GW of OSW.
+#'
+#' @return Data Frame projecting total construction jobs each year and energy capacity over designated time period
+#'
+#' @examples
+#' Central Coast construction jobs from 2025-2045, starting with 0.1 GW in 2025 and increasing to 15 GW by 2045:
+#' calculate_osw_construction_jobs(county = "Tri-County",
+#'                                         start_year = 2025, 
+#'                                         end_year = 2045, 
+#'                                         ambition = "High", 
+#'                                         initial_capacity = 0.1,
+#'                                         target_capacity = 15, 
+#'                                         direct_jobs = 82, 
+#'                                         indirect_jobs = 2571, 
+#'                                         induced_jobs = 781
+#'                                         )
+
+calculate_osw_construction_jobs <- function(county, start_year, end_year, ambition, initial_capacity,
+                                            target_capacity, direct_jobs, indirect_jobs, induced_jobs) {
+    # initial capacity cannot be zero!
+    if (initial_capacity == 0 || initial_capacity < 0){
+        stop("initial_capacity must be a positive, non-zero number")
+    }
+    
+    # Create list of years
+    year = start_year:end_year
+    
+    # Calculate the annual growth rate
+    growth_rate <- (target_capacity / initial_capacity)^(1 / (end_year - (start_year+5))) - 1
+    
+    # Add total capacity for each year into empty list
+    total_capacity <- numeric(length(year))
+    
+    # Calculate up and running capacity, starting 5 years after the year construction starts
+    for (i in 6:length(year)) {
+        total_capacity[i] <- initial_capacity * (1 + growth_rate)^(year[i] - (start_year + 5))
+    }  
+    
+    # Calculate new capacity on the year construction starts
+    new_capacity = lead(total_capacity, 5) - lead(total_capacity, 4)
+    
+    # Fill NAs with 0
+    new_capacity[is.na(new_capacity)] <- 0
+    
+    # Create a data frame with the results
+    df <- data.frame(county = county, 
+                     year = year, 
+                     technology = "Offshore Wind",
+                     ambition = ambition,
+                     new_capacity_mw = round(new_capacity*1000, 2),
+                     total_capacity_mw = round(total_capacity*1000, 2),
+                     new_capacity_gw = round(new_capacity, 2),
+                     total_capacity_gw = round(total_capacity, 2))
+    
+    # Direct jobs
+    # Initialize jobs/per GW Year that will be multiplied by capacity each year
+    direct_jobs_gw_year <- direct_jobs/5 # Direct construction jobs outputted by JEDI / 5 Years
+    # New jobs each year
+    new_jobs <- direct_jobs_gw_year * df$new_capacity_gw
+    
+    # Total direct jobs each year: need to sum construction jobs over 5 year periods
+    df_direct <- df %>%
+        mutate(occupation = "Construction", 
+               type = "direct", 
+               n_jobs = zoo::rollapply(new_jobs, width = 5, FUN = sum, align = "right", partial = TRUE))
+    
+    # Indirect jobs
+    # Initialize jobs/per GW Year that will be multiplied by capacity each year
+    indirect_jobs_gw_year <- indirect_jobs/5 # Direct construction jobs outputted by JEDI / 5 Years
+    # New jobs each year
+    new_jobs <- indirect_jobs_gw_year * df$new_capacity_gw
+    
+    # Total indirect jobs each year: need to sum construction jobs over 5 year periods
+    df_indirect <- df %>%
+        mutate(occupation = "Construction", 
+               type = "indirect", 
+               n_jobs = zoo::rollapply(new_jobs, width = 5, FUN = sum, align = "right", partial = TRUE))
+    
+    # Induced jobs
+    # Initialize jobs/per GW Year that will be multiplied by capacity each year
+    induced_jobs_gw_year <- induced_jobs/5 # Direct construction jobs outputted by JEDI / 5 Years
+    # New jobs each year
+    new_jobs <- induced_jobs_gw_year * df$new_capacity_gw
+    
+    # Total indirect jobs each year: need to sum construction jobs over 5 year periods
+    df_induced <- df %>%
+        mutate(occupation = "Construction", 
+               type = "induced", 
+               n_jobs = zoo::rollapply(new_jobs, width = 5, FUN = sum, align = "right", partial = TRUE))
+    
+    # Stack them together for total jobs
+    df_final <- rbind(df_direct, df_indirect, df_induced)
+    
+}
+
+###################### OSW Operations and Maintenance Jobs Function ######################  
+#' Calculate OSW O&M jobs and annual capacity
+#'
+#' @param county Character string. Name of the county.
+#' @param start_year Integer. The year that you are starting with. E.g., 2025 for a 2025-2045 analysis.
+#' @param end_year Integer. The year you are ending with. E.g., 2045 for a 2025-2045 analysis.
+#' @param ambition Character string, either "High" or "Low".
+#' @param initial_capacity Numeric. Starting capacity in Gigawatts. E.g., 5 for 5 GW of wind to begin constructing at the start year
+#' @param target_capacity Numeric. Target capacity in Gigawatts. E.g., 15 for 15 GW goal in end year.
+#' @param direct_jobs Numeric. JEDI output representing number of direct O&M jobs per GW of OSW.
+#' @param indirect_jobs Numeric. JEDI output representing number of indirect O&M jobs per GW of OSW.
+#' @param induced_jobs Numeric. JEDI output representing number of induced O&M jobs per GW of OSW.
+#'
+#' @return Data Frame projecting total O&M jobs each year and energy capacity over designated time period
+#'
+#' @examples
+#' #' Central Coast O&M jobs from 2025-2045, starting with 0.1 GW in 2025 and increasing to 15 GW by 2045:
+#' calculate_osw_om_jobs(county = "Tri-County",
+#'                       start_year = 2025, 
+#'                       end_year = 2045, 
+#'                       ambition = "High", 
+#'                       initial_capacity = 0.1,
+#'                       target_capacity = 15, 
+#'                       direct_jobs = 127, 
+#'                       indirect_jobs = 126, 
+#'                       induced_jobs = 131)
+
+calculate_osw_om_jobs <- function(county, start_year, end_year, ambition, initial_capacity,
+                                  target_capacity, direct_jobs, indirect_jobs, induced_jobs) {
+    
+    # initial capacity cannot be zero!
+    if (initial_capacity == 0 || initial_capacity < 0){
+        stop("initial_capacity must be a positive, non-zero number")
+    }
+    
+    # Create list of years
+    year = start_year:end_year
+    
+    # Calculate the annual growth rate
+    growth_rate <- (target_capacity / initial_capacity)^(1 / (end_year - (start_year+5))) - 1
+    
+    # Add total capacity for each year into empty list
+    total_capacity <- numeric(length(year))
+    
+    # Calculate up and running capacity, starting 5 years after the year construction starts
+    for (i in 6:length(year)) {
+        total_capacity[i] <- initial_capacity * (1 + growth_rate)^(year[i] - (start_year + 5))
+    }  
+    
+    # Calculate new capacity on the year construction starts
+    new_capacity = lead(total_capacity, 5) - lead(total_capacity, 4)
+    
+    # Fill NAs with 0
+    new_capacity[is.na(new_capacity)] <- 0
+    
+    # Create a data frame with the results
+    df <- data.frame(county = county, 
+                     year = year, 
+                     technology = "Offshore Wind",
+                     ambition = ambition,
+                     new_capacity_mw = round(new_capacity*1000, 2),
+                     total_capacity_mw = round(total_capacity*1000, 2),
+                     new_capacity_gw = round(new_capacity, 2),
+                     total_capacity_gw = round(total_capacity, 2))
+    
+    # Calculate direct jobs
+    df_direct <- df %>%
+        mutate(occupation = "O&M", 
+               type = "direct", 
+               n_jobs = total_capacity_gw * direct_jobs)
+    
+    # Calculate indirect jobs
+    df_indirect <- df %>%
+        mutate(occupation = "O&M", 
+               type = "indirect", 
+               n_jobs = total_capacity_gw * indirect_jobs)
+    
+    # Calculate induced jobs
+    df_induced <- df %>%
+        mutate(occupation = "O&M", 
+               type = "induced", 
+               n_jobs = total_capacity_gw * induced_jobs)
+    
+    # Stack them together for total jobs
+    df_final <- rbind(df_direct, df_indirect, df_induced)
+    
+    return(df_final)
+}

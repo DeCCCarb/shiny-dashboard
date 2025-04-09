@@ -137,21 +137,35 @@ body <- dashboardBody(
                         pickerInput(inputId = 'technology_input',
                                     label = 'Select Technology',
                                     choices = c('Floating Offshore Wind', 
-                                                'Onshore Wind',
-                                                'PV Solar - Residential',
-                                                'PV Solar - Commercial',
+                                                'Rooftop PV',
                                                 'Utility PV',
-                                                'Oil Wells - Capping',
-                                                'Oil Wells - Phase Out'),
-                                    multiple = TRUE,
+                                                'Onshore Wind',
+                                                'Oil Wells - Capping'),
+                                    multiple = FALSE,
                                     options = pickerOptions(actionsBox = TRUE)),
+                        # Enter Numeric Input for initial capacity -----
+                        numericInput(inputId = 'initial_capacity_input',
+                                  label = 'Please input your initial GW capacity.',
+                                  value = 0.1,
+                                  min = 0),
+                        # Enter Numeric Input for final capacity -----
+                        numericInput(inputId = 'final_capacity_input',
+                                     label = 'Please input your final GW capacity.',
+                                     value = 15,
+                                     min = 0), 
                         # Select Ambition Scenario ---
                         checkboxGroupButtons(inputId = 'ambition_input',
                                         label = 'Select Ambition Scenario',
                                         choices = c('Low', 'High'),
                                         selected = c('High'),
-                                        justified = TRUE)
-
+                                        justified = TRUE),
+                        # Select Port/No Port
+                        pickerInput(inputId = 'port_input',
+                                    label = 'Offshore Wind Port Location:',
+                                    choices = c('Hueneme', 'Morro Bay'),
+                                    selected = c('Hueneme', 'Morro Bay'),
+                                    multiple = TRUE,
+                                    options = pickerOptions(actionBox = TRUE))
                         
                     ), # END input box
                     
@@ -169,12 +183,18 @@ body <- dashboardBody(
                     ), # END leaflet box
                     
                     # model jobs box ----
+                    # box(width = 8,
+                    #     # Plot outputs based on selection
+                    #     title = tags$strong('Labor Impact'),
+                    #     plotOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
+                    #         withSpinner(type = 1, color = 'forestgreen')
+                    # ), # model jobs box end 
+                    # Projections table box -----
                     box(width = 8,
-                        # Plot outputs based on selection
+                        # Create a table based on input
                         title = tags$strong('Labor Impact'),
-                        plotOutput(outputId = 'model_jobs_output') |>
-                            withSpinner(type = 1, color = 'forestgreen')
-                    ) # model jobs box end 
+                        tableOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
+                            withSpinner(type = 1, color = 'forestgreen'))
                     
                 )# END  1st fluidRow 
                 
