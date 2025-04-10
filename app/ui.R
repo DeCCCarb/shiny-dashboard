@@ -127,11 +127,22 @@ body <- dashboardBody(
                         title = tags$strong('Pick a County'),
                         
                         # pickerInputs ----
+                        
+                        # Enter Numeric Input for start year
+                        numericInput(inputId = 'start_yr_input',
+                                     label = 'Pick a year to start',
+                                     value = 2025,
+                                     min = 2025),
+                        # Enter Numeric Input for start year
+                        numericInput(inputId = 'end_yr_input',
+                                     label = 'Pick an end year for your targets',
+                                     value = 2045,
+                                     min = 2025),
                         pickerInput(inputId = 'county_input',
                                     label = 'Select your County',
                                     choices = unique(counties$County),
                                     selected = c('Ventura'),
-                                    multiple = TRUE,
+                                    multiple = FALSE,
                                     options = pickerOptions(actionsBox = TRUE)),
                         # Select technology input ----
                         pickerInput(inputId = 'technology_input',
@@ -141,6 +152,14 @@ body <- dashboardBody(
                                                 'Utility PV',
                                                 'Onshore Wind',
                                                 'Oil Wells - Capping'),
+                                    multiple = FALSE,
+                                    options = pickerOptions(actionsBox = TRUE)),
+                        # Select job type input ----
+                        pickerInput(inputId = 'job_type_input',
+                                    label = 'Select Direct, Induced, or Indirect',
+                                    choices = c('direct', 
+                                                'induced',
+                                                'indirect'),
                                     multiple = FALSE,
                                     options = pickerOptions(actionsBox = TRUE)),
                         # Enter Numeric Input for initial capacity -----
@@ -153,12 +172,6 @@ body <- dashboardBody(
                                      label = 'Please input your final GW capacity.',
                                      value = 15,
                                      min = 0), 
-                        # Select Ambition Scenario ---
-                        # checkboxGroupButtons(inputId = 'ambition_input',
-                        #                 label = 'Select Ambition Scenario',
-                        #                 choices = c('Low', 'High'),
-                        #                 selected = c('High'),
-                        #                 justified = TRUE),
                         # Select Port/No Port
                         pickerInput(inputId = 'port_input',
                                     label = 'Offshore Wind Port Location:',
