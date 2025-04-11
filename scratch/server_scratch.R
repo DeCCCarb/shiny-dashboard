@@ -124,3 +124,48 @@ server <- function(input, output){
     })
     
 }
+
+# Create dataframe that has each of the counties initial capacity and final capacity goals
+utility_targets=data.frame(expand.grid(counties=c('San Luis Obispo', 'Santa Barbara', 'Ventura'),
+                                    initial=c(1615.82, 110.86, 6.72),
+                                    final = c(10524.86, 722.08, 43.76))) |> 
+    group_by(counties)
+
+# rooftop_targets = data.frame(expand.grid(counties=c('San Luis Obispo', 'Santa Barbara', 'Ventura'),
+#                                          initial=c(344.84, 242.02, 424.20),
+#                                          final = c(1843.69, 1293.94, 3026.38)))
+
+
+# Create the original long-format data frame
+rooftop_targets <- expand.grid(
+    counties = c('San Luis Obispo', 'Santa Barbara', 'Ventura'),
+    values = c("initial", "final")
+)
+
+# Add capacity values
+rooftop_targets$capacity <- c(344.84, 242.02, 424.20, 1843.69, 1293.94, 3026.38)
+
+# Pivot to wide format
+rooftop_targets <- df_long %>%
+    pivot_wider(names_from = counties, values_from = capacity)
+
+# View the result
+print(rooftop_targets)
+
+
+
+# Create the long-format dataframe
+utility_targets_long <- expand.grid(
+    counties = c('San Luis Obispo', 'Santa Barbara', 'Ventura'),
+    values = c("initial", "final")
+)
+
+# Add capacity values
+utility_targets_long$capacity <- c(1615.82, 110.86, 6.72, 10524.86, 722.08, 43.76)
+
+# Pivot to wide format
+utility_targets <- utility_targets_long %>%
+    pivot_wider(names_from = counties, values_from = capacity)
+
+# View result
+print(utility_targets)

@@ -1,3 +1,4 @@
+
 # Dashboard header ----
 header <- dashboardHeader(
     
@@ -14,8 +15,12 @@ sidebar <- dashboardSidebar(
     # sidebarMenu ---
     sidebarMenu(
         menuItem(text = 'Project Overview', tabName = 'overview', icon = icon('star')),
-        menuItem(text = 'Workforce Tool', tabName = 'dashboard', icon = icon('gauge')),
-        menuItem(text = 'Ensuring A Just Transition', tabName = 'equity', icon = icon('gauge')),
+        menuItem(text = 'Floating Offshore Wind', tabName = 'f_osw', icon = icon('gauge')),
+        menuItem(text = 'Utility Solar', tabName = 'utility', icon = icon('gauge')),
+        menuItem(text = 'Rooftop Solar', tabName = 'rooftop', icon = icon('gauge')),
+        menuItem(text = 'Land Based Wind', tabName = 'lb_wind', icon = icon('gauge')),
+        menuItem(text = 'Oil Well Capping', tabName = 'well_cap', icon = icon('gauge')),
+        menuItem(text = 'Fossil Fuel Phaseout', tabName = 'phaseout', icon = icon('gauge')),
         menuItem(text = 'Tool Documentation', tabName = 'documentation', icon = icon('cog'))
         
         
@@ -116,8 +121,8 @@ body <- dashboardBody(
         ), # END Project Overview tabItem
         
         
-        # Tool/Dashboard tabItem
-        tabItem(tabName = 'dashboard',
+        # Tool/Dashboard tabItem for floating offshore wind
+        tabItem(tabName = 'f_osw',
                 
                 # Create a fluidRow ---
                 fluidRow(
@@ -130,16 +135,16 @@ body <- dashboardBody(
                         
                         # Enter Numeric Input for start year
                         numericInput(inputId = 'start_yr_input',
-                                     label = 'Pick a year to start',
+                                     label = 'Year that construction starts:',
                                      value = 2025,
                                      min = 2025),
                         # Enter Numeric Input for start year
                         numericInput(inputId = 'end_yr_input',
-                                     label = 'Pick an end year for your targets',
+                                     label = 'End year to meet targets:',
                                      value = 2045,
                                      min = 2025),
                         pickerInput(inputId = 'county_input',
-                                    label = 'Select your County',
+                                    label = 'Select a County:',
                                     choices = unique(counties$County),
                                     selected = c('Ventura'),
                                     multiple = FALSE,
@@ -179,7 +184,7 @@ body <- dashboardBody(
                                     selected = c('Hueneme', 'Morro Bay'),
                                     multiple = TRUE,
                                     options = pickerOptions(actionBox = TRUE))
-                        
+
                     ), # END input box
                     
                     #leaflet box ----
@@ -211,11 +216,103 @@ body <- dashboardBody(
                     
                 )# END  1st fluidRow 
                 
-        ) # END dashboard tabITEM
+        ), # END floating offshore wind tabITEM
+        tabItem(tabName = 'utility',
+            # Create a fluidRow ---
+            fluidRow(
+                
+                # input box ----
+                box(width = 4,
+                    title = tags$strong('Pick a County'),
+                    
+                    # pickerInputs ----
+                    
+                    # Enter Numeric Input for start year
+                    numericInput(inputId = 'start_yr_utility_input',
+                                 label = 'Year that construction starts:',
+                                 value = 2025,
+                                 min = 2025),
+                    # Enter Numeric Input for start year
+                     numericInput(inputId = 'end_yr_utility_input',
+                                 label = 'End year to meet targets:',
+                                 value = 2045,
+                                 min = 2025),
+                    pickerInput(inputId = 'county_input',
+                                label = 'Select a County:',
+                                choices = unique(counties$County),
+                                selected = c('Ventura'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+                    # Select technology input ----
+                    # pickerInput(inputId = 'utility_input',
+                    #             label = 'Select Technology',
+                    #             choices = c('Floating Offshore Wind', 
+                    #                         'Rooftop PV',
+                    #                         'Utility PV',
+                    #                         'Onshore Wind',
+                    #                         'Oil Wells - Capping'),
+                    #             multiple = FALSE,
+                    #             options = pickerOptions(actionsBox = TRUE)),
+                    # Select job type input ----
+                    pickerInput(inputId = 'utility_job_type_input',
+                                label = 'Select Direct, Induced, or Indirect',
+                                choices = c('direct', 
+                                            'induced',
+                                            'indirect'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+                    # Enter Numeric Input for initial capacity -----
+                    numericInput(inputId = 'initial_mw_utility_input',
+                                 label = 'Please input your initial MW capacity.',
+                                 value = 0,  # placeholder — will be updated
+                                 min = 0),
+                    # Enter Numeric Input for final capacity -----
+                    numericInput(inputId = 'final_mw_utility_input',
+                                 label = 'Please input your final MW capacity.',
+                                 value = 0,
+                                 min = 0), 
+                    # Select Port/No Port
+                    pickerInput(inputId = 'port_input',
+                                label = 'Offshore Wind Port Location:',
+                                choices = c('Hueneme', 'Morro Bay'),
+                                selected = c('Hueneme', 'Morro Bay'),
+                                multiple = TRUE,
+                                options = pickerOptions(actionBox = TRUE))
+                    
+                ), # END input box
+                
+                #leaflet box ----
+                box(width = 6,
+                    
+                    # title 
+                    title = tags$strong('California Central Coast Counties'),
+                    
+                    leafletOutput(outputId = 'county_map_output') |> 
+                        withSpinner(type = 1, color = 'forestgreen')
+                    
+                    
+                    
+                ), # END leaflet box
+                
+                # model jobs box ----
+                # box(width = 8,
+                #     # Plot outputs based on selection
+                #     title = tags$strong('Labor Impact'),
+                #     plotOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
+                #         withSpinner(type = 1, color = 'forestgreen')
+                # ), # model jobs box end 
+                # Projections table box -----
+                box(width = 12,
+                    # Create a table based on input
+                    title = tags$strong('Utility Solar Job Impacts'),
+                    tableOutput(outputId = 'utility_jobs_output') |> # Changed to table output to show data
+                        withSpinner(type = 1, color = 'forestgreen'))
+                
+            )# END  2nd fluidRow)
         
     ) # End tabItems
     
-)
+))
 
 # combine all into dashboardPage ----
 dashboardPage(header, sidebar, body)

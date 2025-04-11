@@ -1,4 +1,4 @@
-server <- function(input, output){
+server <- function(input, output, session){
     
     # Generate workforce development map tool ----
     output$county_map_output <- renderLeaflet({
@@ -220,4 +220,73 @@ server <- function(input, output){
         
     })
     
+    
+    # Make the default values of capacity in the UI react to user input using renderUI------
+    
+    observeEvent(counties_input(), {
+        # Requires a county input
+        req(counties_input())
+        
+        # Assign selected county
+        selected_county <- as.character(counties_input())[1]  # make sure it's a string
+        
+        # Placeholder for default initial capacity that changes based on county selection
+        initial_val <- utility_targets %>%
+            filter(values == "initial") %>%
+            pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
+        
+        # Placeholder for default final capacity that changes based on county selection
+        final_val <- utility_targets |> 
+            filter(values == 'final') |> 
+            pull(!!sym(selected_county))
+        
+        # Update the UI defaults based on county
+        updateNumericInput(
+            session,
+            inputId = "initial_mw_utility_input",
+            value = initial_val
+        )
+        
+        # Update the UI defaults based on county
+        updateNumericInput(
+            session,
+            inputId = 'final_mw_utility_input',
+            value = final_val
+        )
+    })
+    
+    output$pv_jobs_output <- renderTable({
+        county_utility_pv_om <- calculate_pv_om_jobs(
+            county = input$county_input, 
+            technology = "Utility PV", 
+            ambition = "High",
+            start_year = 2025,
+            end_year = 2045,
+            initial_capacity = input$initial_mw_utility_input, 
+            final_capacity = input$final_mw_utility_input, 
+            direct_jobs = 0.2, 
+            indirect_jobs = 0, 
+            induced_jobs = 0
+        )
+        
+        # Construction Utility PV
+        county_utility_pv_const <- calculate_pv_construction_jobs(
+            county = input$county_input,
+            start_year = 2025,
+            end_year = 2045,
+            technology = "Utility PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 1.6,
+            indirect_jobs = 0.6,
+            induced_jobs = 0.4
+        )
+        
+        # Join utility jobs by selected counties and job type
+        county_utility <- rbind(county_utility_pv_const, county_utility_pv_om) |> 
+            filter(type %in% input$job_type_input) |> 
+            select(-ambition)
+        return(county_utility)
+    })
 }
