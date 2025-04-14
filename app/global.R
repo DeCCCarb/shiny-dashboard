@@ -401,7 +401,7 @@ rooftop_targets <- expand.grid(
 rooftop_targets$capacity <- c(344.84, 242.02, 424.20, 1843.69, 1293.94, 3026.38)
 
 # Pivot to wide format
-rooftop_targets <- df_long %>%
+rooftop_targets <- rooftop_targets %>%
     pivot_wider(names_from = counties, values_from = capacity)
 
 

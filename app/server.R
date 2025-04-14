@@ -223,12 +223,12 @@ server <- function(input, output, session){
     
     # Make the default values of capacity in the UI react to user input using renderUI------
     
-    observeEvent(counties_input(), {
+    observeEvent(utility_counties_input(), {
         # Requires a county input
-        req(counties_input())
+        req(utilitycounties_input())
         
         # Assign selected county
-        selected_county <- as.character(counties_input())[1]  # make sure it's a string
+        selected_county <- as.character(utility_counties_input())[1]  # make sure it's a string
         
         # Placeholder for default initial capacity that changes based on county selection
         initial_val <- utility_targets %>%
@@ -255,13 +255,13 @@ server <- function(input, output, session){
         )
     })
     
-    output$pv_jobs_output <- renderTable({
+    output$utility_jobs_output <- renderTable({
         county_utility_pv_om <- calculate_pv_om_jobs(
             county = input$county_input, 
             technology = "Utility PV", 
             ambition = "High",
-            start_year = 2025,
-            end_year = 2045,
+            start_year = input$start_yr_utility_input,
+            end_year = input$end_yr_utility_input,
             initial_capacity = input$initial_mw_utility_input, 
             final_capacity = input$final_mw_utility_input, 
             direct_jobs = 0.2, 
@@ -272,8 +272,8 @@ server <- function(input, output, session){
         # Construction Utility PV
         county_utility_pv_const <- calculate_pv_construction_jobs(
             county = input$county_input,
-            start_year = 2025,
-            end_year = 2045,
+            start_year = input$start_yr_utility_input,
+            end_year = input$end_yr_utility_input,
             technology = "Utility PV",
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
@@ -285,8 +285,9 @@ server <- function(input, output, session){
         
         # Join utility jobs by selected counties and job type
         county_utility <- rbind(county_utility_pv_const, county_utility_pv_om) |> 
-            filter(type %in% input$job_type_input) |> 
+            filter(type %in% input$utility_job_type_input) |> 
             select(-ambition)
+        
         return(county_utility)
     })
 }
