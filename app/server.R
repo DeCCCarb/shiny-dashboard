@@ -1,37 +1,40 @@
 server <- function(input, output, session){
+    # Create reactive port 
+    port_input <- reactive({
+        data.frame(
+            port_name = c("Hueneme", "Morro Bay"),
+            address = c(
+                "Port of Hueneme, Port Hueneme, CA 93041",
+                "699 Embarcadero, Morro Bay, CA 93442"
+            )
+        ) %>%
+            tidygeocoder::geocode(address = address, method = "osm") |> 
+            # tidyr::drop_na(lat, long) %>%
+            # sf::st_as_sf(coords = c("long", "lat"), crs = 4326) |> 
+            filter(port_name == input$port_input)
+        
+    })
     
-    # Generate workforce development map tool ----
-    output$county_map_output <- renderLeaflet({
-        
-        counties_input <- reactive({
-            counties |>
-                filter(County == input$county_input) 
-        })
-        
-        port_input <- reactive({
-            #     port_name = c("Hueneme", "Morro Bay"),
-            #     address = c(
-            #         "Port of Hueneme, Port Hueneme, CA 93041",
-            #         "699 Embarcadero #11, Morro Bay, CA 93442"
-            #     )
-            # ) %>%
-            #     tidygeocoder::geocode(address = address,
-            #                           method = "osm") %>%
-            #     sf::st_as_sf(coords = c("long", "lat"), crs = 4326) |> 
-            data.frame(
-                port_name = c("Hueneme", "Morro Bay"),
-                address = c(
-                    "Port of Hueneme, Port Hueneme, CA 93041",
-                    "699 Embarcadero, Morro Bay, CA 93442"
-                )
-            ) %>%
-                tidygeocoder::geocode(address = address, method = "osm") |> 
-                # tidyr::drop_na(lat, long) %>%
-                # sf::st_as_sf(coords = c("long", "lat"), crs = 4326) |> 
-                filter(port_name == input$port_input)
-            
-        })
-        
+    # output$osw_county_map_output <- renderLeaflet({
+    #     icons <- awesomeIcons(
+    #         icon = 'helmet-safety',
+    #         iconColor = 'black',
+    #         library = 'fa',
+    #         markerColor = "orange"
+    #     )
+    #     
+    #     leaflet() |>
+    #         addProviderTiles(providers$Stadia.StamenTerrain) |>
+    #         setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+    #         addPolygons(data = ca_counties) |> 
+    #         addAwesomeMarkers(data = port_input(),
+    #                           lng = port_input()$long,
+    #                           lat = port_input()$lat,
+    #                           icon = icons,
+    #                           popup = paste('Port', port_input()$port_name))
+    # })
+    # # 
+    output$osw_map_output <- renderLeaflet({
         icons <- awesomeIcons(
             icon = 'helmet-safety',
             iconColor = 'black',
@@ -39,30 +42,121 @@ server <- function(input, output, session){
             markerColor = "orange"
         )
         
-        # sample California Central Coast map using leaflet ----
-        leaflet() |>
+        # Base map
+        leaflet_map <- leaflet() |>
             addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -119.698189,
-                    lat = 34.420830,
-                    zoom = 7) |>
-            # addMiniMap(toggleDisplay = TRUE,
-            #             minimized = FALSE) |>
-            # addMarkers(data = counties_input(),
-            #            lng = counties_input()$Longitude,
-            #            lat = counties_input()$Latitude,
-            #            popup = paste0('County: ', counties_input()$County, '<br>',
-            #                           '% current fossil fuel workers ____', '<br>',
-            #                           'Projected Job Loss___', '<br',
-            #                           'Projected Job Gain ____')) |> 
-            # addTiles() %>% 
-            addPolygons(data=ca_counties) |> 
-            addAwesomeMarkers(data = port_input(),
-                              lng = port_input()$long,
-                              lat = port_input()$lat,
-                              icon = icons,
-                              popup = paste('Port', port_input()$port_name))
+            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            addPolygons(data = ca_counties)
         
+        # Only add markers if ports are selected
+        if (!is.null(input$osw_port_input) && length(input$osw_port_input) > 0) {
+            ports_df <- data.frame(
+                port_name = c("Hueneme", "Morro Bay"),
+                address = c(
+                    "Port of Hueneme, Port Hueneme, CA 93041",
+                    "699 Embarcadero, Morro Bay, CA 93442"
+                )
+            ) |>
+                filter(port_name %in% input$osw_port_input) |>
+                tidygeocoder::geocode(address = address, method = "osm")
+            
+            leaflet_map <- leaflet_map |>
+                addAwesomeMarkers(data = ports_df,
+                                  lng = ports_df$long,
+                                  lat = ports_df$lat,
+                                  icon = icons,
+                                  popup = paste('Port:', ports_df$port_name))
+        }
+        
+        leaflet_map
     })
+    
+    # # Generate workforce development map tool ----
+    output$utility_county_map_output <- renderLeaflet({
+            
+            counties_input <- reactive({
+                if (!is.null(input$county_input)) {
+                    ca_counties |> filter(name %in% input$county_input)
+                } else {
+                    ca_counties
+                }
+            })
+            
+            icons <- awesomeIcons(
+                icon = 'helmet-safety',
+                iconColor = 'black',
+                library = 'fa',
+                markerColor = "orange"
+            )
+            
+            leaflet_map <- leaflet() |>
+                addProviderTiles(providers$Stadia.StamenTerrain) |>
+                setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+                addPolygons(data = counties_input())
+            
+            # Only add ports if selected
+            if (!is.null(input$port_input) && length(input$port_input) > 0) {
+                ports <- data.frame(
+                    port_name = c("Hueneme", "Morro Bay"),
+                    address = c(
+                        "Port of Hueneme, Port Hueneme, CA 93041",
+                        "699 Embarcadero, Morro Bay, CA 93442"
+                    )
+                ) |>
+                    filter(port_name %in% input$port_input) |>
+                    tidygeocoder::geocode(address = address, method = "osm")
+                
+                leaflet_map <- leaflet_map |>
+                    addAwesomeMarkers(data = ports,
+                                      lng = ports$long,
+                                      lat = ports$lat,
+                                      icon = icons,
+                                      popup = paste('Port', ports$port_name))
+            }
+            
+            leaflet_map
+        })
+# 
+#         counties_input <- reactive({
+#             if (!is.null(input$county_input)) {
+#                 ca_counties |> filter(name %in% input$county_input)
+#             } else {
+#                 ca_counties
+#             }
+#         })
+# 
+# 
+#         icons <- awesomeIcons(
+#             icon = 'helmet-safety',
+#             iconColor = 'black',
+#             library = 'fa',
+#             markerColor = "orange"
+#         )
+# 
+#         # sample California Central Coast map using leaflet ----
+#         leaflet() |>
+#             addProviderTiles(providers$Stadia.StamenTerrain) |>
+#             setView(lng = -119.698189,
+#                     lat = 34.420830,
+#                     zoom = 7) |>
+#             # addMiniMap(toggleDisplay = TRUE,
+#             #             minimized = FALSE) |>
+#             # addMarkers(data = counties_input(),
+#             #            lng = counties_input()$Longitude,
+#             #            lat = counties_input()$Latitude,
+#             #            popup = paste0('County: ', counties_input()$County, '<br>',
+#             #                           '% current fossil fuel workers ____', '<br>',
+#             #                           'Projected Job Loss___', '<br',
+#             #                           'Projected Job Gain ____')) |>
+#             # addTiles() %>%
+#             addPolygons(data=ca_counties) |>
+#             addAwesomeMarkers(data = port_input(),
+#                               lng = port_input()$long,
+#                               lat = port_input()$lat,
+#                               icon = icons,
+#                               popup = paste('Port', port_input()$port_name))
+# 
+#     })
     
     # County selection
     counties_input <- reactive({
