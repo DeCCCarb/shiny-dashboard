@@ -2,7 +2,7 @@ server <- function(input, output, session){
     # Create reactive port 
     port_input <- reactive({
         data.frame(
-            port_name = c("Hueneme", "Morro Bay"),
+            port_name = c("Hueneme", "San Luis Obispo"),
             address = c(
                 "Port of Hueneme, Port Hueneme, CA 93041",
                 "699 Embarcadero, Morro Bay, CA 93442"
@@ -51,7 +51,7 @@ server <- function(input, output, session){
         # Only add markers if ports are selected
         if (!is.null(input$osw_port_input) && length(input$osw_port_input) > 0) {
             ports_df <- data.frame(
-                port_name = c("Hueneme", "Morro Bay"),
+                port_name = c("Hueneme", "San Luis Obispo"),
                 address = c(
                     "Port of Hueneme, Port Hueneme, CA 93041",
                     "699 Embarcadero, Morro Bay, CA 93442"
@@ -97,7 +97,7 @@ server <- function(input, output, session){
             # Only add ports if selected
             if (!is.null(input$port_input) && length(input$port_input) > 0) {
                 ports <- data.frame(
-                    port_name = c("Hueneme", "Morro Bay"),
+                    port_name = c("Hueneme", "San Luis Obispo"),
                     address = c(
                         "Port of Hueneme, Port Hueneme, CA 93041",
                         "699 Embarcadero, Morro Bay, CA 93442"
@@ -169,16 +169,16 @@ server <- function(input, output, session){
     # Generate the plot of jobs based on user selection ---
     output$model_jobs_output <- renderTable({
         # Define inputs
-        tech <- input$technology_input
+ #       tech <- input$technology_input   # MARINA REMOVED SELECT TECHNOLOGY DROP DOWN
         
         
-        if (tech == 'Floating Offshore Wind') {
+ #       if (tech == 'Floating Offshore Wind') {      # MARINA REMOVED SELECT TECHNOLOGY DROP DOWN
             # Floating Offshore Wind ------
             # O&M OSW --
             osw_om <- calculate_osw_om_jobs(
                 county = "Tri-county",
-                start_year = input$start_yr_input,
-                end_year = input$end_yr_input,
+                start_year = input$year_range_input[1],
+                end_year = input$year_range_input[2],
                 ambition = "High",
                 initial_capacity = input$initial_capacity_input,
                 target_capacity = input$final_capacity_input,
@@ -190,8 +190,8 @@ server <- function(input, output, session){
             # Construction OSW -- 
             osw_construction <- calculate_osw_construction_jobs(
                 county = "Tri-County",
-                start_year = input$start_yr_input,
-                end_year = input$end_yr_input,
+                start_year = input$year_range_input[1],
+                end_year = input$year_range_input[2],
                 ambition = "High", 
                 initial_capacity = input$initial_capacity_input,
                 target_capacity = input$final_capacity_input,
@@ -204,8 +204,8 @@ server <- function(input, output, session){
                 filter(type %in% input$job_type_input)
             
             return(osw_all)
-            
-        }})
+      })      
+     #   }})
     
     
     
@@ -269,7 +269,7 @@ server <- function(input, output, session){
         # Only add ports if selected
         if (!is.null(input$port_input) && length(input$port_input) > 0) {
             ports <- data.frame(
-                port_name = c("Hueneme", "Morro Bay"),
+                port_name = c("Hueneme", "San Luis Obispo"),
                 address = c(
                     "Port of Hueneme, Port Hueneme, CA 93041",
                     "699 Embarcadero, Morro Bay, CA 93442"
