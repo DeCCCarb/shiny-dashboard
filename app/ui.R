@@ -12,7 +12,7 @@ header <- dashboardHeader(
 # dashboard sidebar ---
 sidebar <- dashboardSidebar(
     
-    # sidebarMenu ---
+    ##### sidebarMenu: tabNames  ---#######
     sidebarMenu(
         menuItem(text = 'Project Overview', tabName = 'overview', icon = icon('star')),
         menuItem(text = 'Floating Offshore Wind', tabName = 'f_osw', icon = icon('gauge')),
@@ -376,9 +376,65 @@ body <- dashboardBody(
             )# END  2nd fluidRow)
 
 
-            ) # End Rooftop Solar tabItem
+            ), # End Rooftop Solar tabItem
+    tabItem(tabName = 'lb_wind',
+            # Create a fluid row
+            # Create a fluidRow ---
+            fluidRow(
+                
+                # input box ----
+                box(width = 4,
+                    title = tags$strong('Land Based Wind Development'),
+                    
+                    # pickerInputs ----
+                    sliderInput(inputId = 'input_lw_years',
+                                label = 'Select a range of years',
+                                min = 2026,
+                                max = 2050,
+                                value = c(2026, 2045),
+                                dragRange = TRUE,
+                                sep = ''),
+                    # Slider Range output for land wind ---- 
+                    verbatimTextOutput("input_lw_years"),
+                    pickerInput(inputId = 'lw_counties_input',
+                                label = 'Select a County:',
+                                choices = unique(counties$County),
+                                selected = c('Ventura'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+                    # Select job type input ----
+                    pickerInput(inputId = 'lw_job_type_input',
+                                label = 'Select Direct, Induced, or Indirect',
+                                choices = c('direct',
+                                            'induced',
+                                            'indirect'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+                    # Enter Numeric Input for initial capacity -----
+                    numericInput(inputId = 'initial_gw_lw_input',
+                                 label = 'Please input your initial GW capacity.',
+                                 value = 0,  # placeholder — will be updated
+                                 min = 0),
+                    # Enter Numeric Input for final capacity -----
+                    numericInput(inputId = 'final_gw_land_input',
+                                 label = 'Please input your final GW capacity.',
+                                 value = 0,
+                                 min = 0)
+                    
+                ), # End input box
+                # Projections table box -----
+                box(width = 12,
+                    # Create a table based on input
+                    title = tags$strong('Land Based Wind Job Impacts'),
+                    tableOutput(outputId = 'lw_jobs_output') |> # Changed to table output to show data
+                        withSpinner(type = 1, color = 'forestgreen'))
+
+
+                ) # End 1st fluidRow
+            ) # End Land Based Wind tabItem
+    )
     
-))
+    ) # End Dashboard Body
 
 # combine all into dashboardPage ----
 dashboardPage(header, sidebar, body)
