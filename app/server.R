@@ -1,5 +1,5 @@
-server <- function(input, output, session){
-    # Create reactive port 
+server <- function(input, output, session) {
+    # Create reactive port
     port_input <- reactive({
         data.frame(
             port_name = c("Hueneme", "Morro Bay"),
@@ -8,9 +8,9 @@ server <- function(input, output, session){
                 "699 Embarcadero, Morro Bay, CA 93442"
             )
         ) %>%
-            tidygeocoder::geocode(address = address, method = "osm") |> 
+            tidygeocoder::geocode(address = address, method = "osm") |>
             # tidyr::drop_na(lat, long) %>%
-            # sf::st_as_sf(coords = c("long", "lat"), crs = 4326) |> 
+            # sf::st_as_sf(coords = c("long", "lat"), crs = 4326) |>
             filter(port_name == input$port_input)
         
     })
@@ -22,18 +22,18 @@ server <- function(input, output, session){
     #         library = 'fa',
     #         markerColor = "orange"
     #     )
-    #     
+    #
     #     leaflet() |>
     #         addProviderTiles(providers$Stadia.StamenTerrain) |>
     #         setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
-    #         addPolygons(data = ca_counties) |> 
+    #         addPolygons(data = ca_counties) |>
     #         addAwesomeMarkers(data = port_input(),
     #                           lng = port_input()$long,
     #                           lat = port_input()$lat,
     #                           icon = icons,
     #                           popup = paste('Port', port_input()$port_name))
     # })
-    # # 
+    # #
     output$osw_map_output <- renderLeaflet({
         icons <- awesomeIcons(
             icon = 'helmet-safety',
@@ -45,11 +45,14 @@ server <- function(input, output, session){
         # Base map
         leaflet_map <- leaflet() |>
             addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            setView(lng = -119.698189,
+                    lat = 34.420830,
+                    zoom = 7) |>
             addPolygons(data = ca_counties)
         
         # Only add markers if ports are selected
-        if (!is.null(input$osw_port_input) && length(input$osw_port_input) > 0) {
+        if (!is.null(input$osw_port_input) &&
+            length(input$osw_port_input) > 0) {
             ports_df <- data.frame(
                 port_name = c("Hueneme", "Morro Bay"),
                 address = c(
@@ -61,11 +64,13 @@ server <- function(input, output, session){
                 tidygeocoder::geocode(address = address, method = "osm")
             
             leaflet_map <- leaflet_map |>
-                addAwesomeMarkers(data = ports_df,
-                                  lng = ports_df$long,
-                                  lat = ports_df$lat,
-                                  icon = icons,
-                                  popup = paste('Port:', ports_df$port_name))
+                addAwesomeMarkers(
+                    data = ports_df,
+                    lng = ports_df$long,
+                    lat = ports_df$lat,
+                    icon = icons,
+                    popup = paste('Port:', ports_df$port_name)
+                )
         }
         
         leaflet_map
@@ -73,96 +78,163 @@ server <- function(input, output, session){
     
     # # Generate workforce development map tool ----
     output$utility_county_map_output <- renderLeaflet({
-            
-            counties_input <- reactive({
-                if (!is.null(input$county_input)) {
-                    ca_counties |> filter(name %in% input$county_input)
-                } else {
-                    ca_counties
-                }
-            })
-            
-            icons <- awesomeIcons(
-                icon = 'helmet-safety',
-                iconColor = 'black',
-                library = 'fa',
-                markerColor = "orange"
-            )
-            
-            leaflet_map <- leaflet() |>
-                addProviderTiles(providers$Stadia.StamenTerrain) |>
-                setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
-                addPolygons(data = counties_input())
-            
-            # Only add ports if selected
-            if (!is.null(input$port_input) && length(input$port_input) > 0) {
-                ports <- data.frame(
-                    port_name = c("Hueneme", "Morro Bay"),
-                    address = c(
-                        "Port of Hueneme, Port Hueneme, CA 93041",
-                        "699 Embarcadero, Morro Bay, CA 93442"
-                    )
-                ) |>
-                    filter(port_name %in% input$port_input) |>
-                    tidygeocoder::geocode(address = address, method = "osm")
-                
-                leaflet_map <- leaflet_map |>
-                    addAwesomeMarkers(data = ports,
-                                      lng = ports$long,
-                                      lat = ports$lat,
-                                      icon = icons,
-                                      popup = paste('Port', ports$port_name))
+        counties_input <- reactive({
+            if (!is.null(input$county_input)) {
+                ca_counties |> filter(name %in% input$county_input)
+            } else {
+                ca_counties
             }
-            
-            leaflet_map
         })
-# 
-#         counties_input <- reactive({
-#             if (!is.null(input$county_input)) {
-#                 ca_counties |> filter(name %in% input$county_input)
-#             } else {
-#                 ca_counties
-#             }
-#         })
-# 
-# 
-#         icons <- awesomeIcons(
-#             icon = 'helmet-safety',
-#             iconColor = 'black',
-#             library = 'fa',
-#             markerColor = "orange"
-#         )
-# 
-#         # sample California Central Coast map using leaflet ----
-#         leaflet() |>
-#             addProviderTiles(providers$Stadia.StamenTerrain) |>
-#             setView(lng = -119.698189,
-#                     lat = 34.420830,
-#                     zoom = 7) |>
-#             # addMiniMap(toggleDisplay = TRUE,
-#             #             minimized = FALSE) |>
-#             # addMarkers(data = counties_input(),
-#             #            lng = counties_input()$Longitude,
-#             #            lat = counties_input()$Latitude,
-#             #            popup = paste0('County: ', counties_input()$County, '<br>',
-#             #                           '% current fossil fuel workers ____', '<br>',
-#             #                           'Projected Job Loss___', '<br',
-#             #                           'Projected Job Gain ____')) |>
-#             # addTiles() %>%
-#             addPolygons(data=ca_counties) |>
-#             addAwesomeMarkers(data = port_input(),
-#                               lng = port_input()$long,
-#                               lat = port_input()$lat,
-#                               icon = icons,
-#                               popup = paste('Port', port_input()$port_name))
-# 
-#     })
+        
+        icons <- awesomeIcons(
+            icon = 'helmet-safety',
+            iconColor = 'black',
+            library = 'fa',
+            markerColor = "orange"
+        )
+        
+        leaflet_map <- leaflet() |>
+            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            setView(lng = -119.698189,
+                    lat = 34.420830,
+                    zoom = 7) |>
+            addPolygons(data = counties_input())
+        
+        # Only add ports if selected
+        if (!is.null(input$port_input) &&
+            length(input$port_input) > 0) {
+            ports <- data.frame(
+                port_name = c("Hueneme", "Morro Bay"),
+                address = c(
+                    "Port of Hueneme, Port Hueneme, CA 93041",
+                    "699 Embarcadero, Morro Bay, CA 93442"
+                )
+            ) |>
+                filter(port_name %in% input$port_input) |>
+                tidygeocoder::geocode(address = address, method = "osm")
+            
+            leaflet_map <- leaflet_map |>
+                addAwesomeMarkers(
+                    data = ports,
+                    lng = ports$long,
+                    lat = ports$lat,
+                    icon = icons,
+                    popup = paste('Port', ports$port_name)
+                )
+        }
+        
+        leaflet_map
+    })
+    
+    # Make the default values of capacity in the UI react to user input using renderUI------
+    observeEvent(input$county_input, {
+        # Requires a county input
+        req(input$county_input)
+        
+        # Assign selected county
+        selected_county <- as.character(input$county_input)[1]  # make sure it's a string
+        
+        # Placeholder for default initial capacity that changes based on county selection
+        initial_val <- utility_targets %>% # Find targets in global.R
+            filter(values == "initial") %>%
+            pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
+        
+        # Placeholder for default final capacity that changes based on county selection
+        final_val <- utility_targets |>
+            filter(values == 'final') |>
+            pull(!!sym(selected_county))
+        
+        # Update the UI defaults based on county
+        updateNumericInput(session, inputId = "initial_mw_utility_input", value = initial_val)
+        
+        # Update the UI defaults based on county
+        updateNumericInput(session, inputId = 'final_mw_utility_input', value = final_val)
+    })
+    
+    output$utility_jobs_output <- renderTable({
+        county_utility_pv_om <- calculate_pv_om_jobs(
+            county = input$county_input,
+            technology = "Utility PV",
+            ambition = "High",
+            start_year = input$start_yr_utility_input,
+            end_year = input$end_yr_utility_input,
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 0.2,
+            indirect_jobs = 0,
+            induced_jobs = 0
+        )
+        
+        # Construction Utility PV
+        county_utility_pv_const <- calculate_pv_construction_jobs(
+            county = input$county_input,
+            start_year = input$start_yr_utility_input,
+            end_year = input$end_yr_utility_input,
+            technology = "Utility PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 1.6,
+            indirect_jobs = 0.6,
+            induced_jobs = 0.4
+        )
+        
+        # Join roof jobs by selected counties and job type
+        county_utility <- rbind(county_utility_pv_const, county_utility_pv_om) |>
+            filter(type %in% input$utility_job_type_input) |>
+            select(-ambition)
+        
+        return(county_utility)
+    })
+    
+    
+    #
+    #         counties_input <- reactive({
+    #             if (!is.null(input$county_input)) {
+    #                 ca_counties |> filter(name %in% input$county_input)
+    #             } else {
+    #                 ca_counties
+    #             }
+    #         })
+    #
+    #
+    #         icons <- awesomeIcons(
+    #             icon = 'helmet-safety',
+    #             iconColor = 'black',
+    #             library = 'fa',
+    #             markerColor = "orange"
+    #         )
+    #
+    #         # sample California Central Coast map using leaflet ----
+    #         leaflet() |>
+    #             addProviderTiles(providers$Stadia.StamenTerrain) |>
+    #             setView(lng = -119.698189,
+    #                     lat = 34.420830,
+    #                     zoom = 7) |>
+    #             # addMiniMap(toggleDisplay = TRUE,
+    #             #             minimized = FALSE) |>
+    #             # addMarkers(data = counties_input(),
+    #             #            lng = counties_input()$Longitude,
+    #             #            lat = counties_input()$Latitude,
+    #             #            popup = paste0('County: ', counties_input()$County, '<br>',
+    #             #                           '% current fossil fuel workers ____', '<br>',
+    #             #                           'Projected Job Loss___', '<br',
+    #             #                           'Projected Job Gain ____')) |>
+    #             # addTiles() %>%
+    #             addPolygons(data=ca_counties) |>
+    #             addAwesomeMarkers(data = port_input(),
+    #                               lng = port_input()$long,
+    #                               lat = port_input()$lat,
+    #                               icon = icons,
+    #                               popup = paste('Port', port_input()$port_name))
+    #
+    #     })
     
     # County selection
     counties_input <- reactive({
         counties |>
-            filter(County == input$county_input) 
-    }) 
+            filter(County == input$county_input)
+    })
     
     
     # Choose your technology
@@ -187,25 +259,26 @@ server <- function(input, output, session){
                 induced_jobs = 131
             )
             
-            # Construction OSW -- 
+            # Construction OSW --
             osw_construction <- calculate_osw_construction_jobs(
                 county = "Tri-County",
                 start_year = input$start_yr_input,
                 end_year = input$end_yr_input,
-                ambition = "High", 
+                ambition = "High",
                 initial_capacity = input$initial_capacity_input,
                 target_capacity = input$final_capacity_input,
-                direct_jobs = 82, 
-                indirect_jobs = 2571, 
+                direct_jobs = 82,
+                indirect_jobs = 2571,
                 induced_jobs = 781
             )
             
-            osw_all <- rbind(osw_construction, osw_om) |> 
+            osw_all <- rbind(osw_construction, osw_om) |>
                 filter(type %in% input$job_type_input)
             
             return(osw_all)
             
-        }})
+        }
+    })
     
     
     
@@ -223,29 +296,20 @@ server <- function(input, output, session){
             pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
         
         # Placeholder for default final capacity that changes based on county selection
-        final_val <- rooftop_targets |> 
-            filter(values == 'final') |> 
+        final_val <- rooftop_targets |>
+            filter(values == 'final') |>
             pull(!!sym(selected_county))
         
         # Update the UI defaults based on county
-        updateNumericInput(
-            session,
-            inputId = "initial_mw_roof_input",
-            value = initial_val
-        )
+        updateNumericInput(session, inputId = "initial_mw_roof_input", value = initial_val)
         
         # Update the UI defaults based on county
-        updateNumericInput(
-            session,
-            inputId = 'final_mw_roof_input',
-            value = final_val
-        )
+        updateNumericInput(session, inputId = 'final_mw_roof_input', value = final_val)
     })
     
-      
+    
     #rooftop leaflet map output ----
     output$roof_county_map_output <- renderLeaflet({
-        
         counties_input <- reactive({
             if (!is.null(input$roof_counties_input)) {
                 ca_counties |> filter(name %in% input$roof_counties_input)
@@ -263,11 +327,14 @@ server <- function(input, output, session){
         
         leaflet_map <- leaflet() |>
             addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            setView(lng = -119.698189,
+                    lat = 34.420830,
+                    zoom = 7) |>
             addPolygons(data = counties_input())
         
         # Only add ports if selected
-        if (!is.null(input$port_input) && length(input$port_input) > 0) {
+        if (!is.null(input$port_input) &&
+            length(input$port_input) > 0) {
             ports <- data.frame(
                 port_name = c("Hueneme", "Morro Bay"),
                 address = c(
@@ -279,11 +346,13 @@ server <- function(input, output, session){
                 tidygeocoder::geocode(address = address, method = "osm")
             
             leaflet_map <- leaflet_map |>
-                addAwesomeMarkers(data = ports,
-                                  lng = ports$long,
-                                  lat = ports$lat,
-                                  icon = icons,
-                                  popup = paste('Port', ports$port_name))
+                addAwesomeMarkers(
+                    data = ports,
+                    lng = ports$long,
+                    lat = ports$lat,
+                    icon = icons,
+                    popup = paste('Port', ports$port_name)
+                )
         }
         
         leaflet_map
@@ -317,7 +386,7 @@ server <- function(input, output, session){
             induced_jobs = 0.4
         )
         
-        # Join utility jobs by selected counties and job type
+        # Join roof jobs by selected counties and job type
         county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
             filter(type %in% input$roof_job_type_input) |>
             select(-ambition)
@@ -334,28 +403,56 @@ server <- function(input, output, session){
         selected_county <- as.character(input$roof_counties_input)[1]  # make sure it's a string
         
         # Placeholder for default initial capacity that changes based on county selection
-        initial_val <- utility_targets %>%
+        initial_val <- rooftop_targets %>%
             filter(values == "initial") %>%
             pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
         
         # Placeholder for default final capacity that changes based on county selection
-        final_val <- utility_targets |> 
-            filter(values == 'final') |> 
+        final_val <- rooftop_targets |>
+            filter(values == 'final') |>
             pull(!!sym(selected_county))
         
         # Update the UI defaults based on county
-        updateNumericInput(
-            session,
-            inputId = "initial_mw_utility_input",
-            value = initial_val
-        )
+        updateNumericInput(session, inputId = "initial_mw_roof_input", value = initial_val)
         
         # Update the UI defaults based on county
-        updateNumericInput(
-            session,
-            inputId = 'final_mw_utility_input',
-            value = final_val
-        )
+        updateNumericInput(session, inputId = 'final_mw_roof_input', value = final_val)
+    })
+    ########### Slider Input Range of Years for Land Based WIND ########
+    
+    output$value <- renderPrint({
+        input$input_lw_years
     })
     
+    ####### Land Based Wind Output Render Jobs ################
+    output$lw_jobs_output <- renderTable({
+        land_wind_construction_test <- calculate_land_wind_construction_jobs(
+            county = input$lw_counties_input,
+            start_year = input$input_lw_years[1],
+            end_year = input$input_lw_years[2],
+            initial_capacity = 0.98,
+            final_capacity = 5,
+            direct_jobs = 1,
+            indirect_jobs = 1,
+            induced_jobs = 1
+        )
+        
+        land_wind_om_test <- calculate_land_wind_om_jobs(
+            county = input$lw_counties_input,
+            start_year = input$input_lw_years[1],
+            end_year = input$input_lw_years[2],
+            initial_capacity = 0.98,
+            final_capacity = 5,
+            direct_jobs = 1,
+            indirect_jobs = 1,
+            induced_jobs = 1
+        )
+        
+        # Join roof jobs by selected counties and job type
+        county_lw <- rbind(land_wind_construction_test, land_wind_om_test) |>
+            filter(type %in% input$lw_job_type_input) |>
+            select(-ambition)
+        
+        return(county_lw)
+    })
 }

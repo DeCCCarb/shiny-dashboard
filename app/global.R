@@ -390,6 +390,8 @@ calculate_osw_om_jobs <- function(county, start_year, end_year, ambition, initia
     return(df_final)
 }
 
+################## Create default values for utility and rooftop solar ###########
+
 # Create dataframe that has each of the counties initial capacity and final capacity goals
 # Create the original long-format data frame
 rooftop_targets <- expand.grid(
@@ -417,3 +419,165 @@ utility_targets_long$capacity <- c(1615.82, 110.86, 6.72, 10524.86, 722.08, 43.7
 # Pivot to wide format
 utility_targets <- utility_targets_long %>%
     pivot_wider(names_from = counties, values_from = capacity)
+
+
+###################### Land Wind O&M Jobs Function ######################
+#' Calculate Land-Based Wind Operations and Maintenance jobs and annual capacity
+#'
+#' @param county Character string. Name of the county.
+#' @param start_year Integer. The year that you are starting with. E.g., 2025 for a 2025-2045 analysis.
+#' @param end_year Integer. The year you are ending with. E.g., 2045 for a 2025-2045 analysis.
+#' @param initial_capacity Numeric. Starting capacity in Gigawatts.
+#' @param final_capacity Numeric. Target capacity in Gigawatts. E.g., 5 for 5 GW goal in 2045.
+#' @param direct_jobs Numeric. JEDI output representing number of direct O&M jobs per GW of land wind.
+#' @param indirect_jobs Numeric. JEDI output representing number of indirect O&M jobs per GW of land wind.
+#' @param induced_jobs Numeric. JEDI output representing number of induced O&M jobs per GW of land wind.
+#'
+#' @return Data Frame projecting total O&M jobs each year and energy capacity over designated time period
+#'
+#' @examples
+#' Santa Barbara Land-Based Wind O&M Jobs from 2025-2045, starting with 0.98 GW in 2025 and increasing to 3 GW by 2045:
+#' sb_land_wind_om_jobs <- calculate_land_wind_om_jobs(county = "SB",
+#'                                            start_year = 2025,
+#'                                            end_year = 2045,
+#'                                            initial_capacity = 0.98,
+#'                                            final_capacity = 3,
+#'                                            direct_jobs = 0.5,
+#'                                            indirect_jobs = 0.1,
+#'                                            induced_jobs = 0.2)
+#' print(sb_land_wind_om_jobs) 
+
+calculate_land_wind_om_jobs <- function(county, start_year, end_year, initial_capacity,
+                                        final_capacity, direct_jobs, indirect_jobs, induced_jobs) {
+    
+    # Calculate the annual growth rate
+    growth_rate <- (final_capacity / initial_capacity)^(1 / (end_year - start_year)) - 1
+    
+    # Create variables to store the results
+    year <- start_year:end_year
+    capacity <- numeric(length(year))
+    new_capacity <- numeric(length(year))
+    
+    # Calculate the total capacity for each year
+    for (i in 1:length(year)) {
+        capacity[i] <- initial_capacity * (1 + growth_rate)^(year[i] - start_year)
+        if (i == 1) {
+            new_capacity[i] <- capacity[i] - initial_capacity
+        } else {
+            new_capacity[i] <- capacity[i] - capacity[i-1]
+        }
+    }
+    
+    # Create a data frame with the results
+    df <- data.frame(county = county, 
+                     year = year, 
+                     technology = "Land-Based Wind",
+                     ambition = NA,
+                     new_capacity_mw = round(new_capacity*1000, 2),
+                     total_capacity_mw = round(capacity*1000, 2),
+                     new_capacity_gw = round(new_capacity, 2),
+                     total_capacity_gw = round(capacity, 2))
+    
+    # Direct jobs
+    df_direct <- df %>%
+        mutate(occupation = "O&M", 
+               type = "direct", 
+               n_jobs = round(total_capacity_gw * direct_jobs, 2))
+    
+    # Indirect jobs
+    df_indirect <- df %>%
+        mutate(occupation = "O&M",
+               type = "indirect", 
+               n_jobs = round(total_capacity_gw * indirect_jobs, 2))
+    
+    # Induced jobs
+    df_induced <- df %>%
+        mutate(occupation = "O&M",
+               type = "induced", 
+               n_jobs = round(total_capacity_gw * induced_jobs, 2))
+    
+    # Stack them together for total jobs
+    df_final <- rbind(df_direct, df_indirect, df_induced)
+    
+    return(df_final)
+}
+
+#################### Land Wind Construction Jobs Function ####################
+#' Calculate Land Wind Construction jobs and annual capacity
+#'
+#' @param county Character string. Name of the county.
+#' @param start_year Integer. The year that you are starting with. E.g., 2025 for a 2025-2045 analysis.
+#' @param end_year Integer. The year you are ending with. E.g., 2045 for a 2025-2045 analysis.
+#' @param initial_capacity Numeric. Starting capacity in Gigawatts.
+#' @param final_capacity Numeric. Target capacity in Gigawatts. E.g., 5 for 5 GW goal in 2045.
+#' @param direct_jobs Numeric. JEDI output representing number of direct construction jobs per GW of land wind.
+#' @param indirect_jobs Numeric. JEDI output representing number of indirect construction jobs per GW of land wind.
+#' @param induced_jobs Numeric. JEDI output representing number of induced construction jobs per GW of land wind.
+#'
+#' @return Data Frame projecting total construction jobs each year and energy capacity over designated time period
+#'
+#' @examples
+#' Santa Barbara Land-Based Wind construction Jobs from 2025-2045, starting with 0.98 GW in 2025 and increasing to 3 GW by 2045:
+#' sb_land_wind_const_jobs <- calculate_land_wind_const_jobs(county = "SB",
+#'                                            start_year = 2025,
+#'                                            end_year = 2045,
+#'                                            initial_capacity = 0.98,
+#'                                            final_capacity = 3,
+#'                                            direct_jobs = 0.5,
+#'                                            indirect_jobs = 0.1,
+#'                                            induced_jobs = 0.2)
+#' print(sb_land_wind_const_jobs) 
+
+calculate_land_wind_construction_jobs <- function(county, start_year, end_year, initial_capacity, final_capacity, direct_jobs, indirect_jobs, induced_jobs) {
+    
+    # Calculate the annual growth rate
+    growth_rate <- (final_capacity / initial_capacity)^(1 / (end_year - start_year)) - 1
+    
+    # Create variables to store the results
+    year <- start_year:end_year
+    capacity <- numeric(length(year))
+    new_capacity <- numeric(length(year))
+    
+    # Calculate the total capacity for each year
+    for (i in 1:length(year)) {
+        capacity[i] <- initial_capacity * (1 + growth_rate)^(year[i] - start_year)
+        if (i == 1) {
+            new_capacity[i] <- capacity[i] - initial_capacity
+        } else {
+            new_capacity[i] <- capacity[i] - capacity[i-1]
+        }
+    }
+    
+    # Create a data frame with the results
+    df <- data.frame(county = county, 
+                     year = year, 
+                     technology = "Land-Based Wind",
+                     ambition = NA,
+                     new_capacity_mw = round(new_capacity*1000, 2),
+                     total_capacity_mw = round(capacity*1000, 2),
+                     new_capacity_gw = round(new_capacity, 2),
+                     total_capacity_gw = round(capacity, 2))
+    
+    # Direct jobs - it is assumed that construction of land wind project takes on average 1 year
+    df_direct <- df %>%
+        mutate(occupation = "Construction", 
+               type = "direct", 
+               n_jobs = round(new_capacity_gw * direct_jobs, 2))
+    
+    # Indirect jobs
+    df_indirect <- df %>%
+        mutate(occupation = "Construction",
+               type = "indirect", 
+               n_jobs = round(new_capacity_gw * indirect_jobs, 2))
+    
+    # Induced jobs
+    df_induced <- df %>%
+        mutate(occupation = "Construction",
+               type = "induced", 
+               n_jobs = round(new_capacity_gw * induced_jobs, 2))
+    
+    # Stack them together for total jobs
+    df_final <- rbind(df_direct, df_indirect, df_induced)
+    
+    return(df_final)
+}
