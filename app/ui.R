@@ -211,7 +211,7 @@ body <- dashboardBody(
                     box(width = 12,
                         # Create a table based on input
                         title = tags$strong('Labor Impact'),
-                        tableOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
+                        plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
                             withSpinner(type = 1, color = 'forestgreen'))
                     
                 )# END  1st fluidRow 
