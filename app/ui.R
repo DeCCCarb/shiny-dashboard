@@ -134,31 +134,42 @@ body <- dashboardBody(
                         # pickerInputs ----
                         
                         # Enter Numeric Input for start year
-                        numericInput(inputId = 'start_yr_input',
-                                     label = 'Year that construction starts:',
-                                     value = 2025,
-                                     min = 2025),
-                        # Enter Numeric Input for start year
-                        numericInput(inputId = 'end_yr_input',
-                                     label = 'End year to meet targets:',
-                                     value = 2045,
-                                     min = 2025),
-                        pickerInput(inputId = 'county_input',
-                                    label = 'Select a County:',
-                                    choices = unique(counties$County),
-                                    selected = c('Ventura'),
-                                    multiple = FALSE,
-                                    options = pickerOptions(actionsBox = TRUE)),
-                        # Select technology input ----
-                        pickerInput(inputId = 'technology_input',
-                                    label = 'Select Technology',
-                                    choices = c('Floating Offshore Wind', 
-                                                'Rooftop PV',
-                                                'Utility PV',
-                                                'Onshore Wind',
-                                                'Oil Wells - Capping'),
-                                    multiple = FALSE,
-                                    options = pickerOptions(actionsBox = TRUE)),
+                        # numericInput(inputId = 'start_yr_input',
+                        #              label = 'Year that construction starts:',
+                        #              value = 2025,
+                        #              min = 2025),
+                        # # Enter Numeric Input for start year
+                        # numericInput(inputId = 'end_yr_input',
+                        #              label = 'End year to meet targets:',
+                        #              value = 2045,
+                        #              min = 2025),
+                        # pickerInput(inputId = 'county_input',
+                        #             label = 'Select a County:',
+                        #             choices = unique(counties$County),
+                        #             selected = c('Ventura'),
+                        #             multiple = FALSE,
+                        #             options = pickerOptions(actionsBox = TRUE)),
+                        
+                        # year range slider input ----
+                        sliderInput(inputId = 'year_range_input',
+                                    label = 'Year Range (CHOOSE BETTER LABEL)',
+                                    min = 2025,
+                                    max = 2045,
+                                    value = c(2025, 2045),
+                                    step = 1,
+                                    ticks = TRUE,
+                                    sep = ""),
+                        
+                        # Select technology input ----      # MARINA REMOVED SELECT TECHNOLOGY DROP DOWN
+                        # pickerInput(inputId = 'technology_input',
+                        #             label = 'Select Technology',
+                        #             choices = c('Floating Offshore Wind', 
+                        #                         'Rooftop PV',
+                        #                         'Utility PV',
+                        #                         'Onshore Wind',
+                        #                         'Oil Wells - Capping'),
+                        #             multiple = FALSE,
+                        #             options = pickerOptions(actionsBox = TRUE)),
                         # Select job type input ----
                         pickerInput(inputId = 'job_type_input',
                                     label = 'Select Direct, Induced, or Indirect',
@@ -180,9 +191,9 @@ body <- dashboardBody(
                         # Select Port/No Port
                         pickerInput(inputId = 'osw_port_input',
                                     label = 'Offshore Wind Port Location:',
-                                    choices = c('Hueneme', 'Morro Bay'),
+                                    choices = c('Hueneme', 'San Luis Obispo'),
                                     selected = NULL,
-                                    multiple = TRUE,
+                                    multiple = FALSE,
                                     options = pickerOptions(actionsBox = TRUE))
 
                     ), # END input box

@@ -2,7 +2,7 @@ server <- function(input, output, session) {
     # Create reactive port
     port_input <- reactive({
         data.frame(
-            port_name = c("Hueneme", "Morro Bay"),
+            port_name = c("Hueneme", "San Luis Obispo"),
             address = c(
                 "Port of Hueneme, Port Hueneme, CA 93041",
                 "699 Embarcadero, Morro Bay, CA 93442"
@@ -54,7 +54,7 @@ server <- function(input, output, session) {
         if (!is.null(input$osw_port_input) &&
             length(input$osw_port_input) > 0) {
             ports_df <- data.frame(
-                port_name = c("Hueneme", "Morro Bay"),
+                port_name = c("Hueneme", "San Luis Obispo"),
                 address = c(
                     "Port of Hueneme, Port Hueneme, CA 93041",
                     "699 Embarcadero, Morro Bay, CA 93442"
@@ -78,49 +78,46 @@ server <- function(input, output, session) {
     
     # # Generate workforce development map tool ----
     output$utility_county_map_output <- renderLeaflet({
-        counties_input <- reactive({
-            if (!is.null(input$county_input)) {
-                ca_counties |> filter(name %in% input$county_input)
-            } else {
-                ca_counties
-            }
-        })
-        
-        icons <- awesomeIcons(
-            icon = 'helmet-safety',
-            iconColor = 'black',
-            library = 'fa',
-            markerColor = "orange"
-        )
-        
-        leaflet_map <- leaflet() |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -119.698189,
-                    lat = 34.420830,
-                    zoom = 7) |>
-            addPolygons(data = counties_input())
-        
-        # Only add ports if selected
-        if (!is.null(input$port_input) &&
-            length(input$port_input) > 0) {
-            ports <- data.frame(
-                port_name = c("Hueneme", "Morro Bay"),
-                address = c(
-                    "Port of Hueneme, Port Hueneme, CA 93041",
-                    "699 Embarcadero, Morro Bay, CA 93442"
-                )
-            ) |>
-                filter(port_name %in% input$port_input) |>
-                tidygeocoder::geocode(address = address, method = "osm")
             
-            leaflet_map <- leaflet_map |>
-                addAwesomeMarkers(
-                    data = ports,
-                    lng = ports$long,
-                    lat = ports$lat,
-                    icon = icons,
-                    popup = paste('Port', ports$port_name)
-                )
+            counties_input <- reactive({
+                if (!is.null(input$county_input)) {
+                    ca_counties |> filter(name %in% input$county_input)
+                } else {
+                    ca_counties
+                }
+            })
+            
+            icons <- awesomeIcons(
+                icon = 'helmet-safety',
+                iconColor = 'black',
+                library = 'fa',
+                markerColor = "orange"
+            )
+            
+            leaflet_map <- leaflet() |>
+                addProviderTiles(providers$Stadia.StamenTerrain) |>
+                setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+                addPolygons(data = counties_input())
+            
+            # Only add ports if selected
+            if (!is.null(input$port_input) && length(input$port_input) > 0) {
+                ports <- data.frame(
+                    port_name = c("Hueneme", "San Luis Obispo"),
+                    address = c(
+                        "Port of Hueneme, Port Hueneme, CA 93041",
+                        "699 Embarcadero, Morro Bay, CA 93442"
+                    )
+                ) |>
+                    filter(port_name %in% input$port_input) |>
+                    tidygeocoder::geocode(address = address, method = "osm")
+                
+                leaflet_map <- leaflet_map |>
+                    addAwesomeMarkers(data = ports,
+                                      lng = ports$long,
+                                      lat = ports$lat,
+                                      icon = icons,
+                                      popup = paste('Port', ports$port_name))
+
         }
         
         leaflet_map
@@ -241,16 +238,16 @@ server <- function(input, output, session) {
     # Generate the plot of jobs based on user selection ---
     output$model_jobs_output <- renderTable({
         # Define inputs
-        tech <- input$technology_input
+ #       tech <- input$technology_input   # MARINA REMOVED SELECT TECHNOLOGY DROP DOWN
         
         
-        if (tech == 'Floating Offshore Wind') {
+ #       if (tech == 'Floating Offshore Wind') {      # MARINA REMOVED SELECT TECHNOLOGY DROP DOWN
             # Floating Offshore Wind ------
             # O&M OSW --
             osw_om <- calculate_osw_om_jobs(
                 county = "Tri-county",
-                start_year = input$start_yr_input,
-                end_year = input$end_yr_input,
+                start_year = input$year_range_input[1],
+                end_year = input$year_range_input[2],
                 ambition = "High",
                 initial_capacity = input$initial_capacity_input,
                 target_capacity = input$final_capacity_input,
@@ -262,9 +259,10 @@ server <- function(input, output, session) {
             # Construction OSW --
             osw_construction <- calculate_osw_construction_jobs(
                 county = "Tri-County",
-                start_year = input$start_yr_input,
-                end_year = input$end_yr_input,
-                ambition = "High",
+
+                start_year = input$year_range_input[1],
+                end_year = input$year_range_input[2],
+                ambition = "High", 
                 initial_capacity = input$initial_capacity_input,
                 target_capacity = input$final_capacity_input,
                 direct_jobs = 82,
@@ -276,9 +274,8 @@ server <- function(input, output, session) {
                 filter(type %in% input$job_type_input)
             
             return(osw_all)
-            
-        }
-    })
+      })      
+
     
     
     
@@ -336,7 +333,7 @@ server <- function(input, output, session) {
         if (!is.null(input$port_input) &&
             length(input$port_input) > 0) {
             ports <- data.frame(
-                port_name = c("Hueneme", "Morro Bay"),
+                port_name = c("Hueneme", "San Luis Obispo"),
                 address = c(
                     "Port of Hueneme, Port Hueneme, CA 93041",
                     "699 Embarcadero, Morro Bay, CA 93442"
