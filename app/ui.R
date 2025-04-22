@@ -133,23 +133,6 @@ body <- dashboardBody(
                         
                         # pickerInputs ----
                         
-                        # Enter Numeric Input for start year
-                        # numericInput(inputId = 'start_yr_input',
-                        #              label = 'Year that construction starts:',
-                        #              value = 2025,
-                        #              min = 2025),
-                        # # Enter Numeric Input for start year
-                        # numericInput(inputId = 'end_yr_input',
-                        #              label = 'End year to meet targets:',
-                        #              value = 2045,
-                        #              min = 2025),
-                        # pickerInput(inputId = 'county_input',
-                        #             label = 'Select a County:',
-                        #             choices = unique(counties$County),
-                        #             selected = c('Ventura'),
-                        #             multiple = FALSE,
-                        #             options = pickerOptions(actionsBox = TRUE)),
-                        
                         # year range slider input ----
                         sliderInput(inputId = 'year_range_input',
                                     label = 'Year Range (CHOOSE BETTER LABEL)',
@@ -160,16 +143,6 @@ body <- dashboardBody(
                                     ticks = TRUE,
                                     sep = ""),
                         
-                        # Select technology input ----      # MARINA REMOVED SELECT TECHNOLOGY DROP DOWN
-                        # pickerInput(inputId = 'technology_input',
-                        #             label = 'Select Technology',
-                        #             choices = c('Floating Offshore Wind', 
-                        #                         'Rooftop PV',
-                        #                         'Utility PV',
-                        #                         'Onshore Wind',
-                        #                         'Oil Wells - Capping'),
-                        #             multiple = FALSE,
-                        #             options = pickerOptions(actionsBox = TRUE)),
                         # Select job type input ----
                         pickerInput(inputId = 'job_type_input',
                                     label = 'Select Direct, Induced, or Indirect',

@@ -238,10 +238,6 @@ server <- function(input, output, session) {
     # Generate the plot of jobs based on user selection ---
     output$model_jobs_output <- renderTable({
         # Define inputs
- #       tech <- input$technology_input   # MARINA REMOVED SELECT TECHNOLOGY DROP DOWN
-        
-        
- #       if (tech == 'Floating Offshore Wind') {      # MARINA REMOVED SELECT TECHNOLOGY DROP DOWN
             # Floating Offshore Wind ------
             # O&M OSW --
             osw_om <- calculate_osw_om_jobs(
