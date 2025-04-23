@@ -211,16 +211,15 @@ body <- dashboardBody(
                     
                     # pickerInputs ----
                     
-                    # Enter Numeric Input for start year
-                    numericInput(inputId = 'start_yr_utility_input',
-                                 label = 'Year that construction starts:',
-                                 value = 2025,
-                                 min = 2025),
-                    # Enter Numeric Input for start year
-                     numericInput(inputId = 'end_yr_utility_input',
-                                 label = 'End year to meet targets:',
-                                 value = 2045,
-                                 min = 2025),
+                    # Enter Slider Input for year range
+                    sliderInput(inputId = 'year_range_input_utility',
+                                label = 'Year Range (CHOOSE BETTER LABEL)',
+                                min = 2025,
+                                max = 2045,
+                                value = c(2025, 2045),
+                                step = 1,
+                                ticks = TRUE,
+                                sep = ""),
                     pickerInput(inputId = 'county_input',
                                 label = 'Select a County:',
                                 choices = unique(counties$County),
@@ -290,16 +289,15 @@ body <- dashboardBody(
 
                     # pickerInputs ----
 
-                    # Enter Numeric Input for start year
-                    numericInput(inputId = 'start_yr_roof_input',
-                                 label = 'Year that construction starts:',
-                                 value = 2025,
-                                 min = 2025),
-                    # Enter Numeric Input for start year
-                    numericInput(inputId = 'end_yr_roof_input',
-                                 label = 'End year to meet targets:',
-                                 value = 2045,
-                                 min = 2025),
+                    # Enter slider Input for start year
+                    sliderInput(inputId = 'year_range_input_roof',
+                                label = 'Year Range (CHOOSE BETTER LABEL)',
+                                min = 2025,
+                                max = 2045,
+                                value = c(2025, 2045),
+                                step = 1,
+                                ticks = TRUE,
+                                sep = ""),
                     pickerInput(inputId = 'roof_counties_input',
                                 label = 'Select a County:',
                                 choices = unique(counties$County),
