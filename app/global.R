@@ -6,7 +6,10 @@ library(leaflet)
 library(shinycssloaders)
 library(fresh)
 library(shinyWidgets)
+library(plotly)
 library(shinyjs)
+library(glue)
+
 
 
 # read in data ---
