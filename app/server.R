@@ -123,7 +123,7 @@ server <- function(input, output, session) {
         leaflet_map
     })
     
-    # Make the default values of capacity in the UI react to user input using renderUI------
+    # Make the default values of UTILITY capacity in the UI react to user input using renderUI------
     observeEvent(input$county_input, {
         # Requires a county input
         req(input$county_input)
@@ -147,14 +147,14 @@ server <- function(input, output, session) {
         # Update the UI defaults based on county
         updateNumericInput(session, inputId = 'final_mw_utility_input', value = final_val)
     })
-    
+    ##### Utility Jobs Output #######
     output$utility_jobs_output <- renderTable({
         county_utility_pv_om <- calculate_pv_om_jobs(
             county = input$county_input,
             technology = "Utility PV",
             ambition = "High",
-            start_year = input$start_yr_utility_input,
-            end_year = input$end_yr_utility_input,
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
             direct_jobs = 0.2,
@@ -165,8 +165,8 @@ server <- function(input, output, session) {
         # Construction Utility PV
         county_utility_pv_const <- calculate_pv_construction_jobs(
             county = input$county_input,
-            start_year = input$start_yr_utility_input,
-            end_year = input$end_yr_utility_input,
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
             technology = "Utility PV",
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
@@ -356,8 +356,8 @@ server <- function(input, output, session) {
             county = input$roof_counties_input,
             technology = "Rooftop PV",
             ambition = "High",
-            start_year = input$start_yr_roof_input,
-            end_year = input$end_yr_roof_input,
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
             direct_jobs = 0.2,
@@ -368,8 +368,8 @@ server <- function(input, output, session) {
         # Construction Utility PV
         county_roof_pv_const <- calculate_pv_construction_jobs(
             county = input$roof_counties_input,
-            start_year = input$start_yr_roof_input,
-            end_year = input$end_yr_roof_input,
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
             technology = "Rooftop PV",
             ambition = "High",
             initial_capacity = input$initial_mw_roof_input,
