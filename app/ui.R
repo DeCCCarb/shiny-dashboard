@@ -135,7 +135,7 @@ body <- dashboardBody(
                         shinyjs::useShinyjs(),  # Enable shinyjs
                         # year range slider input ----
                         sliderInput(inputId = 'year_range_input',
-                                    label = 'Year Range (CHOOSE BETTER LABEL)',
+                                    label = 'Year Construction Starts - Year to Meet Targets',
                                     min = 2025,
                                     max = 2045,
                                     value = c(2025, 2045),
