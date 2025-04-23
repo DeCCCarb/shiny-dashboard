@@ -6,11 +6,10 @@ library(leaflet)
 library(shinycssloaders)
 library(fresh)
 library(shinyWidgets)
-<<<<<<< HEAD
 library(plotly)
-=======
 library(shinyjs)
->>>>>>> 91da483d2862482cb2f4054d68862c7b665e2af3
+library(glue)
+
 
 
 # read in data ---

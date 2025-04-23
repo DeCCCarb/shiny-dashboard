@@ -268,17 +268,18 @@ server <- function(input, output, session) {
             
             osw_all <- rbind(osw_construction, osw_om) |>
                 filter(type %in% input$job_type_input)
-            
+            ######## Generate Plot for OSW ##############
             osw_plot <- ggplot(osw_all, aes(x = year, y = n_jobs, group = occupation)) +
                 geom_col(aes(fill = occupation)) +
                 scale_fill_manual(labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
                                   values = c("#4a4e69", "#9a8c98")) +
                 scale_y_continuous(limits = c(0, 2000)) +
-                labs(title = "Projected direct jobs in CA \nCentral Coast from \nFloating OSW development",
+                labs(title = glue::glue("Projected {input$job_type_input} jobs in CA Central Coast from Floating OSW development"),
                      y = "FTE Jobs") +
                 theme_minimal()
             
-            plotly::ggplotly(osw_plot)
+            plotly::ggplotly(osw_plot) 
+                
         })
         
       
