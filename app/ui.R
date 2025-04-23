@@ -129,18 +129,18 @@ body <- dashboardBody(
                     
                     # input box ----
                     box(width = 4,
-                        title = tags$strong('Pick a County'),
+                        title = tags$strong('Floating Offshore Wind Project Inputs'),
                         
                         # pickerInputs ----
                         shinyjs::useShinyjs(),  # Enable shinyjs
                         # year range slider input ----
                         sliderInput(inputId = 'year_range_input',
-                                    label = 'Year Range (CHOOSE BETTER LABEL)',
+                                    label = 'Year Construction Starts - Year to Meet Targets',
                                     min = 2025,
                                     max = 2045,
                                     value = c(2025, 2045),
                                     step = 1,
-                                    ticks = TRUE,
+                                    ticks = F,
                                     sep = ""),
                         tags$script(HTML("
                                         // Wait until the document is ready
@@ -171,7 +171,7 @@ body <- dashboardBody(
                         
                         # Select job type input ----
                         pickerInput(inputId = 'job_type_input',
-                                    label = 'Select Direct, Induced, or Indirect',
+                                    label = 'Direct, Induced, or Indirect Job Impacts',
                                     choices = c('direct', 
                                                 'induced',
                                                 'indirect'),
@@ -179,12 +179,12 @@ body <- dashboardBody(
                                     options = pickerOptions(actionsBox = TRUE)),
                         # Enter Numeric Input for initial capacity -----
                         numericInput(inputId = 'initial_capacity_input',
-                                     label = 'Please input your initial GW capacity.',
+                                     label = 'GW Capacity of Initial Construction Project',
                                      value = 0.1,
                                      min = 0),
                         # Enter Numeric Input for final capacity -----
                         numericInput(inputId = 'final_capacity_input',
-                                     label = 'Please input your final GW capacity.',
+                                     label = 'Target GW Capacity',
                                      value = 15,
                                      min = 0), 
                         # Select Port/No Port
@@ -201,7 +201,7 @@ body <- dashboardBody(
                     box(width = 6,
                         
                         # title 
-                        title = tags$strong('California Central Coast Counties'),
+                     #   title = tags$strong('California Central Coast Counties'),
                         
                         leafletOutput(outputId = 'osw_map_output') |> 
                             withSpinner(type = 1, color = 'forestgreen')
