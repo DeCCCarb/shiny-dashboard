@@ -140,7 +140,7 @@ body <- dashboardBody(
                                     max = 2045,
                                     value = c(2025, 2045),
                                     step = 1,
-                                    ticks = TRUE,
+                                    ticks = F,
                                     sep = ""),
                         tags$script(HTML("
                                         // Wait until the document is ready
