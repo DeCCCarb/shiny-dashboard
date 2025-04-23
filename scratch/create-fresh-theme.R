@@ -18,7 +18,7 @@ create_theme(
     
     adminlte_sidebar(
         dark_bg = '#DCE1E5',
-        dark_hover_bg = '#FEBC11',
+        dark_hover_bg = '#09847A',
         dark_color = '#09847A',
         width = '400px'
         

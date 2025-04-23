@@ -3,7 +3,7 @@
 header <- dashboardHeader(
     
     # title ----
-    title = 'Labor Impacts of Decarbonization',
+    title = 'Labor Impacts of Decarbonization', # Tentative title
     titleWidth = 800
     
     
@@ -12,11 +12,11 @@ header <- dashboardHeader(
 # dashboard sidebar ---
 sidebar <- dashboardSidebar(
     
-    ##### sidebarMenu: tabNames  ---#######
+    ##### sidebarMenu: tabNames  #######
     sidebarMenu(
         menuItem(text = 'Project Overview', tabName = 'overview', icon = icon('star')),
         menuItem(text = 'Floating Offshore Wind', tabName = 'f_osw', icon = icon('gauge')),
-        menuItem(text = 'Utility Solar', tabName = 'utility', icon = icon('gauge')),
+        menuItem(text = 'Utility Solar', tabName = 'utility', icon = icon('gauge')), # change icons for all
         menuItem(text = 'Rooftop Solar', tabName = 'rooftop', icon = icon('gauge')),
         menuItem(text = 'Land Based Wind', tabName = 'lb_wind', icon = icon('gauge')),
         menuItem(text = 'Oil Well Capping', tabName = 'well_cap', icon = icon('gauge')),
@@ -36,9 +36,7 @@ body <- dashboardBody(
     
     # tabItems ----
     tabItems(
-        
-        
-        
+       
         # Project overview tab item ---
         tabItem(
             tabName = 'overview',
@@ -121,7 +119,7 @@ body <- dashboardBody(
         ), # END Project Overview tabItem
         
         
-        # Tool/Dashboard tabItem for floating offshore wind
+        ########## Tool/Dashboard tabItem for floating offshore wind ###########
         tabItem(tabName = 'f_osw',
                 
                 # Create a fluidRow ---
@@ -146,7 +144,7 @@ body <- dashboardBody(
                                         // Wait until the document is ready
                                         $(document).on('shiny:connected', function() {
                                           // Custom minimum range
-                                          var minRange = 6;
+                                          var minRange = 6; // Construction year boundary, minimum to reach target
                                     
                                           // Target the slider
                                           var slider = $('#year_range_input').data('ionRangeSlider');
@@ -172,9 +170,11 @@ body <- dashboardBody(
                         # Select job type input ----
                         pickerInput(inputId = 'job_type_input',
                                     label = 'Direct, Induced, or Indirect Job Impacts',
-                                    choices = c('direct', 
-                                                'induced',
-                                                'indirect'),
+                                    choices = c(
+                                        'direct', # Change to capital 
+                                        'indirect', 
+                                        'induced'
+                                    ),
                                     multiple = FALSE,
                                     options = pickerOptions(actionsBox = TRUE)),
                         # Enter Numeric Input for initial capacity -----
@@ -200,29 +200,17 @@ body <- dashboardBody(
                     #leaflet box ----
                     box(width = 6,
                         
-                        # title 
-                     #   title = tags$strong('California Central Coast Counties'),
-                        
                         leafletOutput(outputId = 'osw_map_output') |> 
-                            withSpinner(type = 1, color = 'forestgreen')
-                        
-                        
-                        
+                            withSpinner(type = 1, color = '#09847A')
+                   
                     ), # END leaflet box
                     
-                    # model jobs box ----
-                    # box(width = 8,
-                    #     # Plot outputs based on selection
-                    #     title = tags$strong('Labor Impact'),
-                    #     plotOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
-                    #         withSpinner(type = 1, color = 'forestgreen')
-                    # ), # model jobs box end 
-                    # Projections table box -----
+                    ######### Interactive Plotly Output for OSW ##########-----
                     box(width = 12,
                         # Create a table based on input
                         title = tags$strong('Labor Impact'),
                         plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
-                            withSpinner(type = 1, color = 'forestgreen'))
+                            withSpinner(type = 1, color = '#09847A'))
                     
                 )# END  1st fluidRow 
                 
@@ -359,7 +347,7 @@ body <- dashboardBody(
                     title = tags$strong('California Central Coast Counties'),
                     
                     leafletOutput(outputId = 'utility_county_map_output') |> 
-                        withSpinner(type = 1, color = 'forestgreen')
+                        withSpinner(type = 1, color = '#09847A')
                     
                     
                     
@@ -370,7 +358,7 @@ body <- dashboardBody(
                     # Create a table based on input
                     title = tags$strong('Utility Solar Job Impacts'),
                     tableOutput(outputId = 'utility_jobs_output') |> # Changed to table output to show data
-                        withSpinner(type = 1, color = 'forestgreen'))
+                        withSpinner(type = 1, color = '#09847A'))
                 
             )# END  2nd fluidRow)
     ), # End Utility Solar tabItem
@@ -430,7 +418,7 @@ body <- dashboardBody(
 
                     # Leaflet rendering from server
                     leafletOutput(outputId = 'roof_county_map_output') |>
-                        withSpinner(type = 1, color = 'forestgreen')
+                        withSpinner(type = 1, color = '#09847A')
 
                 ), # END leaflet box
 
@@ -439,7 +427,7 @@ body <- dashboardBody(
                     # Create a table based on input
                     title = tags$strong('Rooftop Solar Job Impacts'),
                     tableOutput(outputId = 'roof_jobs_output') |> # Changed to table output to show data
-                        withSpinner(type = 1, color = 'forestgreen'))
+                        withSpinner(type = 1, color = '#09847A'))
 
             )# END  2nd fluidRow)
 
@@ -497,11 +485,28 @@ body <- dashboardBody(
                         # Create a table based on input
                         title = tags$strong('Land Based Wind Job Impacts'),
                         tableOutput(outputId = 'lw_jobs_output') |> # Changed to table output to show data
-                            withSpinner(type = 1, color = 'forestgreen'))
+                            withSpinner(type = 1, color = '#09847A'))
                     
                     
                 ) # End 1st fluidRow
-        ) # End Land Based Wind tabItem
+        ), # End Land Based Wind tabItem
+    tabItem(tabName = 'well_cap',
+            fluidRow(
+                box(
+                    width = 4,
+                    title = 'Oil Well Capping',
+                    pickerInput(
+                        inputId = 'county_wells_input',
+                        choices = c('San Luis Obispo',
+                                    'Ventura',
+                                    'Santa Barbara'),
+                        multiple = FALSE
+                    ) # End county picker
+                    
+                )# End box for inputs?
+                
+            )# End fluidRow for well capping
+            ) # end well capping tab item 
     ) 
     ) # End Dashboard Body
 

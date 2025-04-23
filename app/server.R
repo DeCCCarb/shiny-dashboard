@@ -255,7 +255,6 @@ server <- function(input, output, session) {
             # Construction OSW --
             osw_construction <- calculate_osw_construction_jobs(
                 county = "Tri-County",
-
                 start_year = input$year_range_input[1],
                 end_year = input$year_range_input[2],
                 ambition = "High", 
@@ -266,8 +265,10 @@ server <- function(input, output, session) {
                 induced_jobs = 781
             )
             
+            # Create joined dataframe 
             osw_all <- rbind(osw_construction, osw_om) |>
-                filter(type %in% input$job_type_input)
+                filter(type %in% input$job_type_input) # Filter to inputted job type
+            
             ######## Generate Plot for OSW ##############
             osw_plot <- ggplot(osw_all, aes(x = as.factor(year), y = n_jobs, group = occupation)) +
                 geom_col(aes(fill = occupation)) +

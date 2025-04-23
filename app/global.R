@@ -11,24 +11,15 @@ library(shinyjs)
 library(glue)
 
 
-
-# read in data ---
-
-counties <- readxl::read_xlsx('data/ccc-coords.xlsx')
-
-# faculty review df ----- 
-pv_all_plot <- read_csv(here::here('app', 'data', 'pv_all_plot.csv'))
-
-# shapefile for leaflet map in server ---
+########### Shapefile for leaflet map in server ####################
 ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties.shp')) %>%
     sf::st_transform('+proj=longlat +datum=WGS84') |> 
     janitor::clean_names() |> 
     filter(namelsad %in% c('Santa Barbara County', 'Ventura County', 'San Luis Obispo County'))
 
-
-# faculty review df ----
-osw <- read_csv(here::here('app', 'data', 'osw.csv'))
-
+####### Placeholder for congolomerate county map #############
+#osw_all_counties <- ca_counties |> 
+    
 
 ###################### PV O&M Jobs Function ######################
 #' Calculate PV Operations and Maintenance jobs and annual capacity
@@ -45,20 +36,6 @@ osw <- read_csv(here::here('app', 'data', 'osw.csv'))
 #' @param induced_jobs Numeric. JEDI output representing number of induced O&M jobs per MW of solar.
 #'
 #' @return Data Frame projecting total O&M jobs each year and energy capacity over designated time period
-#'
-#' @examples
-#' Santa Barbara Utility Solar O&M Jobs from 2025-2045, starting with 111 MW in 2025 and increasing to 722 MW by 2045:
-#' sb_utility_pv_om_jobs <- calculate_pv_om_jobs(county = "SB",
-#'                                            start_year = 2025,
-#'                                            end_year = 2045,
-#'                                            technology = "Utility PV",
-#'                                            ambition = "High"
-#'                                            initial_capacity = 111,
-#'                                            final_capacity = 722,
-#'                                            direct_jobs = 0.5,
-#'                                            indirect_jobs = 0.1,
-#'                                            induced_jobs = 0.2)
-#' print(sb_utility_pv_om_jobs) 
 
 calculate_pv_om_jobs <- function(county, start_year, end_year, technology, ambition, initial_capacity,
                                  final_capacity, direct_jobs, indirect_jobs, induced_jobs) {
@@ -130,20 +107,7 @@ calculate_pv_om_jobs <- function(county, start_year, end_year, technology, ambit
 #' @param induced_jobs Numeric. JEDI output representing number of induced construction jobs per MW of solar.
 #'
 #' @return Data Frame projecting total construction jobs each year and energy capacity over designated time period
-#'
-#' @examples
-#' Santa Barbara Utility Solar construction Jobs from 2025-2045, starting with 111 MW in 2025 and increasing to 722 MW by 2045:
-#' sb_utility_pv_const_jobs <- calculate_pv_construction_jobs(county = "SB",
-#'                                            start_year = 2025,
-#'                                            end_year = 2045,
-#'                                            technology = "Utility PV",
-#'                                            ambition = "High",
-#'                                            initial_capacity = 111,
-#'                                            final_capacity = 722,
-#'                                            direct_jobs = 0.5,
-#'                                            indirect_jobs = 0.1,
-#'                                            induced_jobs = 0.2)
-#' print(sb_utility_pv_const_jobs) 
+
 
 calculate_pv_construction_jobs <- function(county, start_year, end_year, technology, ambition, initial_capacity, final_capacity, direct_jobs, indirect_jobs, induced_jobs) {
     
@@ -213,19 +177,7 @@ calculate_pv_construction_jobs <- function(county, start_year, end_year, technol
 #' @param induced_jobs Numeric. JEDI output representing number of induced construction jobs per GW of OSW.
 #'
 #' @return Data Frame projecting total construction jobs each year and energy capacity over designated time period
-#'
-#' @examples
-#' Central Coast construction jobs from 2025-2045, starting with 0.1 GW in 2025 and increasing to 15 GW by 2045:
-#' calculate_osw_construction_jobs(county = "Tri-County",
-#'                                         start_year = 2025, 
-#'                                         end_year = 2045, 
-#'                                         ambition = "High", 
-#'                                         initial_capacity = 0.1,
-#'                                         target_capacity = 15, 
-#'                                         direct_jobs = 82, 
-#'                                         indirect_jobs = 2571, 
-#'                                         induced_jobs = 781
-#'                                         )
+
 
 calculate_osw_construction_jobs <- function(county, start_year, end_year, ambition, initial_capacity,
                                             target_capacity, direct_jobs, indirect_jobs, induced_jobs) {
@@ -319,18 +271,7 @@ calculate_osw_construction_jobs <- function(county, start_year, end_year, ambiti
 #' @param induced_jobs Numeric. JEDI output representing number of induced O&M jobs per GW of OSW.
 #'
 #' @return Data Frame projecting total O&M jobs each year and energy capacity over designated time period
-#'
-#' @examples
-#' #' Central Coast O&M jobs from 2025-2045, starting with 0.1 GW in 2025 and increasing to 15 GW by 2045:
-#' calculate_osw_om_jobs(county = "Tri-County",
-#'                       start_year = 2025, 
-#'                       end_year = 2045, 
-#'                       ambition = "High", 
-#'                       initial_capacity = 0.1,
-#'                       target_capacity = 15, 
-#'                       direct_jobs = 127, 
-#'                       indirect_jobs = 126, 
-#'                       induced_jobs = 131)
+
 
 calculate_osw_om_jobs <- function(county, start_year, end_year, ambition, initial_capacity,
                                   target_capacity, direct_jobs, indirect_jobs, induced_jobs) {
@@ -375,26 +316,37 @@ calculate_osw_om_jobs <- function(county, start_year, end_year, ambition, initia
         mutate(occupation = "O&M", 
                type = "direct", 
                n_jobs = total_capacity_gw * direct_jobs)
-    
-    # Calculate indirect jobs
+
+   # Calculate indirect jobs
     df_indirect <- df %>%
-        mutate(occupation = "O&M", 
-               type = "indirect", 
+        mutate(occupation = "O&M",
+               type = "indirect",
                n_jobs = total_capacity_gw * indirect_jobs)
-    
+
     # Calculate induced jobs
     df_induced <- df %>%
-        mutate(occupation = "O&M", 
-               type = "induced", 
+        mutate(occupation = "O&M",
+               type = "induced",
                n_jobs = total_capacity_gw * induced_jobs)
-    
+
     # Stack them together for total jobs
     df_final <- rbind(df_direct, df_indirect, df_induced)
-    
+
     return(df_final)
 }
 
-################## Create default values for utility and rooftop solar ###########
+osw_construction <- calculate_osw_construction_jobs(
+    county = "Tri-County",
+    start_year = 2026,
+    end_year = 2045,
+    ambition = "High", 
+    initial_capacity = 2,
+    target_capacity = 15,
+    direct_jobs = 82,
+    indirect_jobs = 2571,
+    induced_jobs = 781)
+
+################## Create default values for rooftop solar ###########
 
 # Create dataframe that has each of the counties initial capacity and final capacity goals
 # Create the original long-format data frame
@@ -410,7 +362,7 @@ rooftop_targets$capacity <- c(344.84, 242.02, 424.20, 1843.69, 1293.94, 3026.38)
 rooftop_targets <- rooftop_targets %>%
     pivot_wider(names_from = counties, values_from = capacity)
 
-
+################## Create default values for utility solar ###########
 # Create the long-format dataframe
 utility_targets_long <- expand.grid(
     counties = c('San Luis Obispo', 'Santa Barbara', 'Ventura'),
@@ -420,9 +372,13 @@ utility_targets_long <- expand.grid(
 # Add capacity values
 utility_targets_long$capacity <- c(1615.82, 110.86, 6.72, 10524.86, 722.08, 43.76)
 
+
 # Pivot to wide format
 utility_targets <- utility_targets_long %>%
     pivot_wider(names_from = counties, values_from = capacity)
+
+# Remove longer utility df after pivoting
+rm(utility_targets_long)
 
 
 ###################### Land Wind O&M Jobs Function ######################
@@ -439,17 +395,7 @@ utility_targets <- utility_targets_long %>%
 #'
 #' @return Data Frame projecting total O&M jobs each year and energy capacity over designated time period
 #'
-#' @examples
-#' Santa Barbara Land-Based Wind O&M Jobs from 2025-2045, starting with 0.98 GW in 2025 and increasing to 3 GW by 2045:
-#' sb_land_wind_om_jobs <- calculate_land_wind_om_jobs(county = "SB",
-#'                                            start_year = 2025,
-#'                                            end_year = 2045,
-#'                                            initial_capacity = 0.98,
-#'                                            final_capacity = 3,
-#'                                            direct_jobs = 0.5,
-#'                                            indirect_jobs = 0.1,
-#'                                            induced_jobs = 0.2)
-#' print(sb_land_wind_om_jobs) 
+
 
 calculate_land_wind_om_jobs <- function(county, start_year, end_year, initial_capacity,
                                         final_capacity, direct_jobs, indirect_jobs, induced_jobs) {
@@ -519,18 +465,7 @@ calculate_land_wind_om_jobs <- function(county, start_year, end_year, initial_ca
 #' @param induced_jobs Numeric. JEDI output representing number of induced construction jobs per GW of land wind.
 #'
 #' @return Data Frame projecting total construction jobs each year and energy capacity over designated time period
-#'
-#' @examples
-#' Santa Barbara Land-Based Wind construction Jobs from 2025-2045, starting with 0.98 GW in 2025 and increasing to 3 GW by 2045:
-#' sb_land_wind_const_jobs <- calculate_land_wind_const_jobs(county = "SB",
-#'                                            start_year = 2025,
-#'                                            end_year = 2045,
-#'                                            initial_capacity = 0.98,
-#'                                            final_capacity = 3,
-#'                                            direct_jobs = 0.5,
-#'                                            indirect_jobs = 0.1,
-#'                                            induced_jobs = 0.2)
-#' print(sb_land_wind_const_jobs) 
+
 
 calculate_land_wind_construction_jobs <- function(county, start_year, end_year, initial_capacity, final_capacity, direct_jobs, indirect_jobs, induced_jobs) {
     
