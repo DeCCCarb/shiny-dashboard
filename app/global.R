@@ -543,7 +543,7 @@ calculate_land_wind_construction_jobs <- function(county, start_year, end_year, 
 #'
 #' @example
 #' Direct fossil fuel employment phaseout 2025–2045: 5280 ft setback policy
-#' plot_employment_projection(setback = 'setback_5280ft')
+#' phaseout_employment_projection(setback = 'setback_5280ft')
 
 phaseout_employment_projection <- function(excise_tax = 'no tax', setback,
                                        oil_price = 'reference case', prod_quota = 'no quota') {
@@ -555,6 +555,7 @@ phaseout_employment_projection <- function(excise_tax = 'no tax', setback,
                oil_price_scenario == oil_price,
                prod_quota_scenario == prod_quota,
                year %in% c(2025:2045)) %>% 
+        select(year, excise_tax_scenario, setback_scenario, prod_quota_scenario, oil_price_scenario, county, total_emp) %>% 
         return(filtered_data)
     
     # # Generate plot

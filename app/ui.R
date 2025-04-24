@@ -512,7 +512,7 @@ body <- dashboardBody(
             fluidRow(
 
                 # input box ----
-                box(width = 12,
+                box(width = 6,
                     title = tags$strong('Pick a County'),
 
                     #pickerInputs ----
@@ -537,28 +537,39 @@ body <- dashboardBody(
                                 multiple = FALSE,
                                 options = pickerOptions(actionsBox = TRUE))
                 ), # END input box
+                
+                #leaflet box ----
+                box(width = 6,
+                    
+                    # title
+                    title = tags$strong('California Central Coast Counties'),
+                    
+                    # Leaflet rendering from server
+                    leafletOutput(outputId = 'phaseout_county_map_output') |>
+                        withSpinner(type = 1, color = '#09847A')
+                ) # END leaflet box
 
 
             ), # END  1st fluidRow
             
             fluidRow(
                 
-                #leaflet box ----
-                box(width = 3,
+                    box(
+                        width = 6,
+                        # table output ----
+                        tableOutput(
+                            outputId = 'phaseout_output_table'
+                        ), # End table
+                        ), # END table box
+                
                     
-                    # # title
-                    # title = tags$strong('California Central Coast Counties'),
-                    # 
-                    # # Leaflet rendering from server
-                    # leafletOutput(outputId = 'phaseout_county_map_output') |>
-                    #     withSpinner(type = 1, color = '#09847A')
+                    ######### Interactive Plotly Output for OSW ##########-----
+                    box(width = 6,
+                        # Create a table based on input
+                        title = tags$strong('Labor Impact'),
+                        plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
+                            withSpinner(type = 1, color = '#09847A')) # END plot box
                     
-                    # table output ----
-                    tableOutput(
-                        outputId = 'phaseout_output_table'
-                    ) # End table
-                    
-                ) # END leaflet box
                 
             ) # END 2nd fluid row
             
