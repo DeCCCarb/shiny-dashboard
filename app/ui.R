@@ -555,7 +555,7 @@ body <- dashboardBody(
             fluidRow(
                 
                     box(
-                        width = 9,
+                        width = 6,
                         # table output ----
                         tableOutput(
                             outputId = 'phaseout_output_table'
@@ -564,7 +564,7 @@ body <- dashboardBody(
                 
                     
                     ######### Interactive Plotly Output for OSW ##########-----
-                    box(width = 3,
+                    box(width = 6,
                         # Create a table based on input
                         title = tags$strong('Labor Impact'),
                         plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
