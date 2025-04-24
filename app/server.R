@@ -16,10 +16,9 @@ server <- function(input, output, session) {
     # Map label for total jobs ATTEMPT ----
     x <- 2
     y <- 3
-    # osw_jobs_map_label <- paste(glue("some text and then {x + y}"), "<br>",
-    #                            glue("some text on a new line" ))
-    osw_jobs_map_label <- paste("Some text with some code", {x + y}, "Some more text on a new line")
-
+    osw_map_label = HTML(paste("some text and then", {x + y}, "<br>", # UPDATE WITH REAL LABEL
+                        "some text on a new line" ))
+    
     output$osw_map_output <- renderLeaflet({
         port_icon <- awesomeIcons(
             icon = 'helmet-safety',
@@ -34,13 +33,21 @@ server <- function(input, output, session) {
             setView(lng = -119.698189,
                     lat = 34.420830,
                     zoom = 7) |>
-            addPolygons(data = osw_all_counties, color = 'forestgreen', opacity = 0.7) |>
-            
-            # UPDATE THIS!!! TRYING TO MAKE TOTAL JOB NUMBER LABEL IN MAP
-            addCircleMarkers(lng = -122,
-                       lat = 34.420830,
-                       label = osw_jobs_map_label,
-                       labelOptions = labelOptions(noHide = TRUE))
+            addPolygons(data = osw_all_counties, 
+                        color = 'forestgreen', 
+                        opacity = 0.7,
+            ) |>
+            # Label each county with total jobs
+            addLabelOnlyMarkers(
+                data = st_centroid(osw_all_counties),
+                label = osw_map_label,
+                labelOptions = labelOptions(
+                    noHide = TRUE,
+                    direction = 'auto',
+                    textsize = "12px",
+                    opacity = 1
+                ))
+
         
         # Only add markers if ports are selected
         if (!is.null(input$osw_port_input) &&
@@ -70,46 +77,46 @@ server <- function(input, output, session) {
     
     # # Generate workforce development map tool ----
     output$utility_county_map_output <- renderLeaflet({
+        
+        counties_input <- reactive({
+            if (!is.null(input$county_input)) {
+                ca_counties |> filter(name %in% input$county_input)
+            } else {
+                ca_counties
+            }
+        })
+        
+        icons <- awesomeIcons(
+            icon = 'helmet-safety',
+            iconColor = 'black',
+            library = 'fa',
+            markerColor = "orange"
+        )
+        
+        leaflet_map <- leaflet() |>
+            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            addPolygons(data = counties_input())
+        
+        # Only add ports if selected
+        if (!is.null(input$port_input) && length(input$port_input) > 0) {
+            ports <- data.frame(
+                port_name = c("Hueneme", "San Luis Obispo"),
+                address = c(
+                    "Port of Hueneme, Port Hueneme, CA 93041",
+                    "699 Embarcadero, Morro Bay, CA 93442"
+                )
+            ) |>
+                filter(port_name %in% input$port_input) |>
+                tidygeocoder::geocode(address = address, method = "osm")
             
-            counties_input <- reactive({
-                if (!is.null(input$county_input)) {
-                    ca_counties |> filter(name %in% input$county_input)
-                } else {
-                    ca_counties
-                }
-            })
+            leaflet_map <- leaflet_map |>
+                addAwesomeMarkers(data = ports,
+                                  lng = ports$long,
+                                  lat = ports$lat,
+                                  icon = icons,
+                                  popup = paste('Port', ports$port_name))
             
-            icons <- awesomeIcons(
-                icon = 'helmet-safety',
-                iconColor = 'black',
-                library = 'fa',
-                markerColor = "orange"
-            )
-            
-            leaflet_map <- leaflet() |>
-                addProviderTiles(providers$Stadia.StamenTerrain) |>
-                setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
-                addPolygons(data = counties_input())
-            
-            # Only add ports if selected
-            if (!is.null(input$port_input) && length(input$port_input) > 0) {
-                ports <- data.frame(
-                    port_name = c("Hueneme", "San Luis Obispo"),
-                    address = c(
-                        "Port of Hueneme, Port Hueneme, CA 93041",
-                        "699 Embarcadero, Morro Bay, CA 93442"
-                    )
-                ) |>
-                    filter(port_name %in% input$port_input) |>
-                    tidygeocoder::geocode(address = address, method = "osm")
-                
-                leaflet_map <- leaflet_map |>
-                    addAwesomeMarkers(data = ports,
-                                      lng = ports$long,
-                                      lat = ports$lat,
-                                      icon = icons,
-                                      popup = paste('Port', ports$port_name))
-
         }
         
         leaflet_map
@@ -230,65 +237,65 @@ server <- function(input, output, session) {
     # Generate the plot of jobs based on user selection ---
     output$model_jobs_output <- renderPlotly({
         # Define inputs
-            # Floating Offshore Wind ------
-            # O&M OSW --
-            osw_om <- calculate_osw_om_jobs(
-                county = "Tri-county",
-                start_year = input$year_range_input[1],
-                end_year = input$year_range_input[2],
-                ambition = "High",
-                initial_capacity = input$initial_capacity_input,
-                target_capacity = input$final_capacity_input,
-                direct_jobs = 127,
-                indirect_jobs = 126,
-                induced_jobs = 131
-            )
-            
-            # Construction OSW --
-            osw_construction <- calculate_osw_construction_jobs(
-                county = "Tri-County",
-                start_year = input$year_range_input[1],
-                end_year = input$year_range_input[2],
-                ambition = "High", 
-                initial_capacity = input$initial_capacity_input,
-                target_capacity = input$final_capacity_input,
-                direct_jobs = 82,
-                indirect_jobs = 2571,
-                induced_jobs = 781
-            )
-            
-            # Create joined dataframe 
-            osw_all <- rbind(osw_construction, osw_om) |>
-                filter(type %in% input$job_type_input) # Filter to inputted job type
-            
-            ######## Generate Plot for OSW ##############
-            osw_plot <- ggplot(osw_all, aes(x = as.factor(year), y = n_jobs, group = occupation)) +
-                geom_col(aes(fill = occupation)) +
-                scale_fill_manual(labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
-                                  values = c("#3A8398", "#A3BDBE")) +
-                scale_y_continuous(limits = c(0, 2000),
-                                   labels = scales::comma) +
-                scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
-                labs(title = glue::glue("Projected {input$job_type_input} jobs in CA Central Coast from Floating OSW development"),
-                     y = "FTE Jobs") +
-                theme_minimal() +
-                theme(
-                    # Axes
-                    axis.title.x = element_blank(),
-                    axis.title.y = element_text(margin = margin(10,10,10,10)),
-                    
-                    # Legend
-                    legend.title = element_blank(),
-                    legend.position = "bottom" 
-                    
-                )
-            
-            plotly::ggplotly(osw_plot) 
-                
-        })
+        # Floating Offshore Wind ------
+        # O&M OSW --
+        osw_om <- calculate_osw_om_jobs(
+            county = "Tri-county",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High",
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 127,
+            indirect_jobs = 126,
+            induced_jobs = 131
+        )
         
-      
-
+        # Construction OSW --
+        osw_construction <- calculate_osw_construction_jobs(
+            county = "Tri-County",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High", 
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 82,
+            indirect_jobs = 2571,
+            induced_jobs = 781
+        )
+        
+        # Create joined dataframe 
+        osw_all <- rbind(osw_construction, osw_om) |>
+            filter(type %in% input$job_type_input) # Filter to inputted job type
+        
+        ######## Generate Plot for OSW ##############
+        osw_plot <- ggplot(osw_all, aes(x = as.factor(year), y = n_jobs, group = occupation)) +
+            geom_col(aes(fill = occupation)) +
+            scale_fill_manual(labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
+                              values = c("#3A8398", "#A3BDBE")) +
+            scale_y_continuous(limits = c(0, 2000),
+                               labels = scales::comma) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
+            labs(title = glue::glue("Projected {input$job_type_input} jobs in CA Central Coast from Floating OSW development"),
+                 y = "FTE Jobs") +
+            theme_minimal() +
+            theme(
+                # Axes
+                axis.title.x = element_blank(),
+                axis.title.y = element_text(margin = margin(10,10,10,10)),
+                
+                # Legend
+                legend.title = element_blank(),
+                legend.position = "bottom" 
+                
+            )
+        
+        plotly::ggplotly(osw_plot) 
+        
+    })
+    
+    
+    
     
     
     
