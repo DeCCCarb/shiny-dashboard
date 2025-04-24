@@ -26,7 +26,7 @@ ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties
     janitor::clean_names() |> 
     filter(namelsad %in% c('Santa Barbara County', 'Ventura County', 'San Luis Obispo County'))
 
-####### Placeholder for congolomerate county map #############
+####### Shapefile for OSW leaflet map #############
 osw_all_counties <- st_union(ca_counties, by_feature = FALSE)
     
 
