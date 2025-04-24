@@ -12,9 +12,16 @@ server <- function(input, output, session) {
             filter(port_name == input$port_input)
         
     })
+    
+    # Map label for total jobs ATTEMPT ----
+    x <- 2
+    y <- 3
+    # osw_jobs_map_label <- paste(glue("some text and then {x + y}"), "<br>",
+    #                            glue("some text on a new line" ))
+    osw_jobs_map_label <- paste("Some text with some code", {x + y}, "Some more text on a new line")
 
     output$osw_map_output <- renderLeaflet({
-        icons <- awesomeIcons(
+        port_icon <- awesomeIcons(
             icon = 'helmet-safety',
             iconColor = 'black',
             library = 'fa',
@@ -27,7 +34,13 @@ server <- function(input, output, session) {
             setView(lng = -119.698189,
                     lat = 34.420830,
                     zoom = 7) |>
-            addPolygons(data = osw_all_counties, color = 'forestgreen', opacity = 0.7)
+            addPolygons(data = osw_all_counties, color = 'forestgreen', opacity = 0.7) |>
+            
+            # UPDATE THIS!!! TRYING TO MAKE TOTAL JOB NUMBER LABEL IN MAP
+            addCircleMarkers(lng = -122,
+                       lat = 34.420830,
+                       label = osw_jobs_map_label,
+                       labelOptions = labelOptions(noHide = TRUE))
         
         # Only add markers if ports are selected
         if (!is.null(input$osw_port_input) &&
@@ -47,7 +60,7 @@ server <- function(input, output, session) {
                     data = ports_df,
                     lng = ports_df$long,
                     lat = ports_df$lat,
-                    icon = icons,
+                    icon = port_icon,
                     popup = paste('Port:', ports_df$port_name)
                 )
         }
