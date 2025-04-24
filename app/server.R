@@ -463,15 +463,26 @@ server <- function(input, output, session) {
         
     }) # END phaseout output table
     
+    # Define reactive dataframe for filtered_data 
+    filtered_data <- reactive({
+        req(input$phaseout_setback_input)
+        phaseout_employment_projection(
+            excise_tax = 'no tax',
+            setback = input$phaseout_setback_input,
+            oil_price = 'reference case',
+            prod_quota = 'no quota'
+        )
+    })
+    
     output$phaseout_plot <- renderPlotly({
         
-        phaseout_plot <- filtered_data %>%
+        phaseout_plot <- filtered_data() %>%
             group_by(county) %>%
             ggplot(aes(x = year, y = total_emp, fill = county)) +
             geom_bar(stat = 'identity') +
             scale_fill_manual(values = c('Ventura' = '#4a4e69','Santa Barbara' = '#9a8c98','San Luis Obispo' = '#f0e68c')) +
             labs(title = paste('Direct fossil fuel employment phaseout 2025–2045:',
-                               gsub("_", " ", setback), 'policy'),
+                               gsub("_", " ", input$phaseout_setback_input), 'policy'),
                  y = 'Total direct employment') +
             theme_minimal() +
             theme(axis.title.x = element_blank())
@@ -480,30 +491,30 @@ server <- function(input, output, session) {
         
     })
     
-    # #phaseout leaflet map output ----
-    # output$phaseout_county_map_output <- renderLeaflet({
-    #     counties_input <- reactive({
-    #         if (!is.null(input$phaseout_counties_input)) {
-    #             ca_counties |> filter(name %in% input$phaseout_counties_input)
-    #         } else {
-    #             ca_counties
-    #         }
-    #     })
-    # 
-    #     icons <- awesomeIcons(
-    #         icon = 'helmet-safety',
-    #         iconColor = 'black',
-    #         library = 'fa',
-    #         markerColor = "orange"
-    #     )
-    # 
-    #     leaflet_map <- leaflet() |>
-    #         addProviderTiles(providers$Stadia.StamenTerrain) |>
-    #         setView(lng = -119.698189,
-    #                 lat = 34.420830,
-    #                 zoom = 7) |>
-    #         addPolygons(data = counties_input())
-    # 
-    #     leaflet_map
-    # })
+    #phaseout leaflet map output ----
+    output$phaseout_county_map_output <- renderLeaflet({
+        counties_input <- reactive({
+            if (!is.null(input$phaseout_counties_input)) {
+                ca_counties |> filter(name %in% input$phaseout_counties_input)
+            } else {
+                ca_counties
+            }
+        })
+
+        icons <- awesomeIcons(
+            icon = 'helmet-safety',
+            iconColor = 'black',
+            library = 'fa',
+            markerColor = "orange"
+        )
+
+        leaflet_map <- leaflet() |>
+            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            setView(lng = -119.698189,
+                    lat = 34.420830,
+                    zoom = 7) |>
+            addPolygons(data = counties_input())
+
+        leaflet_map
+    })
 }
