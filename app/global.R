@@ -10,7 +10,14 @@ library(plotly)
 library(shinyjs)
 library(glue)
 library(sf)
+library(readxl)
 
+########### Read in data ####################
+
+counties <- read_excel(here::here('app','data', 'ccc-coords.xlsx'))
+
+job_projections <- read_csv(here::here('app','data','county_oil_employment_projections.csv')) %>% 
+    filter(county %in% c('Santa Barbara','San Luis Obispo','Ventura'))
 
 ########### Shapefile for leaflet map in server ####################
 
@@ -521,4 +528,45 @@ calculate_land_wind_construction_jobs <- function(county, start_year, end_year, 
     df_final <- rbind(df_direct, df_indirect, df_induced)
     
     return(df_final)
+}
+
+#################### Fossil Fuel Jobs Phaseout function ####################
+
+#' Calculate direct employment in fossil fuels given certain policy scenario. 
+#'
+#' @param excise_tax Character string. Could be no tax or tax_setback_1000ft.
+#' @param setback Character string. Could be setback_1000ft, setback_2500ft, setback_5280ft, or no_setback.
+#' @param oil_price Character string. Could be low oil price, high oil price, or reference case.
+#' @param prod_quota Character string. Could be no quota.
+#'
+#' @return Plot showing direct employment under given scenario
+#'
+#' @example
+#' Direct fossil fuel employment phaseout 2025–2045: 5280 ft setback policy
+#' plot_employment_projection(setback = 'setback_5280ft')
+
+phaseout_employment_projection <- function(excise_tax = 'no tax', setback,
+                                       oil_price = 'reference case', prod_quota = 'no quota') {
+    
+    # Filter data according to function inputs
+    filtered_data <- job_projections %>%
+        filter(excise_tax_scenario == excise_tax,
+               setback_scenario == setback,
+               oil_price_scenario == oil_price,
+               prod_quota_scenario == prod_quota,
+               year %in% c(2025:2045)) %>% 
+        return(filtered_data)
+    
+    # # Generate plot
+    # plot <- filtered_data %>%
+    #     group_by(county) %>%
+    #     ggplot(aes(x = year, y = total_emp, fill = county)) +
+    #     geom_bar(stat = 'identity') +
+    #     scale_fill_manual(values = c('Ventura' = '#4a4e69','Santa Barbara' = '#9a8c98','San Luis Obispo' = '#f0e68c')) +
+    #     labs(title = paste('Direct fossil fuel employment phaseout 2025–2045:',
+    #                        gsub("_", " ", setback), 'policy'),
+    #          y = 'Total direct employment') +
+    #     theme_minimal() +
+    #     theme(axis.title.x = element_blank())
+    # 
 }
