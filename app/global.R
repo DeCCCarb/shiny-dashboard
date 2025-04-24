@@ -12,6 +12,8 @@ library(glue)
 library(sf)
 
 
+counties <- readxl::read_excel(here::here('app', 'data', 'ccc-coords.xlsx'))
+
 ########### Shapefile for leaflet map in server ####################
 
 ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties.shp')) %>%
