@@ -9,16 +9,18 @@ library(shinyWidgets)
 library(plotly)
 library(shinyjs)
 library(glue)
+library(sf)
 
 
 ########### Shapefile for leaflet map in server ####################
+
 ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties.shp')) %>%
     sf::st_transform('+proj=longlat +datum=WGS84') |> 
     janitor::clean_names() |> 
     filter(namelsad %in% c('Santa Barbara County', 'Ventura County', 'San Luis Obispo County'))
 
 ####### Placeholder for congolomerate county map #############
-#osw_all_counties <- ca_counties |> 
+osw_all_counties <- st_union(ca_counties, by_feature = FALSE)
     
 
 ###################### PV O&M Jobs Function ######################
