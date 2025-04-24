@@ -506,7 +506,66 @@ body <- dashboardBody(
                 )# End box for inputs?
                 
             )# End fluidRow for well capping
-            ) # end well capping tab item 
+            ), # end well capping tab item 
+    tabItem(tabName = 'phaseout',
+            # Create a fluidRow ---
+            fluidRow(
+
+                # input box ----
+                box(width = 12,
+                    title = tags$strong('Pick a County'),
+
+                    #pickerInputs ----
+                    # Enter county
+                    pickerInput(inputId = 'phaseout_counties_input',
+                                label = 'Select a County:',
+                                choices = c('Santa Barbara',
+                                            'San Luis Obispo',
+                                            'Ventura'),
+                                selected = c('Ventura'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+
+                    # Select setback input ----
+                    pickerInput(inputId = 'phaseout_setback_input',
+                                label = 'Select Setback Policy',
+                                choices = c('setback_1000ft',
+                                            'setback_2500ft',
+                                            'setback_5280ft',
+                                            'no_setback'),
+                                selected = c('setback_2500ft'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE))
+                ), # END input box
+
+
+            ), # END  1st fluidRow
+            
+            fluidRow(
+                
+                #leaflet box ----
+                box(width = 3,
+                    
+                    # # title
+                    # title = tags$strong('California Central Coast Counties'),
+                    # 
+                    # # Leaflet rendering from server
+                    # leafletOutput(outputId = 'phaseout_county_map_output') |>
+                    #     withSpinner(type = 1, color = '#09847A')
+                    
+                    # table output ----
+                    tableOutput(
+                        outputId = 'phaseout_output_table'
+                    ) # End table
+                    
+                ) # END leaflet box
+                
+            ) # END 2nd fluid row
+            
+            
+            
+            
+    ) # End Fossil Fuel Phaseout tabItem
     ) 
     ) # End Dashboard Body
 
