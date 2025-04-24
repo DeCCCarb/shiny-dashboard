@@ -13,12 +13,61 @@ server <- function(input, output, session) {
         
     })
     
-    # Map label for total jobs ATTEMPT ----
-    x <- 2
-    y <- 3
-    osw_map_label = HTML(paste("some text and then", {x + y}, "<br>", # UPDATE WITH REAL LABEL
-                        "some text on a new line" ))
+    # Interactive OSW Map ----
+    observeEvent(c(input$year_range_input, input$job_type_input, input$initial_capacity_input, input$final_capacity_input), {
+        
+        # Calculate the osw dataframe based on user input ----
+        # OSW O&M jobs
+        osw_om <- calculate_osw_om_jobs(
+            county = "Tri-county",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High",
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 127,
+            indirect_jobs = 126,
+            induced_jobs = 131
+        )
+        
+        # OSW Construction
+        osw_construction <- calculate_osw_construction_jobs(
+            county = "Tri-County",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High", 
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 82,
+            indirect_jobs = 2571,
+            induced_jobs = 781
+        )
+        
+        # Bind together
+        osw_all <- rbind(osw_om, osw_construction) |>
+            filter(type == input$job_type_input)
+        
+        # Calculate total construction jobs
+        const_njobs_label <- osw_all |>
+            filter(occupation == "Construction")
+        
+        const_njobs_label <- round(sum(const_njobs_label$n_jobs), 0)
+        
+        # Calculate total O&M jobs
+        om_njobs_label <- osw_all |>
+            filter(occupation == "O&M")
+        
+        om_njobs_label <- round(sum(om_njobs_label$n_jobs), 0)
+        
+        # Generate a label based on the updated dataframe
+        osw_map_label <- HTML(paste("<b>Total Jobs in Central Coast</b>",
+                                     "<br>",
+                                    "- Construction:", const_njobs_label,
+                                   "<br>", 
+                                   "- O&M:", om_njobs_label))
     
+    
+    # OSW map ----
     output$osw_map_output <- renderLeaflet({
         port_icon <- awesomeIcons(
             icon = 'helmet-safety',
@@ -74,8 +123,9 @@ server <- function(input, output, session) {
         
         leaflet_map
     })
+    })
     
-    # # Generate workforce development map tool ----
+    # Utility PV map ----
     output$utility_county_map_output <- renderLeaflet({
         
         counties_input <- reactive({
@@ -183,48 +233,6 @@ server <- function(input, output, session) {
         return(county_utility)
     })
     
-    
-    #
-    #         counties_input <- reactive({
-    #             if (!is.null(input$county_input)) {
-    #                 ca_counties |> filter(name %in% input$county_input)
-    #             } else {
-    #                 ca_counties
-    #             }
-    #         })
-    #
-    #
-    #         icons <- awesomeIcons(
-    #             icon = 'helmet-safety',
-    #             iconColor = 'black',
-    #             library = 'fa',
-    #             markerColor = "orange"
-    #         )
-    #
-    #         # sample California Central Coast map using leaflet ----
-    #         leaflet() |>
-    #             addProviderTiles(providers$Stadia.StamenTerrain) |>
-    #             setView(lng = -119.698189,
-    #                     lat = 34.420830,
-    #                     zoom = 7) |>
-    #             # addMiniMap(toggleDisplay = TRUE,
-    #             #             minimized = FALSE) |>
-    #             # addMarkers(data = counties_input(),
-    #             #            lng = counties_input()$Longitude,
-    #             #            lat = counties_input()$Latitude,
-    #             #            popup = paste0('County: ', counties_input()$County, '<br>',
-    #             #                           '% current fossil fuel workers ____', '<br>',
-    #             #                           'Projected Job Loss___', '<br',
-    #             #                           'Projected Job Gain ____')) |>
-    #             # addTiles() %>%
-    #             addPolygons(data=ca_counties) |>
-    #             addAwesomeMarkers(data = port_input(),
-    #                               lng = port_input()$long,
-    #                               lat = port_input()$lat,
-    #                               icon = icons,
-    #                               popup = paste('Port', port_input()$port_name))
-    #
-    #     })
     
     # County selection
     counties_input <- reactive({
