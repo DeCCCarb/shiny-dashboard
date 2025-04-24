@@ -9,31 +9,10 @@ server <- function(input, output, session) {
             )
         ) %>%
             tidygeocoder::geocode(address = address, method = "osm") |>
-            # tidyr::drop_na(lat, long) %>%
-            # sf::st_as_sf(coords = c("long", "lat"), crs = 4326) |>
             filter(port_name == input$port_input)
         
     })
-    
-    # output$osw_county_map_output <- renderLeaflet({
-    #     icons <- awesomeIcons(
-    #         icon = 'helmet-safety',
-    #         iconColor = 'black',
-    #         library = 'fa',
-    #         markerColor = "orange"
-    #     )
-    #
-    #     leaflet() |>
-    #         addProviderTiles(providers$Stadia.StamenTerrain) |>
-    #         setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
-    #         addPolygons(data = ca_counties) |>
-    #         addAwesomeMarkers(data = port_input(),
-    #                           lng = port_input()$long,
-    #                           lat = port_input()$lat,
-    #                           icon = icons,
-    #                           popup = paste('Port', port_input()$port_name))
-    # })
-    # #
+
     output$osw_map_output <- renderLeaflet({
         icons <- awesomeIcons(
             icon = 'helmet-safety',
@@ -48,7 +27,7 @@ server <- function(input, output, session) {
             setView(lng = -119.698189,
                     lat = 34.420830,
                     zoom = 7) |>
-            addPolygons(data = ca_counties)
+            addPolygons(data = osw_all_counties, color = 'forestgreen', opacity = 0.7)
         
         # Only add markers if ports are selected
         if (!is.null(input$osw_port_input) &&
