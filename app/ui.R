@@ -190,7 +190,7 @@ body <- dashboardBody(
                         # Select Port/No Port
                         pickerInput(inputId = 'osw_port_input',
                                     label = 'Offshore Wind Port Location:',
-                                    choices = c('Hueneme', 'San Luis Obispo'),
+                                    choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
                                     selected = NULL,
                                     multiple = FALSE,
                                     options = pickerOptions(actionsBox = TRUE))

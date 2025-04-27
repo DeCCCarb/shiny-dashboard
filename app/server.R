@@ -1,5 +1,5 @@
 server <- function(input, output, session) {
-    # Create reactive port
+    # Create reactive port for OSW map
     port_input <- reactive({
         data.frame(
             port_name = c("Hueneme", "San Luis Obispo"),
@@ -9,129 +9,146 @@ server <- function(input, output, session) {
             )
         ) %>%
             tidygeocoder::geocode(address = address, method = "osm") |>
-            filter(port_name == input$port_input)
+            filter(port_name == input$osw_port_input)
         
     })
     
     # Interactive OSW Map ----
-    observeEvent(c(input$year_range_input, input$job_type_input, input$initial_capacity_input, input$final_capacity_input), {
-        
-        # Calculate the osw dataframe based on user input ----
-        # OSW O&M jobs
-        osw_om <- calculate_osw_om_jobs(
-            county = "Tri-county",
-            start_year = input$year_range_input[1],
-            end_year = input$year_range_input[2],
-            ambition = "High",
-            initial_capacity = input$initial_capacity_input,
-            target_capacity = input$final_capacity_input,
-            direct_jobs = 127,
-            indirect_jobs = 126,
-            induced_jobs = 131
-        )
-        
-        # OSW Construction
-        osw_construction <- calculate_osw_construction_jobs(
-            county = "Tri-County",
-            start_year = input$year_range_input[1],
-            end_year = input$year_range_input[2],
-            ambition = "High", 
-            initial_capacity = input$initial_capacity_input,
-            target_capacity = input$final_capacity_input,
-            direct_jobs = 82,
-            indirect_jobs = 2571,
-            induced_jobs = 781
-        )
-        
-        # Bind together
-        osw_all <- rbind(osw_om, osw_construction) |>
-            filter(type == input$job_type_input)
-        
-        # Calculate total construction jobs
-        const_njobs_label <- osw_all |>
-            filter(occupation == "Construction")
-        
-        const_njobs_label <- round(sum(const_njobs_label$n_jobs), 0)
-        
-        # Calculate total O&M jobs
-        om_njobs_label <- osw_all |>
-            filter(occupation == "O&M")
-        
-        om_njobs_label <- round(sum(om_njobs_label$n_jobs), 0)
-        
-        # Generate a label based on the updated dataframe
-        osw_map_label <- HTML(paste("<b>Total Jobs in Central Coast</b>",
-                                     "<br>",
-                                    "- Construction:", scales::comma(const_njobs_label),
-                                   "<br>", 
-                                   "- O&M:", scales::comma(om_njobs_label)))
-    
-    
-    # OSW map ----
-    output$osw_map_output <- renderLeaflet({
-        port_icon <- awesomeIcons(
-            icon = 'helmet-safety',
-            iconColor = 'black',
-            library = 'fa',
-            markerColor = "orange"
-        )
-        
-        # Total jobs label location
-        label_coords <- st_coordinates(st_centroid(osw_all_counties)) + c(-0.75, -0.2)
-        
-        label_points <- st_as_sf(data.frame(
-            lng = label_coords[, 1],
-            lat = label_coords[, 2]
-        ), coords = c("lng", "lat"), crs = st_crs(osw_all_counties))
-        
-        # Base map
-        leaflet_map <- leaflet() |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -120.698189,
-                    lat = 34.420830,
-                    zoom = 7) |>
-            addPolygons(data = osw_all_counties, 
-                        color = 'forestgreen', 
-                        opacity = 0.7,
-            ) |>
-            # Label each county with total jobs
-            addLabelOnlyMarkers(
-                data = label_points,
-                label = osw_map_label,
-                labelOptions = labelOptions(
-                    noHide = TRUE,
-                    direction = 'left',
-                    textsize = "12px",
-                    opacity = 1
-                ))
-
-        
-        # Only add markers if ports are selected
-        if (!is.null(input$osw_port_input) &&
-            length(input$osw_port_input) > 0) {
-            ports_df <- data.frame(
-                port_name = c("Hueneme", "San Luis Obispo"),
-                address = c(
-                    "Port of Hueneme, Port Hueneme, CA 93041",
-                    "699 Embarcadero, Morro Bay, CA 93442"
-                )
-            ) |>
-                filter(port_name %in% input$osw_port_input) |>
-                tidygeocoder::geocode(address = address, method = "osm")
-            
-            leaflet_map <- leaflet_map |>
-                addAwesomeMarkers(
-                    data = ports_df,
-                    lng = ports_df$long,
-                    lat = ports_df$lat,
-                    icon = port_icon,
-                    popup = paste('Port:', ports_df$port_name)
-                )
-        }
-        
-        leaflet_map
-    })
-    })
+    observeEvent(c(input$year_range_input, 
+                   input$job_type_input, 
+                   input$initial_capacity_input, 
+                   input$final_capacity_input,
+                   input$osw_port_input), {
+                       
+                       # OSW total jobs map label ----
+                       # Calculate annual jobs when port is in CC
+                       if (!("No Central Coast Port" %in% input$osw_port_input)) {
+                           # OSW O&M jobs
+                           osw_om <- calculate_osw_om_jobs(
+                               county = "Tri-county",
+                               start_year = input$year_range_input[1],
+                               end_year = input$year_range_input[2],
+                               ambition = "High",
+                               initial_capacity = input$initial_capacity_input,
+                               target_capacity = input$final_capacity_input,
+                               direct_jobs = 127,
+                               indirect_jobs = 126,
+                               induced_jobs = 131
+                           )
+                           
+                           # OSW Construction
+                           osw_construction <- calculate_osw_construction_jobs(
+                               county = "Tri-County",
+                               start_year = input$year_range_input[1],
+                               end_year = input$year_range_input[2],
+                               ambition = "High", 
+                               initial_capacity = input$initial_capacity_input,
+                               target_capacity = input$final_capacity_input,
+                               direct_jobs = 82,
+                               indirect_jobs = 2571,
+                               induced_jobs = 781
+                           )
+                           
+                           # Bind together
+                           osw_all <- rbind(osw_om, osw_construction) |>
+                               filter(type == input$job_type_input)
+                           
+                       # Calculate annual jobs when port is NOT in CC
+                       } else {
+                           # Return 0 jobs
+                           osw_all <- data.frame(
+                               year = integer(),
+                               n_jobs = numeric(),
+                               occupation = character(),
+                               type = character(),
+                               stringsAsFactors = FALSE
+                           )
+                       }
+                       
+                       # Calculate total construction jobs
+                       const_njobs_label <- osw_all |>
+                           filter(occupation == "Construction")
+                       
+                       const_njobs_label <- round(sum(const_njobs_label$n_jobs, na.rm = TRUE), 0)
+                       
+                       # Calculate total O&M jobs
+                       om_njobs_label <- osw_all |>
+                           filter(occupation == "O&M")
+                       
+                       om_njobs_label <- round(sum(om_njobs_label$n_jobs, na.rm = TRUE), 0)
+                       
+                       # Generate and format label 
+                       osw_map_label <- HTML(paste("<b>Total Jobs in Central Coast</b>",
+                                                   "<br>",
+                                                   "- Construction:", scales::comma(const_njobs_label),
+                                                   "<br>", 
+                                                   "- O&M:", scales::comma(om_njobs_label)))
+                       
+                       
+                       # OSW map ----
+                       output$osw_map_output <- renderLeaflet({
+                           port_icon <- awesomeIcons(
+                               icon = 'helmet-safety',
+                               iconColor = 'black',
+                               library = 'fa',
+                               markerColor = "orange"
+                           )
+                           
+                           # Total jobs label location
+                           label_coords <- st_coordinates(st_centroid(osw_all_counties)) + c(-0.75, -0.2)
+                           
+                           label_points <- st_as_sf(data.frame(
+                               lng = label_coords[, 1],
+                               lat = label_coords[, 2]
+                           ), coords = c("lng", "lat"), crs = st_crs(osw_all_counties))
+                           
+                           # Base map
+                           leaflet_map <- leaflet() |>
+                               addProviderTiles(providers$Stadia.StamenTerrain) |>
+                               setView(lng = -120.698189,
+                                       lat = 34.420830,
+                                       zoom = 7) |>
+                               addPolygons(data = osw_all_counties, 
+                                           color = 'forestgreen', 
+                                           opacity = 0.7,
+                               ) |>
+                               # Label each county with total jobs
+                               addLabelOnlyMarkers(
+                                   data = label_points,
+                                   label = osw_map_label,
+                                   labelOptions = labelOptions(
+                                       noHide = TRUE,
+                                       direction = 'left',
+                                       textsize = "12px",
+                                       opacity = 1
+                                   ))
+                           
+                           
+                           # Only add markers if ports are selected
+                           if (!("No Central Coast Port" %in% input$osw_port_input)) {
+                               ports_df <- data.frame(
+                                   port_name = c("Hueneme", "San Luis Obispo"),
+                                   address = c(
+                                       "Port of Hueneme, Port Hueneme, CA 93041",
+                                       "699 Embarcadero, Morro Bay, CA 93442"
+                                   )
+                               ) |>
+                                   filter(port_name %in% input$osw_port_input) |>
+                                   tidygeocoder::geocode(address = address, method = "osm")
+                               
+                               leaflet_map <- leaflet_map |>
+                                   addAwesomeMarkers(
+                                       data = ports_df,
+                                       lng = ports_df$long,
+                                       lat = ports_df$lat,
+                                       icon = port_icon,
+                                       popup = paste('Port:', ports_df$port_name)
+                                   )
+                           }
+                           
+                           leaflet_map
+                       })
+                   })
     
     # Utility PV map ----
     output$utility_county_map_output <- renderLeaflet({
@@ -249,11 +266,43 @@ server <- function(input, output, session) {
     })
     
     
-    # Choose your technology
     # Generate the plot of jobs based on user selection ---
     output$model_jobs_output <- renderPlotly({
         # Define inputs
         # Floating Offshore Wind ------
+        if ("No Central Coast Port" %in% input$osw_port_input){
+            # Generate a dummy df to preserve x and y axis
+            years <- input$year_range_input[1]:input$year_range_input[2]
+            dummy_df <- data.frame(
+                year = years,
+                n_jobs = rep(0, length(years)),
+                occupation = factor(rep(NA, length(years))),
+                type = rep(NA, length(years))
+            )
+            
+            # Plot showing no jobs
+            empty_plot <- ggplot(dummy_df, aes(x = as.factor(year), y = n_jobs)) +
+                geom_col(fill = "#cccccc") +
+                scale_y_continuous(limits = c(0, 2000), labels = scales::comma) +
+                scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+                labs(title = "Projected jobs in CA Central Coast from Floating OSW development",
+                     y = "FTE Jobs") +
+                annotate("text",
+                         x = as.factor(median(years)),
+                         y = 1000,
+                         label = "No Port in Central Coast — job projections are 0",
+                         size = 5,
+                         color = "gray30") +
+                theme_minimal() +
+                theme(
+                    axis.title.x = element_blank(),
+                    axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
+                    legend.position = "none"
+                )
+            
+            return(plotly::ggplotly(empty_plot))
+        }
+        
         # O&M OSW --
         osw_om <- calculate_osw_om_jobs(
             county = "Tri-county",
@@ -498,7 +547,7 @@ server <- function(input, output, session) {
     
     # Define reactive dataframe for filtered_data 
     filtered_data <- reactive({
-     #   req(input$phaseout_setback_input)
+        #   req(input$phaseout_setback_input)
         phaseout_employment_projection(
             excise_tax = 'no tax',
             setback = input$phaseout_setback_input,
@@ -533,21 +582,21 @@ server <- function(input, output, session) {
                 ca_counties
             }
         })
-
+        
         icons <- awesomeIcons(
             icon = 'helmet-safety',
             iconColor = 'black',
             library = 'fa',
             markerColor = "orange"
         )
-
+        
         leaflet_map <- leaflet() |>
             addProviderTiles(providers$Stadia.StamenTerrain) |>
             setView(lng = -119.698189,
                     lat = 34.420830,
                     zoom = 7) |>
             addPolygons(data = counties_input())
-
+        
         leaflet_map
     })
 }
