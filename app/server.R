@@ -359,7 +359,57 @@ server <- function(input, output, session) {
         
     })
     
-    
+    # Generate capacity plot based on user selection ---
+    output$osw_cap_projections_output <- renderPlotly({
+        
+        # O&M OSW ---
+        osw <- calculate_osw_om_jobs(
+            county = "Tri-county",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High",
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 127,
+            indirect_jobs = 126,
+            induced_jobs = 131
+        )
+        
+        ######## Generate Plot for OSW ##############
+        # total_cap_line <- osw |>
+        #     filter(year %in% c(2030:2045))
+        # annual_cap_line <- osw |>
+        #     filter(year %in% c(2026:2041))
+        
+        osw_cap_plot <- ggplot() +
+            geom_point(data = osw, 
+                       aes(x = as.factor(year), y = total_capacity_gw),
+                       color = "#A3BDBE") +
+            geom_point(data = osw,
+                      aes(x = as.factor(year), y = new_capacity_gw),
+                      color = "#3A8398") +
+            scale_x_discrete(breaks = scales::breaks_pretty(n=4)) +
+            labs(y = "Capacity (GW)",
+                 title = "Capacity Growth Rate to Meet Target ") +
+            theme_minimal() +
+             theme(
+                 axis.title.x = element_blank(),
+            #     axis.title.y = element_text(size = 24, margin = margin(5,20,0,10)),
+            #     axis.text = element_text(size = 20),
+            #     legend.title = element_blank(),
+            #     legend.text = element_text(size = 20),
+            #     legend.position = "bottom",
+            #     plot.background = element_rect(fill = "#EFEFEF"),
+            #     plot.title = element_blank(),
+            #     panel.grid = element_line(color = "grey85")
+             )
+            
+        
+        plotly::ggplotly(osw_cap_plot) 
+        
+        
+        
+    })
     
     
     
