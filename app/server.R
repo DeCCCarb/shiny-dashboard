@@ -62,9 +62,9 @@ server <- function(input, output, session) {
         # Generate a label based on the updated dataframe
         osw_map_label <- HTML(paste("<b>Total Jobs in Central Coast</b>",
                                      "<br>",
-                                    "- Construction:", const_njobs_label,
+                                    "- Construction:", scales::comma(const_njobs_label),
                                    "<br>", 
-                                   "- O&M:", om_njobs_label))
+                                   "- O&M:", scales::comma(om_njobs_label)))
     
     
     # OSW map ----
@@ -76,10 +76,18 @@ server <- function(input, output, session) {
             markerColor = "orange"
         )
         
+        # Total jobs label location
+        label_coords <- st_coordinates(st_centroid(osw_all_counties)) + c(-0.75, -0.2)
+        
+        label_points <- st_as_sf(data.frame(
+            lng = label_coords[, 1],
+            lat = label_coords[, 2]
+        ), coords = c("lng", "lat"), crs = st_crs(osw_all_counties))
+        
         # Base map
         leaflet_map <- leaflet() |>
             addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -119.698189,
+            setView(lng = -120.698189,
                     lat = 34.420830,
                     zoom = 7) |>
             addPolygons(data = osw_all_counties, 
@@ -88,11 +96,11 @@ server <- function(input, output, session) {
             ) |>
             # Label each county with total jobs
             addLabelOnlyMarkers(
-                data = st_centroid(osw_all_counties),
+                data = label_points,
                 label = osw_map_label,
                 labelOptions = labelOptions(
                     noHide = TRUE,
-                    direction = 'auto',
+                    direction = 'left',
                     textsize = "12px",
                     opacity = 1
                 ))
