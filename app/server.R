@@ -595,12 +595,12 @@ server <- function(input, output, session) {
         return(county_lw)
     })
     
-    output$phaseout_output_table <- renderTable({
-        filtered_data() %>% 
-            filter(county == input$phaseout_counties_input) %>% 
-            select(year, excise_tax_scenario, setback_scenario, prod_quota_scenario, oil_price_scenario, county, total_emp)
-        
-    }) # END phaseout output table
+    # output$phaseout_output_table <- renderTable({
+    #     filtered_data() %>% 
+    #         filter(county == input$phaseout_counties_input) %>% 
+    #         select(year, excise_tax_scenario, setback_scenario, prod_quota_scenario, oil_price_scenario, county, total_emp)
+    #     
+    # }) # END phaseout output table
     
     # Define reactive dataframe for filtered_data 
     filtered_data <- reactive({
@@ -609,6 +609,7 @@ server <- function(input, output, session) {
             county = input$phaseout_counties_input,
             excise_tax = 'no tax',
             setback = input$phaseout_setback_input,
+            setback_existing = input$phaseout_setback_existing_input,
             oil_price = 'reference case',
             prod_quota = 'no quota'
         )
@@ -617,17 +618,16 @@ server <- function(input, output, session) {
     output$phaseout_plot <- renderPlotly({
         
         phaseout_plot <- filtered_data() %>%
-            group_by(county) %>%
-            ggplot(aes(x = as.factor(year), y = total_emp)) +
-            geom_bar(stat = 'identity', fill = "#A3BDBE") +
-            scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
+            ggplot(aes(x = as.factor(year), y = total_emp, text = paste("Year:", year, "<br>Jobs:", total_emp))) +
+            geom_col(position = "dodge",fill = "#A3BDBE") +
+            #scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
             labs(title = paste('Direct fossil fuel employment phaseout 2025–2045:',
-                               gsub("_", " ", input$phaseout_setback_input), 'policy'),
+                               gsub("_", " ", input$phaseout_setback_input), 'policy', input$phaseout_setback_existing_input),
                  y = 'Total direct employment') +
             theme_minimal() +
             theme(axis.title.x = element_blank())
         
-        plotly::ggplotly(phaseout_plot)
+        plotly::ggplotly(phaseout_plot, tooltip = "text")
         
     })
     
