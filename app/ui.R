@@ -133,7 +133,7 @@ body <- dashboardBody(
                         shinyjs::useShinyjs(),  # Enable shinyjs
                         # year range slider input ----
                         sliderInput(inputId = 'year_range_input',
-                                    label = 'Year Construction Starts - Year to Meet Targets',
+                                    label = 'Year Construction Starts - Year to Meet Target',
                                     min = 2025,
                                     max = 2045,
                                     value = c(2025, 2045),
@@ -179,12 +179,12 @@ body <- dashboardBody(
                                     options = pickerOptions(actionsBox = TRUE)),
                         # Enter Numeric Input for initial capacity -----
                         numericInput(inputId = 'initial_capacity_input',
-                                     label = 'GW Capacity of Initial Construction Project',
+                                     label = 'Capacity (GW) of Initial Construction Project',
                                      value = 0.1,
                                      min = 0),
                         # Enter Numeric Input for final capacity -----
                         numericInput(inputId = 'final_capacity_input',
-                                     label = 'Target GW Capacity',
+                                     label = 'Target Capacity (GW)',
                                      value = 15,
                                      min = 0), 
                         # Select Port/No Port
@@ -322,12 +322,12 @@ body <- dashboardBody(
                                 options = pickerOptions(actionsBox = TRUE)),
                     # Enter Numeric Input for initial capacity -----
                     numericInput(inputId = 'initial_mw_utility_input',
-                                 label = 'Please input your initial MW capacity.',
+                                 label = 'Please input your initial capacity (MW).',
                                  value = 0,  # placeholder — will be updated
                                  min = 0),
                     # Enter Numeric Input for final capacity -----
                     numericInput(inputId = 'final_mw_utility_input',
-                                 label = 'Please input your final MW capacity.',
+                                 label = 'Please input your final capacity (MW).',
                                  value = 0,
                                   min = 0) 
                     # # Select Port/No Port
@@ -399,12 +399,12 @@ body <- dashboardBody(
                                 options = pickerOptions(actionsBox = TRUE)),
                     # Enter Numeric Input for initial capacity -----
                     numericInput(inputId = 'initial_mw_roof_input',
-                                 label = 'Please input your initial MW capacity.',
+                                 label = 'Please input your initial capacity (MW).',
                                  value = 0,  # placeholder — will be updated
                                  min = 0),
                     # Enter Numeric Input for final capacity -----
                     numericInput(inputId = 'final_mw_roof_input',
-                                 label = 'Please input your final MW capacity.',
+                                 label = 'Please input your final capacity (MW).',
                                  value = 0,
                                  min = 0)
 
@@ -470,12 +470,12 @@ body <- dashboardBody(
                                     options = pickerOptions(actionsBox = TRUE)),
                         # Enter Numeric Input for initial capacity -----
                         numericInput(inputId = 'initial_gw_lw_input',
-                                     label = 'Please input your initial GW capacity.',
+                                     label = 'Please input your initial capacity (GW).',
                                      value = 0,  # placeholder — will be updated
                                      min = 0),
                         # Enter Numeric Input for final capacity -----
                         numericInput(inputId = 'final_gw_land_input',
-                                     label = 'Please input your final GW capacity.',
+                                     label = 'Please input your final capacity (GW).',
                                      value = 0,
                                      min = 0)
                         
@@ -554,21 +554,21 @@ body <- dashboardBody(
             
             fluidRow(
                 
-                    box(
-                        width = 6,
-                        # table output ----
-                        tableOutput(
-                            outputId = 'phaseout_output_table'
-                        ), # End table
-                        ), # END table box
-                
                     
                     ######### Interactive Plotly Output for OSW ##########-----
-                    box(width = 6,
+                    box(width = 9,
                         # Create a table based on input
                         title = tags$strong('Labor Impact'),
                         plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
-                            withSpinner(type = 1, color = '#09847A')) # END plot box
+                            withSpinner(type = 1, color = '#09847A')), # END plot box
+                    
+                    box(
+                        width = 3,
+                        # # table output ----
+                        # tableOutput(
+                        #     outputId = 'phaseout_output_table'
+                        # ), # End table
+                    ), # END table box
                     
                 
             ) # END 2nd fluid row
@@ -582,3 +582,4 @@ body <- dashboardBody(
 
 # combine all into dashboardPage ----
 dashboardPage(header, sidebar, body)
+

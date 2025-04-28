@@ -473,12 +473,12 @@ server <- function(input, output, session) {
         return(county_lw)
     })
     
-    output$phaseout_output_table <- renderTable({
-        filtered_data() %>% 
-            filter(county == input$phaseout_counties_input) %>% 
-            select(year, excise_tax_scenario, setback_scenario, prod_quota_scenario, oil_price_scenario, county, total_emp)
-        
-    }) # END phaseout output table
+    # output$phaseout_output_table <- renderTable({
+    #     filtered_data() %>% 
+    #         filter(county == input$phaseout_counties_input) %>% 
+    #         select(year, excise_tax_scenario, setback_scenario, prod_quota_scenario, oil_price_scenario, county, total_emp)
+    #     
+    # }) # END phaseout output table
     
     # Define reactive dataframe for filtered_data 
     filtered_data <- reactive({
