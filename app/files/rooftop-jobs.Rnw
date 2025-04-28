@@ -1,0 +1,117 @@
+\documentclass[10pt,a4paper]{article}
+\setlength\parindent{0pt}
+
+%\UseRawInputEncoding
+
+\usepackage[margin=0.8in]{geometry}
+\usepackage{float}
+
+
+
+\begin{document}
+% ###################################################### PAGE 1: SUMMARY #######################################################
+% ======================================================== SPLASH TEXT =======================================================
+\begin{center}
+\Huge\noindent\textbf{Rooftop Solar Job Impacts}  
+
+\vspace{0.5em}
+\LARGE{EPI-interactive}
+
+\end{center}
+\vspace{0.5em}
+
+\large{\today}\
+\vspace{1em}
+
+\noindent
+<<echo=FALSE, results='asis'>>=
+
+
+glue::glue('For your Rooftop Solar project starting in {input$year_range_input_roof[1]}, there will be')
+@
+\\
+
+<<output$roof_county_map_output, fig = TRUE , echo = FALSE, warning=FALSE, quiet = TRUE, message=FALSE, out.width = "50%">>=
+library(usdata)
+library(tmap)
+library(tigris)
+    
+california_counties <- counties(state = "CA", cb = TRUE) |> 
+    filter(NAME %in% input$roof_counties_input)
+
+california <- counties(state = "CA", cb = TRUE) 
+
+bbox <- california |> 
+    filter(NAME %in% c('Monterey', 'Los Angeles'))
+
+ccc <- tm_shape(california, bbox = bbox) +
+    tm_fill(fill = '#f4f3ee') +
+tm_shape(california_counties) +
+  tm_borders() + 
+  tm_polygons(col = '#09847A') +
+ tm_layout(frame = FALSE,
+            main.title = " ",
+            main.title.position = "center",
+            bg.color = "#edf1efff",
+            fontfamily = "serif") +
+    tm_legend(show = FALSE) +
+    tm_credits(text = glue::glue('Total Jobs in {input$roof_counties_input}: '),
+               position = c('left', 'bottom'),
+               )
+      
+ccc 
+@
+
+
+
+
+<<output$roof_jobs_output, fig = TRUE , echo = FALSE, warning=FALSE, out.width="100%">>=
+county_roof_pv_om <- calculate_pv_om_jobs(
+            county = input$roof_counties_input,
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.2,
+            indirect_jobs = 0,
+            induced_jobs = 0
+        )
+        
+        county_roof_pv_const <- calculate_pv_construction_jobs(
+            county = input$roof_counties_input,
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            technology = "Rooftop PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 1.6,
+            indirect_jobs = 0.6,
+            induced_jobs = 0.4
+        )
+        
+        county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
+            filter(type %in% input$roof_job_type_input) |>
+            select(-ambition) 
+        
+        roof_plot <- ggplot(county_roof, aes(x = year, y = n_jobs, group = occupation)) +
+            geom_col(aes(fill = occupation)) +
+            scale_fill_manual(
+                labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
+                values = c("#4a4e69", "#9a8c98")
+            ) +
+            scale_y_continuous(limits = c(0, 2000)) +
+            labs(
+                title = glue::glue(
+                    "Projected {input$job_type_input} jobs in CA Central Coast from Rooftop Solar development"
+                ),
+                y = "FTE Jobs"
+            ) +
+            theme_minimal()
+            
+            roof_plot
+@
+
+\end{document}
