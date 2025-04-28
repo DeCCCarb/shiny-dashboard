@@ -334,8 +334,13 @@ server <- function(input, output, session) {
             filter(type %in% input$job_type_input) # Filter to inputted job type
         
         ######## Generate Plot for OSW ##############
-        osw_plot <- ggplot(osw_all, aes(x = as.factor(year), y = n_jobs, group = occupation)) +
-            geom_col(aes(fill = occupation)) +
+        osw_plot <- ggplot(osw_all, aes(x = as.factor(year), 
+                                        y = round(n_jobs, 0), 
+                                        group = occupation
+                                        )) +
+            geom_col(aes(fill = occupation,
+                         text = purrr::map(paste0(occupation, " jobs: ", scales::comma(round(n_jobs,0))), 
+                                                 HTML))) +
             scale_fill_manual(labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
                               values = c("#3A8398", "#A3BDBE")) +
             scale_y_continuous(limits = c(0, 2000),
@@ -355,7 +360,9 @@ server <- function(input, output, session) {
                 
             )
         
-        plotly::ggplotly(osw_plot) 
+        plotly::ggplotly(osw_plot,
+                         tooltip = c("text"))  |>
+            layout(hovermode = "x unified")
         
     })
     
