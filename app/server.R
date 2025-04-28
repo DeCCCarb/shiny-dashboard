@@ -487,6 +487,7 @@ server <- function(input, output, session) {
             county = input$phaseout_counties_input,
             excise_tax = 'no tax',
             setback = input$phaseout_setback_input,
+            setback_existing = input$phaseout_setback_existing_input,
             oil_price = 'reference case',
             prod_quota = 'no quota'
         )

@@ -535,6 +535,16 @@ body <- dashboardBody(
                                             'no_setback'),
                                 selected = c('setback_2500ft'),
                                 multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+                    
+                    # Select setback existing input ----
+                    pickerInput(inputId = 'phaseout_setback_existing_input',
+                                label = 'Select whether setback will apply to new wells',
+                                choices = c('Setback policy will apply to new and existing wells',
+                                            'Setback policy will only apply to new wells',
+                                            'No setback policy'),
+                                selected = c('No setback policy'),
+                                multiple = FALSE,
                                 options = pickerOptions(actionsBox = TRUE))
                 ), # END input box
                 
