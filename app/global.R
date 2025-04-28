@@ -546,13 +546,14 @@ calculate_land_wind_construction_jobs <- function(county, start_year, end_year, 
 #' phaseout_employment_projection(setback = 'setback_5280ft')
 
 phaseout_employment_projection <- function(county, excise_tax = 'no tax', setback,
-                                       oil_price = 'reference case', prod_quota = 'no quota') {
+                                       oil_price = 'reference case', prod_quota = 'no quota', setback_existing) {
     
     # Filter data according to function inputs
     filtered_data <- job_projections %>%
         filter(county == county,
                excise_tax_scenario == excise_tax,
                setback_scenario == setback,
+               setback_existing == setback_existing,
                oil_price_scenario == oil_price,
                prod_quota_scenario == prod_quota,
                year %in% c(2025:2045)) %>% 

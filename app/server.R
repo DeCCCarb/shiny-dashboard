@@ -496,17 +496,16 @@ server <- function(input, output, session) {
     output$phaseout_plot <- renderPlotly({
         
         phaseout_plot <- filtered_data() %>%
-            group_by(county) %>%
-            ggplot(aes(x = as.factor(year), y = total_emp)) +
-            geom_bar(stat = 'identity', fill = "#A3BDBE") +
-            scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
+            ggplot(aes(x = as.factor(year), y = total_emp, text = paste("Year:", year, "<br>Jobs:", total_emp))) +
+            geom_col(position = "dodge",fill = "#A3BDBE") +
+            #scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
             labs(title = paste('Direct fossil fuel employment phaseout 2025–2045:',
-                               gsub("_", " ", input$phaseout_setback_input), 'policy'),
+                               gsub("_", " ", input$phaseout_setback_input), 'policy', input$phaseout_setback_existing_input),
                  y = 'Total direct employment') +
             theme_minimal() +
             theme(axis.title.x = element_blank())
         
-        plotly::ggplotly(phaseout_plot)
+        plotly::ggplotly(phaseout_plot, tooltip = "text")
         
     })
     

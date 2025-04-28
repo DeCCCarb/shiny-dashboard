@@ -538,14 +538,17 @@ body <- dashboardBody(
                                 options = pickerOptions(actionsBox = TRUE)),
                     
                     # Select setback existing input ----
-                    pickerInput(inputId = 'phaseout_setback_existing_input',
-                                label = 'Select whether setback will apply to new wells',
-                                choices = c('Setback policy will apply to new and existing wells',
-                                            'Setback policy will only apply to new wells',
-                                            'No setback policy'),
-                                selected = c('No setback policy'),
-                                multiple = FALSE,
-                                options = pickerOptions(actionsBox = TRUE))
+                    pickerInput(
+                        inputId = 'phaseout_setback_existing_input',
+                        label = 'Should the setback policy apply to existing wells?',
+                        choices = c(
+                            'Setback policy applies to new and existing wells' = 0,
+                            'Setback policy applies only to new wells' = 1
+                        ),
+                        selected = 1,
+                        multiple = FALSE,
+                        options = pickerOptions(actionsBox = TRUE)
+                        )
                 ), # END input box
                 
                 #leaflet box ----
@@ -565,20 +568,12 @@ body <- dashboardBody(
             fluidRow(
                 
                     
-                    ######### Interactive Plotly Output for OSW ##########-----
-                    box(width = 9,
+                    ######### Interactive Plotly Output for FF Phaseout ##########-----
+                    box(width = 12,
                         # Create a table based on input
                         title = tags$strong('Labor Impact'),
                         plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
                             withSpinner(type = 1, color = '#09847A')), # END plot box
-                    
-                    box(
-                        width = 3,
-                        # # table output ----
-                        # tableOutput(
-                        #     outputId = 'phaseout_output_table'
-                        # ), # End table
-                    ), # END table box
                     
                 
             ) # END 2nd fluid row
