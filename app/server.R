@@ -606,6 +606,7 @@ server <- function(input, output, session) {
     filtered_data <- reactive({
         #   req(input$phaseout_setback_input)
         phaseout_employment_projection(
+            county = input$phaseout_counties_input,
             excise_tax = 'no tax',
             setback = input$phaseout_setback_input,
             oil_price = 'reference case',
@@ -617,9 +618,9 @@ server <- function(input, output, session) {
         
         phaseout_plot <- filtered_data() %>%
             group_by(county) %>%
-            ggplot(aes(x = year, y = total_emp, fill = county)) +
-            geom_bar(stat = 'identity') +
-            scale_fill_manual(values = c('Ventura' = '#4a4e69','Santa Barbara' = '#9a8c98','San Luis Obispo' = '#f0e68c')) +
+            ggplot(aes(x = as.factor(year), y = total_emp)) +
+            geom_bar(stat = 'identity', fill = "#A3BDBE") +
+            scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
             labs(title = paste('Direct fossil fuel employment phaseout 2025–2045:',
                                gsub("_", " ", input$phaseout_setback_input), 'policy'),
                  y = 'Total direct employment') +
