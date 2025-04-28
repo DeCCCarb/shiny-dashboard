@@ -480,18 +480,19 @@ server <- function(input, output, session) {
     #     
     # }) # END phaseout output table
     
-    # Define reactive dataframe for filtered_data 
+    # Define reactive data frame for filtered_data 
     filtered_data <- reactive({
-     #   req(input$phaseout_setback_input)
         phaseout_employment_projection(
             county = input$phaseout_counties_input,
             excise_tax = 'no tax',
             setback = input$phaseout_setback_input,
-            setback_existing = input$phaseout_setback_existing_input,
+            setback_existing = as.numeric(input$phaseout_setback_existing_input),
             oil_price = 'reference case',
-            prod_quota = 'no quota'
+            prod_quota = 'no quota',
+            carbon_price = 'price floor'
         )
     })
+    
     
     output$phaseout_plot <- renderPlotly({
         

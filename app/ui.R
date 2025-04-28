@@ -190,7 +190,7 @@ body <- dashboardBody(
                         # Select Port/No Port
                         pickerInput(inputId = 'osw_port_input',
                                     label = 'Offshore Wind Port Location:',
-                                    choices = c('Hueneme', 'San Luis Obispo'),
+                                    choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
                                     selected = NULL,
                                     multiple = FALSE,
                                     options = pickerOptions(actionsBox = TRUE))
@@ -203,16 +203,25 @@ body <- dashboardBody(
                         leafletOutput(outputId = 'osw_map_output') |> 
                             withSpinner(type = 1, color = '#09847A')
                    
-                    ), # END leaflet box
+                    ) # END leaflet box
+                ),   # END  1st fluidRow  
                     
-                    ######### Interactive Plotly Output for OSW ##########-----
-                    box(width = 12,
-                        # Create a table based on input
-                        title = tags$strong('Labor Impact'),
+                fluidRow(
+                    ######### Interactive Plotly Output for OSW ##########
+                    # Jobs projections plot ----
+                    box(width = 8,
+                        # Create a plot based on input
+                      #  title = tags$strong('Labor Impact'),
                         plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
-                            withSpinner(type = 1, color = '#09847A'))
+                            withSpinner(type = 1, color = '#09847A')),
+                    # Capacity projections plot ----
+                    box(width = 4,
+                        plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
+                            withSpinner(type = 1, color = '#09847A')
+                        )
                     
-                )# END  1st fluidRow 
+                ) # END 2nd fluidRow
+                #)# END  1st fluidRow 
                 
         ), # END floating offshore wind tabITEM
         tabItem(tabName = 'utility',
