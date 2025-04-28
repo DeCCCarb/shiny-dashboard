@@ -3,7 +3,7 @@
 header <- dashboardHeader(
     
     # title ----
-    title = 'Labor Impacts of Decarbonization',
+    title = 'Labor Impacts of Decarbonization', # Tentative title
     titleWidth = 800
     
     
@@ -12,11 +12,11 @@ header <- dashboardHeader(
 # dashboard sidebar ---
 sidebar <- dashboardSidebar(
     
-    ##### sidebarMenu: tabNames  ---#######
+    ##### sidebarMenu: tabNames  #######
     sidebarMenu(
         menuItem(text = 'Project Overview', tabName = 'overview', icon = icon('star')),
         menuItem(text = 'Floating Offshore Wind', tabName = 'f_osw', icon = icon('gauge')),
-        menuItem(text = 'Utility Solar', tabName = 'utility', icon = icon('gauge')),
+        menuItem(text = 'Utility Solar', tabName = 'utility', icon = icon('gauge')), # change icons for all
         menuItem(text = 'Rooftop Solar', tabName = 'rooftop', icon = icon('gauge')),
         menuItem(text = 'Land Based Wind', tabName = 'lb_wind', icon = icon('gauge')),
         menuItem(text = 'Oil Well Capping', tabName = 'well_cap', icon = icon('gauge')),
@@ -36,9 +36,7 @@ body <- dashboardBody(
     
     # tabItems ----
     tabItems(
-        
-        
-        
+       
         # Project overview tab item ---
         tabItem(
             tabName = 'overview',
@@ -120,165 +118,32 @@ body <- dashboardBody(
             
         ), # END Project Overview tabItem
         
-        
-  #       # Tool/Dashboard tabItem for floating offshore wind
-  #       tabItem(tabName = 'f_osw',
-  #               
-  #               # Create a fluidRow ---
-  #               fluidRow(
-  #                   
-  #                   # input box ----
-  #                   box(width = 4,
-  #                       title = tags$strong('Pick a County'),
-  #                       
-  #                       # pickerInputs ----
-  #                       shinyjs::useShinyjs(),  # Enable shinyjs
-  #                       # year range slider input ----
-  #                       sliderInput(inputId = 'year_range_input',
-  #                                   label = 'Year Range (CHOOSE BETTER LABEL)',
-  #                                   min = 2025,
-  #                                   max = 2045,
-  #                                   value = c(2025, 2045),
-  #                                   step = 1,
-  #                                   ticks = TRUE,
-  #                                   sep = ""),
-  #                       tags$script(HTML("
-  #                                       // Wait until the document is ready
-  #                                       $(document).on('shiny:connected', function() {
-  #                                         // Custom minimum range
-  #                                         var minRange = 6;
-  #                                   
-  #                                         // Target the slider
-  #                                         var slider = $('#year_range_input').data('ionRangeSlider');
-  #                                         if (slider) {
-  #                                           slider.update({
-  #                                             onChange: function(data) {
-  #                                               var from = data.from;
-  #                                               var to = data.to;
-  #                                               if ((to - from) < minRange) {
-  #                                                 var newTo = from + minRange;
-  #                                                 if (newTo > data.max) {
-  #                                                   newTo = data.max;
-  #                                                   from = newTo - minRange;
-  #                                                 }
-  #                                                 slider.update({ from: from, to: newTo });
-  #                                               }
-  #                                             }
-  #                                           });
-  #                                         }
-  #                                       });
-  #                                     ")),
-  #                       
-  #                       # Select job type input ----
-  #                       pickerInput(inputId = 'job_type_input',
-  #                                   label = 'Select Direct, Induced, or Indirect',
-  #                                   choices = c('direct', 
-  #                                               'induced',
-  #                                               'indirect'),
-  #                                   multiple = FALSE,
-  #                                   options = pickerOptions(actionsBox = TRUE)),
-  #                       # Enter Numeric Input for initial capacity -----
-  #                       numericInput(inputId = 'initial_capacity_input',
-  #                                    label = 'Please input your initial GW capacity.',
-  #                                    value = 0.1,
-  #                                    min = 0),
-  #                       # Enter Numeric Input for final capacity -----
-  #                       numericInput(inputId = 'final_capacity_input',
-  #                                    label = 'Please input your final GW capacity.',
-  #                                    value = 15,
-  #                                    min = 0), 
-  #                       # Select Port/No Port
-  #                       pickerInput(inputId = 'osw_port_input',
-  #                                   label = 'Offshore Wind Port Location:',
-  #                                   choices = c('Hueneme', 'San Luis Obispo'),
-  #                                   selected = NULL,
-  #                                   multiple = FALSE,
-  #                                   options = pickerOptions(actionsBox = TRUE))
-  #                       
-  #                   ), # END input box
-  #                   
-  #                   #leaflet box ----
-  #                   box(width = 6,
-  #                       
-  #                       # title 
-  #                       title = tags$strong('California Central Coast Counties'),
-  #                       
-  #                       leafletOutput(outputId = 'osw_map_output') |> 
-  #                           withSpinner(type = 1, color = 'forestgreen')
-  #                       
-  #                       
-  #                       
-  #                   ), # END leaflet box
-  #                   # Projections table box -----
-  #                   div(id = 'report-container',
-  #                       box(width = 10,
-  #                           # Create a table based on input
-  #                           title = tags$strong('Labor Impact'),
-  #                           plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
-  #                               withSpinner(type = 1, color = 'forestgreen'))
-  #                       ),
-  #       
-  #                   box(width = 2,
-  #                       actionButton("download_tab_osw", "Download Tab View", onclick = "captureReport()"),
-  #                       
-  #                       # Your existing html2canvas setup
-  #                       tags$head(
-  #                           tags$script(src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
-  #                           tags$script(HTML("
-  #   function captureReport() {
-  #     setTimeout(() => {
-  #       const container = document.querySelector('#report-container');
-  #       if (!container) {
-  #         alert('Container not found!');
-  #         return;
-  #       }
-  #       html2canvas(container, {
-  #         useCORS: true,
-  #         allowTaint: true,
-  #         scale: 2
-  #       }).then(canvas => {
-  #         const link = document.createElement('a');
-  #         link.download = 'shiny_tab.png';
-  #         link.href = canvas.toDataURL('image/png');
-  #         link.click();
-  #       }).catch(err => {
-  #         alert('Screenshot failed: ' + err.message);
-  #       });
-  #     }, 500);
-  #   }
-  # "))
-  #                       )
-  #
-  #
-  #                   ) # Downloadable pdf box end ----
-  #
-  #
-  #               )# END  1st fluidRow
-  #
-  #       ), # END floating offshore wind tabITEM
       
-   ########## Tool/Dashboard tabItem for floating offshore wind ###########
-  tabItem(tabName = 'f_osw',
-          
-          # Create a fluidRow ---
-          fluidRow(
-              
-              # input box ----
-              box(width = 4,
-                  title = tags$strong('Floating Offshore Wind Project Inputs'),
-                  
-                  # pickerInputs ----
-                  shinyjs::useShinyjs(),  # Enable shinyjs
-                  # year range slider input ----
-                  sliderInput(inputId = 'year_range_input',
-                              label = 'Year Construction Starts - Year to Meet Target',
-                              min = 2025,
-                              max = 2045,
-                              value = c(2025, 2045),
-                              step = 1,
-                              ticks = F,
-                              sep = ""),
-                  tags$script(HTML("
+
+
+        ########## Tool/Dashboard tabItem for floating offshore wind ###########
+        tabItem(tabName = 'f_osw',
+                
+                # Create a fluidRow ---
+                fluidRow(
+                    
+                    # input box ----
+                    box(width = 4,
+                        title = tags$strong('Floating Offshore Wind Project Inputs'),
+                        
+                        # pickerInputs ----
+                        shinyjs::useShinyjs(),  # Enable shinyjs
+                        # year range slider input ----
+                        sliderInput(inputId = 'year_range_input',
+                                    label = 'Year Construction Starts - Year to Meet Target',
+                                    min = 2025,
+                                    max = 2045,
+                                    value = c(2025, 2045),
+                                    step = 1,
+                                    ticks = F,
+                                    sep = ""),
+                        tags$script(HTML("
+
                                         // Wait until the document is ready
                                         $(document).on('shiny:connected', function() {
                                           // Custom minimum range
@@ -304,6 +169,7 @@ body <- dashboardBody(
                                           }
                                         });
                                       ")),
+
                   
                   # Select job type input ----
                   pickerInput(inputId = 'job_type_input',
@@ -363,6 +229,66 @@ body <- dashboardBody(
           #)# END  1st fluidRow 
           
   ), # END floating offshore wind tabITEM
+
+                        
+                        # Select job type input ----
+                        pickerInput(inputId = 'job_type_input',
+                                    label = 'Direct, Induced, or Indirect Job Impacts',
+                                    choices = c(
+                                        'direct', # Change to capital 
+                                        'indirect', 
+                                        'induced'
+                                    ),
+                                    multiple = FALSE,
+                                    options = pickerOptions(actionsBox = TRUE)),
+                        # Enter Numeric Input for initial capacity -----
+                        numericInput(inputId = 'initial_capacity_input',
+                                     label = 'Capacity (GW) of Initial Construction Project',
+                                     value = 0.1,
+                                     min = 0),
+                        # Enter Numeric Input for final capacity -----
+                        numericInput(inputId = 'final_capacity_input',
+                                     label = 'Target Capacity (GW)',
+                                     value = 15,
+                                     min = 0), 
+                        # Select Port/No Port
+                        pickerInput(inputId = 'osw_port_input',
+                                    label = 'Offshore Wind Port Location:',
+                                    choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
+                                    selected = NULL,
+                                    multiple = FALSE,
+                                    options = pickerOptions(actionsBox = TRUE))
+                        
+                    ), # END input box
+                    
+                    #leaflet box ----
+                    box(width = 6,
+                        
+                        leafletOutput(outputId = 'osw_map_output') |> 
+                            withSpinner(type = 1, color = '#09847A')
+                   
+                    ) # END leaflet box
+                ),   # END  1st fluidRow  
+                    
+                fluidRow(
+                    ######### Interactive Plotly Output for OSW ##########
+                    # Jobs projections plot ----
+                    box(width = 8,
+                        # Create a plot based on input
+                      #  title = tags$strong('Labor Impact'),
+                        plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
+                            withSpinner(type = 1, color = '#09847A')),
+                    # Capacity projections plot ----
+                    box(width = 4,
+                        plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
+                            withSpinner(type = 1, color = '#09847A')
+                        )
+                    
+                ) # END 2nd fluidRow
+                #)# END  1st fluidRow 
+                
+        ), # END floating offshore wind tabITEM
+
         tabItem(tabName = 'utility',
                 # Create a fluidRow ---
                 # fluidRow(
@@ -470,12 +396,12 @@ body <- dashboardBody(
                                 options = pickerOptions(actionsBox = TRUE)),
                     # Enter Numeric Input for initial capacity -----
                     numericInput(inputId = 'initial_mw_utility_input',
-                                 label = 'Please input your initial MW capacity.',
+                                 label = 'Please input your initial capacity (MW).',
                                  value = 0,  # placeholder — will be updated
                                  min = 0),
                     # Enter Numeric Input for final capacity -----
                     numericInput(inputId = 'final_mw_utility_input',
-                                 label = 'Please input your final MW capacity.',
+                                 label = 'Please input your final capacity (MW).',
                                  value = 0,
                                   min = 0) 
                     # # Select Port/No Port
@@ -495,7 +421,7 @@ body <- dashboardBody(
                     title = tags$strong('California Central Coast Counties'),
                     
                     leafletOutput(outputId = 'utility_county_map_output') |> 
-                        withSpinner(type = 1, color = 'forestgreen')
+                        withSpinner(type = 1, color = '#09847A')
                     
                     
                     
@@ -506,7 +432,7 @@ body <- dashboardBody(
                     # Create a table based on input
                     title = tags$strong('Utility Solar Job Impacts'),
                     tableOutput(outputId = 'utility_jobs_output') |> # Changed to table output to show data
-                        withSpinner(type = 1, color = 'forestgreen'))
+                        withSpinner(type = 1, color = '#09847A'))
                 
             )# END  2nd fluidRow)
     ), # End Utility Solar tabItem
@@ -514,6 +440,7 @@ body <- dashboardBody(
     tabItem(tabName = 'rooftop',
             # Create a fluid row
             # Create a fluidRow ---
+
             sidebarPanel(sliderInput(inputId = 'year_range_input_roof',
                                      label = 'Year Range (CHOOSE BETTER LABEL)',
                                      min = 2025,
@@ -619,6 +546,72 @@ body <- dashboardBody(
 
             #)# END  2nd fluidRow)
 
+            fluidRow(
+
+                # input box ----
+                box(width = 4,
+                    title = tags$strong('Pick a County'),
+
+                    # pickerInputs ----
+
+                    # Enter slider Input for start year
+                    sliderInput(inputId = 'year_range_input_roof',
+                                label = 'Year Range (CHOOSE BETTER LABEL)',
+                                min = 2025,
+                                max = 2045,
+                                value = c(2025, 2045),
+                                step = 1,
+                                ticks = TRUE,
+                                sep = ""),
+                    pickerInput(inputId = 'roof_counties_input',
+                                label = 'Select a County:',
+                                choices = unique(counties$County),
+                                selected = c('Ventura'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+                    # Select job type input ----
+                    pickerInput(inputId = 'roof_job_type_input',
+                                label = 'Select Direct, Induced, or Indirect',
+                                choices = c('direct',
+                                            'induced',
+                                            'indirect'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+                    # Enter Numeric Input for initial capacity -----
+                    numericInput(inputId = 'initial_mw_roof_input',
+                                 label = 'Please input your initial capacity (MW).',
+                                 value = 0,  # placeholder — will be updated
+                                 min = 0),
+                    # Enter Numeric Input for final capacity -----
+                    numericInput(inputId = 'final_mw_roof_input',
+                                 label = 'Please input your final capacity (MW).',
+                                 value = 0,
+                                 min = 0)
+
+                ), # END input box
+
+                #leaflet box ----
+                box(width = 6,
+
+                    # title
+                    title = tags$strong('California Central Coast Counties'),
+
+                    # Leaflet rendering from server
+                    leafletOutput(outputId = 'roof_county_map_output') |>
+                        withSpinner(type = 1, color = '#09847A')
+
+                ), # END leaflet box
+
+                # Projections table box -----
+                box(width = 12,
+                    # Create a table based on input
+                    title = tags$strong('Rooftop Solar Job Impacts'),
+                    tableOutput(outputId = 'roof_jobs_output') |> # Changed to table output to show data
+                        withSpinner(type = 1, color = '#09847A'))
+
+            )# END  2nd fluidRow)
+
+
 
  
                 
@@ -658,12 +651,12 @@ body <- dashboardBody(
                                     options = pickerOptions(actionsBox = TRUE)),
                         # Enter Numeric Input for initial capacity -----
                         numericInput(inputId = 'initial_gw_lw_input',
-                                     label = 'Please input your initial GW capacity.',
+                                     label = 'Please input your initial capacity (GW).',
                                      value = 0,  # placeholder — will be updated
                                      min = 0),
                         # Enter Numeric Input for final capacity -----
                         numericInput(inputId = 'final_gw_land_input',
-                                     label = 'Please input your final GW capacity.',
+                                     label = 'Please input your final capacity (GW).',
                                      value = 0,
                                      min = 0)
                         
@@ -673,13 +666,106 @@ body <- dashboardBody(
                         # Create a table based on input
                         title = tags$strong('Land Based Wind Job Impacts'),
                         tableOutput(outputId = 'lw_jobs_output') |> # Changed to table output to show data
-                            withSpinner(type = 1, color = 'forestgreen'))
+                            withSpinner(type = 1, color = '#09847A'))
                     
                     
                 ) # End 1st fluidRow
-        ) # End Land Based Wind tabItem
+        ), # End Land Based Wind tabItem
+    tabItem(tabName = 'well_cap',
+            fluidRow(
+                box(
+                    width = 4,
+                    title = 'Oil Well Capping',
+                    pickerInput(
+                        inputId = 'county_wells_input',
+                        choices = c('San Luis Obispo',
+                                    'Ventura',
+                                    'Santa Barbara'),
+                        multiple = FALSE
+                    ) # End county picker
+                    
+                )# End box for inputs?
+                
+            )# End fluidRow for well capping
+            ), # end well capping tab item 
+    tabItem(tabName = 'phaseout',
+            # Create a fluidRow ---
+            fluidRow(
+
+                # input box ----
+                box(width = 6,
+                    title = tags$strong('Pick a County'),
+
+                    #pickerInputs ----
+                    # Enter county
+                    pickerInput(inputId = 'phaseout_counties_input',
+                                label = 'Select a County:',
+                                choices = c('Santa Barbara',
+                                            'San Luis Obispo',
+                                            'Ventura'),
+                                selected = c('Ventura'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+
+                    # Select setback input ----
+                    pickerInput(inputId = 'phaseout_setback_input',
+                                label = 'Select Setback Policy',
+                                choices = c('setback_1000ft',
+                                            'setback_2500ft',
+                                            'setback_5280ft',
+                                            'no_setback'),
+                                selected = c('setback_2500ft'),
+                                multiple = FALSE,
+                                options = pickerOptions(actionsBox = TRUE)),
+                    
+                    # Select setback existing input ----
+                    pickerInput(
+                        inputId = 'phaseout_setback_existing_input',
+                        label = 'Should the setback policy apply to existing wells?',
+                        choices = c(
+                            'Setback policy applies to new and existing wells' = 0,
+                            'Setback policy applies only to new wells' = 1
+                        ),
+                        selected = 1,
+                        multiple = FALSE,
+                        options = pickerOptions(actionsBox = TRUE)
+                        )
+                ), # END input box
+                
+                #leaflet box ----
+                box(width = 6,
+                    
+                    # title
+                    title = tags$strong('California Central Coast Counties'),
+                    
+                    # Leaflet rendering from server
+                    leafletOutput(outputId = 'phaseout_county_map_output') |>
+                        withSpinner(type = 1, color = '#09847A')
+                ) # END leaflet box
+
+
+            ), # END  1st fluidRow
+            
+            fluidRow(
+                
+                    
+                    ######### Interactive Plotly Output for FF Phaseout ##########-----
+                    box(width = 12,
+                        # Create a table based on input
+                        title = tags$strong('Labor Impact'),
+                        plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
+                            withSpinner(type = 1, color = '#09847A')), # END plot box
+                    
+                
+            ) # END 2nd fluid row
+            
+            
+            
+            
+    ) # End Fossil Fuel Phaseout tabItem
     ) 
     ) # End Dashboard Body
 
 # combine all into dashboardPage ----
 dashboardPage(header, sidebar, body)
+

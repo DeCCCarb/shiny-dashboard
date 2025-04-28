@@ -1,7 +1,7 @@
 server <- function(input, output, session) {
-    
-    
-    # Create reactive port
+
+    # Create reactive port for OSW map
+
     port_input <- reactive({
         data.frame(
             port_name = c("Hueneme", "San Luis Obispo"),
@@ -12,6 +12,8 @@ server <- function(input, output, session) {
         ) %>%
             tidygeocoder::geocode(address = address, method = "osm") |>
             filter(port_name == input$port_input)
+
+
         
     })
     
@@ -56,6 +58,7 @@ server <- function(input, output, session) {
                                filter(type == input$job_type_input)
                            
                            # Calculate annual jobs when port is NOT in CC
+
                        } else {
                            # Return 0 jobs
                            osw_all <- data.frame(
@@ -98,6 +101,8 @@ server <- function(input, output, session) {
                            
                            # Total jobs label location
                            label_coords <- sf::st_coordinates(st_centroid(osw_all_counties)) + c(-0.75, -0.2)
+
+
                            
                            label_points <- st_as_sf(data.frame(
                                lng = label_coords[, 1],
@@ -152,6 +157,7 @@ server <- function(input, output, session) {
                        })
                    })
     
+
     # # Generate workforce development map tool ----
     output$utility_county_map_output <- renderLeaflet({
             
@@ -174,26 +180,50 @@ server <- function(input, output, session) {
                 addProviderTiles(providers$Stadia.StamenTerrain) |>
                 setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
                 addPolygons(data = counties_input())
-            
-            # Only add ports if selected
-            if (!is.null(input$port_input) && length(input$port_input) > 0) {
-                ports <- data.frame(
-                    port_name = c("Hueneme", "San Luis Obispo"),
-                    address = c(
-                        "Port of Hueneme, Port Hueneme, CA 93041",
-                        "699 Embarcadero, Morro Bay, CA 93442"
-                    )
-                ) |>
-                    filter(port_name %in% input$port_input) |>
-                    tidygeocoder::geocode(address = address, method = "osm")
-                
-                leaflet_map <- leaflet_map |>
-                    addAwesomeMarkers(data = ports,
-                                      lng = ports$long,
-                                      lat = ports$lat,
-                                      icon = icons,
-                                      popup = paste('Port', ports$port_name))
 
+    # Utility PV map ----
+    output$utility_county_map_output <- renderLeaflet({
+        
+        counties_input <- reactive({
+            if (!is.null(input$county_input)) {
+                ca_counties |> filter(name %in% input$county_input)
+            } else {
+                ca_counties
+            }
+        })
+        
+        icons <- awesomeIcons(
+            icon = 'helmet-safety',
+            iconColor = 'black',
+            library = 'fa',
+            markerColor = "orange"
+        )
+        
+        leaflet_map <- leaflet() |>
+            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            addPolygons(data = counties_input())
+        
+        # Only add ports if selected
+        if (!is.null(input$port_input) && length(input$port_input) > 0) {
+            ports <- data.frame(
+                port_name = c("Hueneme", "San Luis Obispo"),
+                address = c(
+                    "Port of Hueneme, Port Hueneme, CA 93041",
+                    "699 Embarcadero, Morro Bay, CA 93442"
+                )
+            ) |>
+                filter(port_name %in% input$port_input) |>
+                tidygeocoder::geocode(address = address, method = "osm")
+            
+            leaflet_map <- leaflet_map |>
+                addAwesomeMarkers(data = ports,
+                                  lng = ports$long,
+                                  lat = ports$lat,
+                                  icon = icons,
+                                  popup = paste('Port', ports$port_name))
+
+            
         }
         
         leaflet_map
@@ -261,48 +291,6 @@ server <- function(input, output, session) {
     })
     
     
-    #
-    #         counties_input <- reactive({
-    #             if (!is.null(input$county_input)) {
-    #                 ca_counties |> filter(name %in% input$county_input)
-    #             } else {
-    #                 ca_counties
-    #             }
-    #         })
-    #
-    #
-    #         icons <- awesomeIcons(
-    #             icon = 'helmet-safety',
-    #             iconColor = 'black',
-    #             library = 'fa',
-    #             markerColor = "orange"
-    #         )
-    #
-    #         # sample California Central Coast map using leaflet ----
-    #         leaflet() |>
-    #             addProviderTiles(providers$Stadia.StamenTerrain) |>
-    #             setView(lng = -119.698189,
-    #                     lat = 34.420830,
-    #                     zoom = 7) |>
-    #             # addMiniMap(toggleDisplay = TRUE,
-    #             #             minimized = FALSE) |>
-    #             # addMarkers(data = counties_input(),
-    #             #            lng = counties_input()$Longitude,
-    #             #            lat = counties_input()$Latitude,
-    #             #            popup = paste0('County: ', counties_input()$County, '<br>',
-    #             #                           '% current fossil fuel workers ____', '<br>',
-    #             #                           'Projected Job Loss___', '<br',
-    #             #                           'Projected Job Gain ____')) |>
-    #             # addTiles() %>%
-    #             addPolygons(data=ca_counties) |>
-    #             addAwesomeMarkers(data = port_input(),
-    #                               lng = port_input()$long,
-    #                               lat = port_input()$lat,
-    #                               icon = icons,
-    #                               popup = paste('Port', port_input()$port_name))
-    #
-    #     })
-    
     # County selection
     counties_input <- reactive({
         counties |>
@@ -329,23 +317,20 @@ server <- function(input, output, session) {
     
     
 
-    # Choose your technology
     # Generate the plot of jobs based on user selection ---
     output$model_jobs_output <- renderPlotly({
         # Define inputs
-            # Floating Offshore Wind ------
-            # O&M OSW --
-            osw_om <- calculate_osw_om_jobs(
-                county = "Tri-county",
-                start_year = input$year_range_input[1],
-                end_year = input$year_range_input[2],
-                ambition = "High",
-                initial_capacity = input$initial_capacity_input,
-                target_capacity = input$final_capacity_input,
-                direct_jobs = 127,
-                indirect_jobs = 126,
-                induced_jobs = 131
+        # Floating Offshore Wind ------
+        if ("No Central Coast Port" %in% input$osw_port_input){
+            # Generate a dummy df to preserve x and y axis
+            years <- input$year_range_input[1]:input$year_range_input[2]
+            dummy_df <- data.frame(
+                year = years,
+                n_jobs = rep(0, length(years)),
+                occupation = factor(rep(NA, length(years))),
+                type = rep(NA, length(years))
             )
+
 
             # Construction OSW --
             osw_construction <- calculate_osw_construction_jobs(
@@ -385,6 +370,33 @@ server <- function(input, output, session) {
         
         # O&M OSW ---
         osw <- calculate_osw_om_jobs(
+            
+            # Plot showing no jobs
+            empty_plot <- ggplot(dummy_df, aes(x = as.factor(year), y = n_jobs)) +
+                geom_col(fill = "#cccccc") +
+                scale_y_continuous(limits = c(0, 2000), labels = scales::comma) +
+                scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+                labs(title = "Projected jobs in CA Central Coast from Floating OSW development",
+                     y = "FTE Jobs") +
+                annotate("text",
+                         x = as.factor(median(years)),
+                         y = 1000,
+                         label = "No Port in Central Coast — job projections are 0",
+                         size = 5,
+                         color = "gray30") +
+                theme_minimal() +
+                theme(
+                    axis.title.x = element_blank(),
+                    axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
+                    legend.position = "none"
+                )
+            
+            return(plotly::ggplotly(empty_plot))
+        }
+        
+        # O&M OSW --
+        osw_om <- calculate_osw_om_jobs(
+
             county = "Tri-county",
             start_year = input$year_range_input[1],
             end_year = input$year_range_input[2],
@@ -396,6 +408,7 @@ server <- function(input, output, session) {
             induced_jobs = 131
         )
         
+
         ######## Generate Plot for OSW ##############
         # total_cap_line <- osw |>
         #     filter(year %in% c(2030:2045))
@@ -451,6 +464,109 @@ server <- function(input, output, session) {
         
     )
       
+
+        # Construction OSW --
+        osw_construction <- calculate_osw_construction_jobs(
+            county = "Tri-County",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High", 
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 82,
+            indirect_jobs = 2571,
+            induced_jobs = 781
+        )
+        
+        # Create joined dataframe 
+        osw_all <- rbind(osw_construction, osw_om) |>
+            filter(type %in% input$job_type_input) # Filter to inputted job type
+        
+        ######## Generate Plot for OSW ##############
+        osw_plot <- ggplot(osw_all, aes(x = as.factor(year), 
+                                        y = round(n_jobs, 0), 
+                                        group = occupation
+                                        )) +
+            geom_col(aes(fill = occupation,
+                         text = purrr::map(paste0(occupation, " jobs: ", scales::comma(round(n_jobs,0))), 
+                                                 HTML))) +
+            scale_fill_manual(labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
+                              values = c("#3A8398", "#A3BDBE")) +
+            scale_y_continuous(limits = c(0, 2000),
+                               labels = scales::comma) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
+            labs(title = glue::glue("Projected {input$job_type_input} jobs in CA Central Coast from Floating OSW development"),
+                 y = "FTE Jobs") +
+            theme_minimal() +
+            theme(
+                # Axes
+                axis.title.x = element_blank(),
+                axis.title.y = element_text(margin = margin(10,10,10,10)),
+                
+                # Legend
+                legend.title = element_blank(),
+                legend.position = "bottom" 
+                
+            )
+        
+        plotly::ggplotly(osw_plot,
+                         tooltip = c("text"))  |>
+            layout(hovermode = "x unified")
+        
+    })
+    
+    # Generate capacity plot based on user selection ---
+    output$osw_cap_projections_output <- renderPlotly({
+        
+        # O&M OSW ---
+        osw <- calculate_osw_om_jobs(
+            county = "Tri-county",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High",
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 127,
+            indirect_jobs = 126,
+            induced_jobs = 131
+        )
+        
+        ######## Generate Plot for OSW ##############
+        # total_cap_line <- osw |>
+        #     filter(year %in% c(2030:2045))
+        # annual_cap_line <- osw |>
+        #     filter(year %in% c(2026:2041))
+        
+        osw_cap_plot <- ggplot() +
+            geom_point(data = osw, 
+                       aes(x = as.factor(year), y = total_capacity_gw),
+                       color = "#A3BDBE") +
+            geom_point(data = osw,
+                      aes(x = as.factor(year), y = new_capacity_gw),
+                      color = "#3A8398") +
+            scale_x_discrete(breaks = scales::breaks_pretty(n=4)) +
+            labs(y = "Capacity (GW)",
+                 title = "Capacity Growth Rate to Meet Target ") +
+            theme_minimal() +
+             theme(
+                 axis.title.x = element_blank(),
+            #     axis.title.y = element_text(size = 24, margin = margin(5,20,0,10)),
+            #     axis.text = element_text(size = 20),
+            #     legend.title = element_blank(),
+            #     legend.text = element_text(size = 20),
+            #     legend.position = "bottom",
+            #     plot.background = element_rect(fill = "#EFEFEF"),
+            #     plot.title = element_blank(),
+            #     panel.grid = element_line(color = "grey85")
+             )
+            
+        
+        plotly::ggplotly(osw_cap_plot) 
+        
+        
+        
+    })
+    
 
     
     
@@ -912,9 +1028,70 @@ server <- function(input, output, session) {
         return(county_lw)
     })
     
-    ####### Downloadable PDF for OSW ###########
-    observeEvent(input$download_tab_osw, {
-        session$sendCustomMessage(type = 'jsCode', list(code = "captureReport();"))
+
+    
+
+    # output$phaseout_output_table <- renderTable({
+    #     filtered_data() %>% 
+    #         filter(county == input$phaseout_counties_input) %>% 
+    #         select(year, excise_tax_scenario, setback_scenario, prod_quota_scenario, oil_price_scenario, county, total_emp)
+    #     
+    # }) # END phaseout output table
+    
+    # Define reactive dataframe for filtered_data 
+    filtered_data <- reactive({
+        #   req(input$phaseout_setback_input)
+        phaseout_employment_projection(
+            county = input$phaseout_counties_input,
+            excise_tax = 'no tax',
+            setback = input$phaseout_setback_input,
+            setback_existing = input$phaseout_setback_existing_input,
+            oil_price = 'reference case',
+            prod_quota = 'no quota'
+        )
     })
     
+    output$phaseout_plot <- renderPlotly({
+        
+        phaseout_plot <- filtered_data() %>%
+            ggplot(aes(x = as.factor(year), y = total_emp, text = paste("Year:", year, "<br>Jobs:", total_emp))) +
+            geom_col(position = "dodge",fill = "#A3BDBE") +
+            #scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
+            labs(title = paste('Direct fossil fuel employment phaseout 2025–2045:',
+                               gsub("_", " ", input$phaseout_setback_input), 'policy', input$phaseout_setback_existing_input),
+                 y = 'Total direct employment') +
+            theme_minimal() +
+            theme(axis.title.x = element_blank())
+        
+        plotly::ggplotly(phaseout_plot, tooltip = "text")
+        
+    })
+    
+    #phaseout leaflet map output ----
+    output$phaseout_county_map_output <- renderLeaflet({
+        counties_input <- reactive({
+            if (!is.null(input$phaseout_counties_input)) {
+                ca_counties |> filter(name %in% input$phaseout_counties_input)
+            } else {
+                ca_counties
+            }
+        })
+        
+        icons <- awesomeIcons(
+            icon = 'helmet-safety',
+            iconColor = 'black',
+            library = 'fa',
+            markerColor = "orange"
+        )
+        
+        leaflet_map <- leaflet() |>
+            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            setView(lng = -119.698189,
+                    lat = 34.420830,
+                    zoom = 7) |>
+            addPolygons(data = counties_input())
+        
+        leaflet_map
+    })
+
 }
