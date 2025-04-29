@@ -10,8 +10,6 @@ This repository holds our code for the development and deployment of our shiny d
 - Marina Kochuten  [GitHub](https://github.com/marinakochuten) | [Website](https://marinakochuten.github.io/) | [LinkedIn](https://www.linkedin.com/in/marina-kochuten-4786b6324/) 
 - Liz Peterson  [GitHib](https://github.com/egp4aq) | [Website](https://egp4aq.github.io/) | [LinkedIn](https://www.linkedin.com/in/elizabeth-peterson-85046b204/)
 
-### Purpose
-
 ### File contents & structure
 ```bash
 ├── app/
