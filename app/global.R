@@ -559,31 +559,20 @@ calculate_land_wind_construction_jobs <- function(county, start_year, end_year, 
 #' Direct fossil fuel employment phaseout 2025–2045: 5280 ft setback policy
 #' phaseout_employment_projection(setback = 'setback_5280ft')
 
-phaseout_employment_projection <- function(county, excise_tax = 'no tax', setback,
-                                       oil_price = 'reference case', prod_quota = 'no quota', setback_existing) {
+phaseout_employment_projection <- function(county_input, excise_tax = 'no tax', setback,
+                                       oil_price = 'reference case', prod_quota = 'no quota', setback_existing_filter, carbon_price = 'price floor') {
     
     # Filter data according to function inputs
     filtered_data <- job_projections %>%
-        filter(county == county,
+        filter(county == county_input,
                excise_tax_scenario == excise_tax,
                setback_scenario == setback,
-               setback_existing == setback_existing,
+               setback_existing == setback_existing_filter,
                oil_price_scenario == oil_price,
                prod_quota_scenario == prod_quota,
+               carbon_price_scenario == carbon_price,
                year %in% c(2025:2045)) %>% 
         select(year, excise_tax_scenario, setback_scenario, prod_quota_scenario, oil_price_scenario, county, total_emp) %>% 
         return(filtered_data)
     
-    # # Generate plot
-    # plot <- filtered_data %>%
-    #     group_by(county) %>%
-    #     ggplot(aes(x = year, y = total_emp, fill = county)) +
-    #     geom_bar(stat = 'identity') +
-    #     scale_fill_manual(values = c('Ventura' = '#4a4e69','Santa Barbara' = '#9a8c98','San Luis Obispo' = '#f0e68c')) +
-    #     labs(title = paste('Direct fossil fuel employment phaseout 2025–2045:',
-    #                        gsub("_", " ", setback), 'policy'),
-    #          y = 'Total direct employment') +
-    #     theme_minimal() +
-    #     theme(axis.title.x = element_blank())
-    # 
 }
