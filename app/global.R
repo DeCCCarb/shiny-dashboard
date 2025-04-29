@@ -9,6 +9,16 @@ library(shinyWidgets)
 library(plotly)
 library(shinyjs)
 library(glue)
+
+library(gridExtra)
+library(mapview)
+library(magick)
+library(webshot2)
+library(webshot)
+library(here)
+library(knitr)
+library(tmap)
+library(usdata)
 library(sf)
 library(readxl)
 
@@ -16,10 +26,14 @@ library(readxl)
 
 counties <- read_excel(here::here('app','data', 'ccc-coords.xlsx'))
 
+
 job_projections <- read_csv(here::here('app','data','county_oil_employment_projections.csv')) %>% 
     filter(county %in% c('Santa Barbara','San Luis Obispo','Ventura'))
 
+
+
 ########### Shapefile for leaflet map in server ####################
+
 
 ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties.shp')) %>%
     sf::st_transform('+proj=longlat +datum=WGS84') |> 
@@ -28,7 +42,7 @@ ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties
 
 ####### Shapefile for OSW leaflet map #############
 osw_all_counties <- st_union(ca_counties, by_feature = FALSE)
-    
+
 
 ###################### PV O&M Jobs Function ######################
 #' Calculate PV Operations and Maintenance jobs and annual capacity
