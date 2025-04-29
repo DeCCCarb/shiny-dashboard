@@ -10,7 +10,6 @@ library(plotly)
 library(shinyjs)
 library(glue)
 
-library(shinyscreenshot)
 library(gridExtra)
 library(mapview)
 library(magick)
