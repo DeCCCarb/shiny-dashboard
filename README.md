@@ -6,9 +6,9 @@ This repository holds our code for the development and deployment of our shiny d
 
 ### Authors & contributors
 
-- Brooke Grazda  [GitHub](https://github.com/bgrazda) | [Website](https://bgrazda.github.io/) | [LinkedIn](https://www.linkedin.com/in/brooke-grazda-a02248217/) 
-- Marina Kochuten  [GitHub](https://github.com/marinakochuten) | [Website](https://marinakochuten.github.io/) | [LinkedIn](https://www.linkedin.com/in/marina-kochuten-4786b6324/) 
-- Liz Peterson  [GitHib](https://github.com/egp4aq) | [Website](https://egp4aq.github.io/) | [LinkedIn](https://www.linkedin.com/in/elizabeth-peterson-85046b204/)
+- [Brooke Grazda](https://github.com/bgrazda)
+- [Marina Kochuten](https://github.com/marinakochuten) 
+- [Liz Peterson](https://github.com/egp4aq) 
 
 ### File contents & structure
 ```bash
