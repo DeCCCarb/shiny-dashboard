@@ -366,9 +366,9 @@ server <- function(input, output, session) {
     #                 axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
     #                 legend.position = "none"
     #             )
-    #
+    # 
     #         plotly::ggplotly(empty_plot) }
-    #
+    # 
     #             osw_om <- calculate_osw_om_jobs(
     #                 county = "Tri-county",
     #                 start_year = input$year_range_input[1],
@@ -380,12 +380,12 @@ server <- function(input, output, session) {
     #                 indirect_jobs = 126,
     #                 induced_jobs = 131
     #             )
-    #
-    #
+    # 
+    # 
     #         # Construction OSW --
     #         osw_construction <- calculate_osw_construction_jobs(
     #             county = "Tri-County",
-    #
+    # 
     #             start_year = input$year_range_input[1],
     #             end_year = input$year_range_input[2],
     #             ambition = "High",
@@ -395,10 +395,10 @@ server <- function(input, output, session) {
     #             indirect_jobs = 2571,
     #             induced_jobs = 781
     #         )
-    #
+    # 
     #         osw_all <- rbind(osw_construction, osw_om) |>
     #             filter(type %in% input$job_type_input)
-    #
+    # 
     #         ######## Generate Plot for OSW ##############
     #         osw_plot <- ggplot(osw_all, aes(x = year, y = n_jobs, group = occupation)) +
     #             geom_col(aes(fill = occupation)) +
@@ -408,11 +408,11 @@ server <- function(input, output, session) {
     #             labs(title = glue::glue("Projected {input$job_type_input} jobs in CA Central Coast from Floating OSW development"),
     #                  y = "FTE Jobs") +
     #             theme_minimal()
-    #
-    #
+    # 
+    # 
     #         plotly::ggplotly(osw_plot)
-    #
-    # })
+    # 
+    #  })
     
     # Generate capacity plot based on user selection ---
     # output$osw_cap_projections_output <- renderPlotly({
@@ -514,7 +514,7 @@ server <- function(input, output, session) {
                 )
             
             plotly::ggplotly(empty_plot)
-        }
+        }else{
         
         osw_om <- calculate_osw_om_jobs(
             county = "Tri-county",
@@ -582,6 +582,7 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(osw_plot, tooltip = c("text"))  |>
             layout(hovermode = "x unified")
+    }
         
     })
     
