@@ -17,18 +17,18 @@ sidebar <- dashboardSidebar(
         menuItem(
             text = 'Floating Offshore Wind',
             tabName = 'f_osw',
-            icon = icon('gauge')
+            icon = icon('docker')
         ),
         menuItem(
             text = 'Utility Solar',
             tabName = 'utility',
-            icon = icon('gauge')
+            icon = icon('solar-panel')
         ),
         # change icons for all
         menuItem(
             text = 'Rooftop Solar',
             tabName = 'rooftop',
-            icon = icon('gauge')
+            icon = icon('house')
         ),
         menuItem(
             text = 'Land Based Wind',
@@ -38,12 +38,12 @@ sidebar <- dashboardSidebar(
         menuItem(
             text = 'Oil Well Capping',
             tabName = 'well_cap',
-            icon = icon('gauge')
+            icon = icon('oil-well')
         ),
         menuItem(
             text = 'Fossil Fuel Phaseout',
             tabName = 'phaseout',
-            icon = icon('gauge')
+            icon = icon('wrench')
         ),
         menuItem(
             text = 'Tool Documentation',
@@ -147,7 +147,6 @@ body <- dashboardBody(# set theme ----
                                                                 
                      
                      box(
-                         
                          width = 4,
                          
                          title = tags$strong('Floating Offshore Wind Project Inputs'),
@@ -230,19 +229,19 @@ body <- dashboardBody(# set theme ----
                              selected = NULL,
                              multiple = FALSE,
                              options = pickerOptions(actionsBox = TRUE)
-                         ), downloadButton('export_osw')
+                         ), downloadButton('export_osw', label = 'Downloadable PDF')
                                                                      
                          
                      ), # END input box
                                                                  
                      #leaflet box ----
                      box(
-                         width = 6,
+                         width = 8,
                          
                          leafletOutput(outputId = 'osw_map_output') |>
                              withSpinner(type = 1, color = '#09847A')
                          
-                     ) # END leaflet box
+                     ), # END leaflet box
                      
                  ), 
                  
@@ -255,7 +254,7 @@ body <- dashboardBody(# set theme ----
                      
                      # Jobs projections plot ----
                      box(
-                         width = 8,
+                         width = 6,
                          # Create a plot based on input
                          #  title = tags$strong('Labor Impact'),
                          plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
@@ -264,7 +263,7 @@ body <- dashboardBody(# set theme ----
                      
                      # Capacity projections plot ----
                      box(
-                         width = 4,
+                         width = 6,
                          plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
                              withSpinner(type = 1, color = '#09847A')
                      )
@@ -435,7 +434,7 @@ body <- dashboardBody(# set theme ----
                      
                      box(
                          
-                         width = 6,
+                         width = 7,
                                                                              
                          # title
                          title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
