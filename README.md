@@ -13,7 +13,7 @@ This repository holds our code for the development and deployment of our shiny d
 ### Purpose
 
 ### File contents & structure
-
+```bash
 ├── app/
 │   ├── data/
 │   │   ├── ca_counties/
@@ -24,30 +24,30 @@ This repository holds our code for the development and deployment of our shiny d
 │   │   │   ├── CA_Counties.sbx
 │   │   │   ├── CA_Counties.shp
 │   │   │   ├── CA_Counties.shp.xml
-│   │   │   ├── CA_Counties.shx
+│   │   │   └──  CA_Counties.shx
 │   │   ├── .DS_Store
 │   │   ├── ccc-coords.xlsx
 │   │   ├── county_oil_employment_projections.csv
 │   │   ├── osw.csv
-│   │   ├── pv_all_plot.csv
+│   │   └──  pv_all_plot.csv
 │   ├── files/
 │   │   ├── osw-jobs.Rmd
 │   │   ├── osw_report.qmd
 │   │   ├── rooftop-jobs.Rmd
-│   │   ├── rooftop-jobs.Rnw
+│   │   └──  rooftop-jobs.Rnw
 │   ├── text/
 │   │   ├── citation.md
 │   │   ├── disclaimer.md
-│   │   ├── intro.md
+│   │   └──  intro.md
 │   ├── www/
 │   │   ├── .sass_cache_keys
 │   │   ├── california_counties_map1.png
 │   │   ├── dashboard-fresh-themes.css
-│   │   ├── teamwork-engineer-wearing-safety-uniform.jpg
+│   │   └── teamwork-engineer-wearing-safety-uniform.jpg
 │   ├── .DS_Store
 │   ├── global.R
 │   ├── server.R
-│   ├── ui.R
+│   └──  ui.R
 ├── scratch/
 │   ├── create-fresh-theme.R
 │   ├── modeling-jobs-transform-scratch.qmd
@@ -57,10 +57,9 @@ This repository holds our code for the development and deployment of our shiny d
 │   ├── scratch-download.R
 │   ├── scratch-tmap.R
 │   ├── scratch.qmd
-│   ├── server_scratch.R
+│   └──  server_scratch.R
 ├── .DS_Store
 ├── .gitignore
 ├── README.md
-├── shiny-dashboard.Rproj
-
-```text ### File contents & structure ├── app/ │ ├── data/ │ │ ├── ca_counties/ │ │ │ ├── CA_Counties.cpg │ │ │ ├── CA_Counties.dbf │ │ │ ├── CA_Counties.prj │ │ │ ├── CA_Counties.sbn │ │ │ ├── CA_Counties.sbx │ │ │ ├── CA_Counties.shp │ │ │ ├── CA_Counties.shp.xml │ │ │ ├── CA_Counties.shx │ │ ├── .DS_Store │ │ ├── ccc-coords.xlsx │ │ ├── county_oil_employment_projections.csv │ │ ├── osw.csv │ │ ├── pv_all_plot.csv │ ├── files/ │ │ ├── osw-jobs.Rmd │ │ ├── osw_report.qmd │ │ ├── rooftop-jobs.Rmd │ │ ├── rooftop-jobs.Rnw │ ├── text/ │ │ ├── citation.md │ │ ├── disclaimer.md │ │ ├── intro.md │ ├── www/ │ │ ├── .sass_cache_keys │ │ ├── california_counties_map1.png │ │ ├── dashboard-fresh-themes.css │ │ ├── teamwork-engineer-wearing-safety-uniform.jpg │ ├── .DS_Store │ ├── global.R │ ├── server.R │ ├── ui.R ├── scratch/ │ ├── create-fresh-theme.R │ ├── modeling-jobs-transform-scratch.qmd │ ├── osw_capacity_growth_plot_faculty_review.png │ ├── plotly_scratch.R │ ├── pv_all_plot.png │ ├── scratch-download.R │ ├── scratch-tmap.R │ ├── scratch.qmd │ ├── server_scratch.R ├── .DS_Store ├── .gitignore ├── README.md ├── shiny-dashboard.Rproj ```
+└── shiny-dashboard.Rproj
+```
