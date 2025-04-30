@@ -991,8 +991,33 @@ server <- function(input, output, session) {
             return(county_lw)
         })
         
+        ############### Land Based Wind Leaflet Map ###############
         
+        # Reactive counties input for Land Wind Map
+        counties_input_lw <- reactive({
+            if (!is.null(input$lw_counties_input)) {
+                ca_counties |> filter(name %in% input$lw_counties_input)
+            } else {
+                ca_counties
+            }
+        })
         
+        # Render the leaflet map for Land Based Wind
+        output$land_wind_map_output <- renderLeaflet({
+            icons <- awesomeIcons(
+                icon = 'helmet-safety',
+                iconColor = 'black',
+                library = 'fa',
+                markerColor = "orange"
+            )
+            
+            leaflet_map <- leaflet() |>
+                addProviderTiles(providers$Stadia.StamenTerrain) |>
+                setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+                addPolygons(data = counties_input_lw())
+            
+            leaflet_map
+        })
         
         # output$phaseout_output_table <- renderTable({
         #     filtered_data() %>%
