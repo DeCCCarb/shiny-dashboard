@@ -58,7 +58,15 @@ sidebar <- dashboardSidebar(
 
 # dashboard body ----
 body <- dashboardBody(# set theme ----
-                      use_theme('dashboard-fresh-theme.css'), # tabItems ----
+                      use_theme('dashboard-fresh-theme.css'), 
+                      tags$head(
+                          tags$script(HTML("
+      $(document).on('shiny:connected', function() {
+        $('[title]').tooltip({ placement: 'right' });
+      });
+    "))
+                      ), # HTML Hover tip
+                      # tabItems ----
                       tabItems(# Project overview tab item ---
                           tabItem(tabName = 'overview', # left hand column ----
                                   column(
@@ -160,8 +168,14 @@ body <- dashboardBody(# set theme ----
                          # year range slider input ----
                          sliderInput(
                              inputId = 'year_range_input',
-                             
-                             label = 'Year Construction Starts - Year to Meet Target',
+                             label = tags$span(
+                                 "Year Construction Starts - Year to Meet Target", 
+                                 tags$i(
+                                     class = "glyphicon glyphicon-info-sign", 
+                                     style = "color:#0072B2;",
+                                     title = "Note: Construction takes a minimum of 5 years for floating offshore wind projects, so the timeline to reach capacity goals must be at least 5 years apart."
+                                 )
+                             ), 
                              min = 2025, 
                              max = 2045, 
                              value = c(2025, 2045),
@@ -201,7 +215,15 @@ body <- dashboardBody(# set theme ----
                          ), # Select job type input ----
                          pickerInput(
                              inputId = 'job_type_input',
-                             label = 'Direct, Induced, or Indirect Job Impacts',
+                             label =
+                                 tags$span(
+                                 'Direct, Induced, or Indirect Job Impacts', 
+                                 tags$i(
+                                     class = "glyphicon glyphicon-info-sign", 
+                                     style = "color:#0072B2;",
+                                     title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")
+                                 
+                             ), 
                              choices = c('direct', # Change to capital
                                          'indirect', 'induced'),
                              multiple = FALSE,
@@ -210,21 +232,42 @@ body <- dashboardBody(# set theme ----
                          # Enter Numeric Input for initial capacity -----
                          numericInput(
                              inputId = 'initial_capacity_input',
-                             label = 'Capacity (GW) of Initial Construction Project',
+                             label =
+                                 tags$span(
+                                     'Capacity (GW) of Initial Construction Project', 
+                                     tags$i(
+                                         class = "glyphicon glyphicon-info-sign", 
+                                         style = "color:#0072B2;",
+                                         title = "Initial capacity is the starting GW value for future projects, which will grow to meet the target goal.")
+                                 ),
                              value = 0.1,
                              min = 0
                          ), 
                          # Enter Numeric Input for final capacity -----
                          numericInput(
                              inputId = 'final_capacity_input',
-                             label = 'Target Capacity (GW)',
+                             label =
+                                 tags$span(
+                                     'Target Capacity (GW)', 
+                                     tags$i(
+                                         class = "glyphicon glyphicon-info-sign", 
+                                         style = "color:#0072B2;",
+                                         title = "Default values are based on the California Energy Commission’s 25 GW statewide target by 2045, with 60% assumed in the Tri-Counties, setting a regional goal of 15 GW.")
+                                 ),
                              value = 15,
                              min = 0
                          ), 
                          # Select Port/No Port
                          pickerInput(
                              inputId = 'osw_port_input',
-                             label = 'Offshore Wind Port Location:',
+                             label =
+                                 tags$span(
+                                     'Offshore Wind Port Location:', 
+                                     tags$i(
+                                         class = "glyphicon glyphicon-info-sign", 
+                                         style = "color:#0072B2;",
+                                         title = "Due to a lack of county specific targets and assuming transferable labor impacts among counties, the three counties are treated as a single region in this analysis. ")
+                                 ),
                              choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
                              selected = NULL,
                              multiple = FALSE,
