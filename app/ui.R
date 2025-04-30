@@ -142,7 +142,7 @@ body <- dashboardBody(# set theme ----
                           
                           
                           
-                          ########## Tool/Dashboard tabItem for floating offshore wind ###########
+                          ########## FLOATING OFFSHORE WIND TAB ###########
                           
                           tabItem(
                               
@@ -504,13 +504,14 @@ body <- dashboardBody(# set theme ----
                               
                           ),  # End Rooftop Solar tabItem
                           
+                          ################ LAND WIND TAB ################
                           tabItem(
                               
                               tabName = 'lb_wind',
                               
                               # Create a fluidRow ---
                               
-                              fluidRow(
+                              fluidRow( 
                                   
                                   # input box ----
                                   
@@ -524,17 +525,29 @@ body <- dashboardBody(# set theme ----
                                       # pickerInputs ----
                                       sliderInput(
                                           inputId = 'input_lw_years',
-                                          label = 'Select a range of years',
-                                          min = 2026,
-                                          max = 2050,
-                                          value = c(2026, 2045),
+                                          label = tags$span('Year Construction Starts - Year to Meet Target',
+                                          tags$i(
+                                              class = "glyphicon glyphicon-info-sign", 
+                                              style = "color:#0072B2;",
+                                              title = "Info text here"
+                                          )),
+                                          min = 2025,
+                                          max = 2045,
+                                          value = c(2025, 2045),
+                                          step = 1,
+                                          ticks = FALSE,
                                           dragRange = TRUE,
                                           sep = ''
                                       ), 
                                       # Slider Range output for land wind ----
                                       verbatimTextOutput("input_lw_years"), pickerInput(
                                           inputId = 'lw_counties_input',
-                                          label = 'Select a County:',
+                                          label = tags$span('County',
+                                          tags$i(
+                                              class = "glyphicon glyphicon-info-sign", 
+                                              style = "color:#0072B2;",
+                                              title = "Info text here"
+                                          )),
                                           choices = unique(counties$County),
                                           selected = c('Ventura'),
                                           multiple = FALSE,
@@ -542,14 +555,24 @@ body <- dashboardBody(# set theme ----
                                       ), # Select job type input ----
                                       pickerInput(
                                           inputId = 'lw_job_type_input',
-                                          label = 'Select Direct, Induced, or Indirect',
-                                          choices = c('direct', 'induced', 'indirect'),
+                                          label = tags$span('Direct, Indirect, or Induced Job Impacts',
+                                          tags$i(
+                                              class = "glyphicon glyphicon-info-sign",
+                                              style = "color:#0072B2;",
+                                              title = "Info text here"
+                                          )),
+                                          choices = c('direct', 'indirect', 'induced'),
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
                                       ), # Enter Numeric Input for initial capacity -----
                                       numericInput(
                                           inputId = 'initial_gw_lw_input',
-                                          label = 'Please input your initial capacity (GW).',
+                                          label = tags$span('Initial Capacity (GW)',
+                                                            tags$i(
+                                                                class = "glyphicon glyphicon-info-sign",
+                                                                style = "color:#0072B2;",
+                                                                title = "Info text here"
+                                                            )),
                                           value = 0,
                                           # placeholder — will be updated
                                           min = 0
@@ -557,7 +580,12 @@ body <- dashboardBody(# set theme ----
                                       # Enter Numeric Input for final capacity -----
                                       numericInput(
                                           inputId = 'final_gw_land_input',
-                                          label = 'Please input your final capacity (GW).',
+                                          label = tags$span('Target Capacity (GW)',
+                                                            tags$i(
+                                                                class = "glyphicon glyphicon-info-sign",
+                                                                style = "color:#0072B2;",
+                                                                title = "Info text here"
+                                                            )),
                                           value = 0,
                                           min = 0
                                       )
