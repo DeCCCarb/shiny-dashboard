@@ -266,7 +266,7 @@ body <- dashboardBody(# set theme ----
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "Due to a lack of county specific targets and assuming transferable labor impacts among counties, the three counties are treated as a single region in this analysis. ")
+                                                      title = "Majority of jobs will occur near the specialized wind port. Due to a lack of county specific targets and assuming transferable labor impacts among counties, the three counties are treated as a single region in this analysis. ")
                                               ),
                                           choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
                                           selected = NULL,
