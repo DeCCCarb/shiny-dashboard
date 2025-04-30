@@ -156,9 +156,9 @@ body <- dashboardBody(# set theme ----
                                   
                                   box(
                                       width = 4,
-      
+                                      
                                       title = tags$strong('Floating Offshore Wind Project Inputs'),
-     
+                                      
                                       
                                       # pickerInputs ----
                                       
@@ -316,7 +316,7 @@ body <- dashboardBody(# set theme ----
                               
                           ), # END floating offshore wind tabITEM
                           
-                          
+                          ######### UTILITY SOLAR TAB #########
                           tabItem(
                               
                               tabName = 'utility',
@@ -526,11 +526,11 @@ body <- dashboardBody(# set theme ----
                                       sliderInput(
                                           inputId = 'input_lw_years',
                                           label = tags$span('Year Construction Starts - Year to Meet Target',
-                                          tags$i(
-                                              class = "glyphicon glyphicon-info-sign", 
-                                              style = "color:#0072B2;",
-                                              title = "Info text here"
-                                          )),
+                                                            tags$i(
+                                                                class = "glyphicon glyphicon-info-sign", 
+                                                                style = "color:#0072B2;",
+                                                                title = "Info text here"
+                                                            )),
                                           min = 2025,
                                           max = 2045,
                                           value = c(2025, 2045),
@@ -543,11 +543,11 @@ body <- dashboardBody(# set theme ----
                                       verbatimTextOutput("input_lw_years"), pickerInput(
                                           inputId = 'lw_counties_input',
                                           label = tags$span('County',
-                                          tags$i(
-                                              class = "glyphicon glyphicon-info-sign", 
-                                              style = "color:#0072B2;",
-                                              title = "Info text here"
-                                          )),
+                                                            tags$i(
+                                                                class = "glyphicon glyphicon-info-sign", 
+                                                                style = "color:#0072B2;",
+                                                                title = "Info text here"
+                                                            )),
                                           choices = unique(counties$County),
                                           selected = c('Ventura'),
                                           multiple = FALSE,
@@ -556,11 +556,11 @@ body <- dashboardBody(# set theme ----
                                       pickerInput(
                                           inputId = 'lw_job_type_input',
                                           label = tags$span('Direct, Indirect, or Induced Job Impacts',
-                                          tags$i(
-                                              class = "glyphicon glyphicon-info-sign",
-                                              style = "color:#0072B2;",
-                                              title = "Info text here"
-                                          )),
+                                                            tags$i(
+                                                                class = "glyphicon glyphicon-info-sign",
+                                                                style = "color:#0072B2;",
+                                                                title = "Info text here"
+                                                            )),
                                           choices = c('direct', 'indirect', 'induced'),
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
@@ -591,7 +591,23 @@ body <- dashboardBody(# set theme ----
                                       )
                                       
                                       
-                                  )  # End input box
+                                  ),  # End input box
+                                  
+                                  # leaflet box ----
+                                  box(
+                                      width = 6,
+                                      
+                                      # title
+                                      title = tags$strong('California Central Coast Counties'),
+                                      
+                                      leafletOutput(outputId = 'land_wind_map_output') |>
+                                          withSpinner(type = 1, color = '#09847A')
+                                      
+                                      
+                                      
+                                  ), 
+                                  
+                                  # END leaflet box
                               ), # End fluid Row
                               # Begin second fluidRow
                               fluidRow( 
