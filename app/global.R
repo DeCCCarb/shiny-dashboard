@@ -360,16 +360,16 @@ calculate_osw_om_jobs <- function(county, start_year, end_year, ambition, initia
     return(df_final)
 }
 
-osw_construction <- calculate_osw_construction_jobs(
-    county = "Tri-County",
-    start_year = 2026,
-    end_year = 2045,
-    ambition = "High", 
-    initial_capacity = 2,
-    target_capacity = 15,
-    direct_jobs = 82,
-    indirect_jobs = 2571,
-    induced_jobs = 781)
+# osw_construction <- calculate_osw_construction_jobs(
+#     county = "Tri-County",
+#     start_year = 2026,
+#     end_year = 2045,
+#     ambition = "High", 
+#     initial_capacity = 2,
+#     target_capacity = 15,
+#     direct_jobs = 82,
+#     indirect_jobs = 2571,
+#     induced_jobs = 781)
 
 ################## Create default values for rooftop solar ###########
 

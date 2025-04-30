@@ -558,7 +558,7 @@ server <- function(input, output, session) {
                 labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
                 values = c("#3A8398", "#A3BDBE")
             ) +
-            scale_y_continuous(limits = c(0, 2000), labels = scales::comma) +
+            scale_y_continuous(labels = scales::comma) +
             scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
             labs(
                 title = glue::glue(
