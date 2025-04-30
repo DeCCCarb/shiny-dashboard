@@ -595,7 +595,7 @@ body <- dashboardBody(# set theme ----
                                   
                                   # leaflet box ----
                                   box(
-                                      width = 6,
+                                      width = 8,
                                       
                                       # title
                                       title = tags$strong('California Central Coast Counties'),
@@ -604,21 +604,30 @@ body <- dashboardBody(# set theme ----
                                           withSpinner(type = 1, color = '#09847A')
                                       
                                       
-                                      
-                                  ), 
+                                  ),  # END leaflet box
                                   
-                                  # END leaflet box
                               ), # End fluid Row
+                              
                               # Begin second fluidRow
                               fluidRow( 
                                   
                                   # Projections table box -----
                                   
+                                  ######### Interactive Plotly Output for OSW ##########
+                                  
+                                  # Jobs projections plot ----
                                   box(
-                                      
-                                      width = 12,
-                                      # Create a table based on input
-                                      title = tags$strong('Land Based Wind Job Impacts'), tableOutput(outputId = 'lw_jobs_output') |> # Changed to table output to show data
+                                      width = 7,
+                                      # Create a plot based on input
+                                      #  title = tags$strong('Labor Impact'),
+                                      plotly::plotlyOutput(outputId = 'land_wind_jobs_plot_output') |> # Changed to table output to show data
+                                          withSpinner(type = 1, color = '#09847A')
+                                  ), 
+                                  
+                                  # Capacity projections plot ----
+                                  box(
+                                      width = 5,
+                                      plotly::plotlyOutput(outputId = 'lw_cap_projections_output') |>
                                           withSpinner(type = 1, color = '#09847A')
                                   )
                                   
