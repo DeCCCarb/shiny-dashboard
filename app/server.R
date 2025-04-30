@@ -579,7 +579,12 @@ server <- function(input, output, session) {
             )
         
         plotly::ggplotly(osw_plot, tooltip = c("text"))  |>
-            layout(hovermode = "x unified")
+            layout(hovermode = "x unified",
+                   legend = list(x = 0.7, 
+                               xanchor = 'left',
+                               yanchor = 'top',
+                               orientation = 'h',
+                               title = "Occupation"))
     }
         
     })

@@ -272,7 +272,7 @@ body <- dashboardBody(# set theme ----
                                           selected = NULL,
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
-                                      ), downloadButton('export_osw', label = 'Downloadable PDF')
+                                      ), downloadButton('export_osw', label = 'Export as PDF')
                                       
                                       
                                   ), # END input box
