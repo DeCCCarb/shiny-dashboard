@@ -255,7 +255,7 @@ calculate_osw_construction_jobs <- function(county, start_year, end_year, ambiti
     
     # Indirect jobs
     # Initialize jobs/per GW Year that will be multiplied by capacity each year
-    indirect_jobs_gw_year <- indirect_jobs/5 # Direct construction jobs outputted by JEDI / 5 Years
+    indirect_jobs_gw_year <- indirect_jobs/5 # Indirect construction jobs outputted by JEDI / 5 Years
     # New jobs each year
     new_jobs <- indirect_jobs_gw_year * df$new_capacity_gw
     

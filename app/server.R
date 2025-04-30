@@ -111,8 +111,6 @@ server <- function(input, output, session) {
                 # Total jobs label location
                 label_coords <- sf::st_coordinates(st_centroid(osw_all_counties)) + c(-0.75, -0.2)
                 
-                
-                
                 label_points <- st_as_sf(
                     data.frame(lng = label_coords[, 1], lat = label_coords[, 2]),
                     coords = c("lng", "lat"),
@@ -491,7 +489,7 @@ server <- function(input, output, session) {
                 occupation = factor(rep(NA, length(years))),
                 type = rep(NA, length(years))
             )
-            # #         # Plot showing no jobs
+            # Plot showing no jobs
             empty_plot <- ggplot(dummy_df, aes(x = as.factor(year), y = n_jobs)) +
                 geom_col(fill = "#cccccc") +
                 scale_y_continuous(limits = c(0, 2000),
@@ -514,8 +512,8 @@ server <- function(input, output, session) {
                 )
             
             plotly::ggplotly(empty_plot)
-        }else{
-        
+            
+        } else {
         osw_om <- calculate_osw_om_jobs(
             county = "Tri-county",
             start_year = input$year_range_input[1],
@@ -611,16 +609,20 @@ server <- function(input, output, session) {
         osw_cap_plot <- ggplot() +
             geom_point(
                 data = osw,
-                aes(x = as.factor(year), y = total_capacity_gw),
-                color = "#A3BDBE"
-            ) +
-            geom_point(
-                data = osw,
-                aes(x = as.factor(year), y = new_capacity_gw),
+                aes(x = as.factor(year), 
+                    y = total_capacity_gw,
+                    text = purrr::map(
+                        paste0("Capacity: ", round(total_capacity_gw, 2), " GW"), HTML
+                    )),
                 color = "#3A8398"
             ) +
+            # geom_point(
+            #     data = osw,
+            #     aes(x = as.factor(year), y = new_capacity_gw),
+            #     color = "#3A8398"
+            # ) +
             scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
-            labs(y = "Capacity (GW)", title = "Capacity Growth Rate to Meet Target ") +
+            labs(y = "Capacity (GW)", title = "Annual Online Capacity (GW)") +
             theme_minimal() +
             theme(axis.title.x = element_blank())
                   #     axis.title.y = element_text(size = 24, margin = margin(5,20,0,10)),
@@ -634,7 +636,8 @@ server <- function(input, output, session) {
                   
                   
         
-        plotly::ggplotly(osw_cap_plot)
+        plotly::ggplotly(osw_cap_plot, tooltip = "text") |>
+            layout(hovermode = "x unified")
                   
                   
                   
