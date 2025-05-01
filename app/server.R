@@ -166,7 +166,7 @@ server <- function(input, output, session) {
                 leaflet_map
             })
         }
-    )
+    ) # end osw map observe event
     
     
     # Utility PV map ----
@@ -706,16 +706,127 @@ server <- function(input, output, session) {
         }
     })
     
-    # Render the leaflet map for Land Based Wind
-    output$land_wind_map_output <- renderLeaflet({
+    # Reactive job calculations for selected counties
+    lw_all_jobs <- reactive({
+        counties <- input$lw_counties_input
+        start_year <- input$input_lw_years[1]
+        end_year <- input$input_lw_years[2]
+        initial_capacity <- input$initial_gw_lw_input
+        final_capacity <- input$final_gw_land_input
         
-        leaflet_map <- leaflet() |>
+        # Define job multipliers per county
+        job_factors <- list(
+            "Santa Barbara" = list(const = c(139, 354, 139), om = c(14, 23, 8)),
+            "San Luis Obispo" = list(const = c(25, 207, 113), om = c(14, 21, 7)),
+            "Ventura" = list(const = c(140, 345, 139), om = c(14, 24, 8))
+        )
+        
+        # Loop through counties and calculate jobs
+        purrr::map_dfr(counties, function(cty) {
+            factors <- job_factors[[cty]]
+            
+            const <- calculate_land_wind_construction_jobs(
+                county = cty,
+                start_year = start_year,
+                end_year = end_year,
+                initial_capacity = initial_capacity,
+                final_capacity = final_capacity,
+                direct_jobs = factors$const[1],
+                indirect_jobs = factors$const[2],
+                induced_jobs = factors$const[3]
+            )
+            
+            om <- calculate_land_wind_om_jobs(
+                county = cty,
+                start_year = start_year,
+                end_year = end_year,
+                initial_capacity = initial_capacity,
+                final_capacity = final_capacity,
+                direct_jobs = factors$om[1],
+                indirect_jobs = factors$om[2],
+                induced_jobs = factors$om[3]
+            )
+            
+            rbind(const, om)
+        }) |> 
+            filter(type %in% input$lw_job_type_input)
+    }) # End reactive job calculations per county
+    
+    # Reactive county labels with job summaries
+    lw_job_labels <- reactive({
+        jobs <- lw_all_jobs()
+        counties_sf <- counties_input_lw()
+        
+        job_summaries <- jobs |>
+            group_by(county, occupation) |>
+            summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = 'drop') |>
+            tidyr::pivot_wider(names_from = occupation, values_from = n_jobs, values_fill = 0)
+        
+        counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
+        
+        counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
+            "<b> <br>", counties_with_labels$name, " County </b><br>",
+            "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
+            "O&M: ", scales::comma(counties_with_labels$`O&M`)
+        )
+        
+        counties_with_labels
+    }) # End reactive county labels 
+    
+    # Render LW leaflet map
+    output$land_wind_map_output <- renderLeaflet({
+        counties_sf <- lw_job_labels()
+ 
+        # Get the coordinates of the centroids
+        label_coords <- sf::st_coordinates(sf::st_centroid(counties_sf))
+        
+        # Define specific offsets for each county
+        county_offsets <- list(
+            "Santa Barbara" = c(x = -0.70, y = 0.04),  
+            "San Luis Obispo" = c(x = -0.5, y = -0.2), 
+            "Ventura" = c(x = -0.4, y = 0) 
+        )
+        
+        # Apply the county-specific offsets for each county
+        for (i in 1:nrow(counties_sf)) {
+            county_name <- counties_sf$name[i]
+            
+            # Retrieve the corresponding offset for this county
+            offset <- county_offsets[[county_name]]
+            
+            # Apply the offset to the centroid coordinates
+            label_coords[i, 1] <- label_coords[i, 1] + offset["x"]
+            label_coords[i, 2] <- label_coords[i, 2] + offset["y"]
+        }
+        
+        # Convert the label coordinates into an sf object for plotting
+        label_points <- st_as_sf(
+            data.frame(lng = label_coords[, 1], lat = label_coords[, 2]),
+            coords = c("lng", "lat"),
+            crs = st_crs(counties_sf)
+        )
+        
+        # Generate the leaflet map with labels at the adjusted centroids
+        leaflet(counties_sf) |>
             addProviderTiles(providers$Stadia.StamenTerrain) |>
             setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
-            addPolygons(data = counties_input_lw())
-        
-        leaflet_map
-    }) # END land wind leaflet map
+            addPolygons(
+                color = "darkgreen",
+                opacity = 0.7
+            ) |>
+            addLabelOnlyMarkers(
+                data = label_points,
+                label = lapply(counties_sf$label, HTML),
+                labelOptions = labelOptions(
+                    noHide = TRUE,
+                    direction = 'left',
+                    textsize = "12px",
+                    opacity = 0.9
+                )
+            )
+    }) # End render leaflet map
+    
+    
     
     ######## Land wind plot output #######
     output$land_wind_jobs_plot_output <- renderPlotly({
@@ -839,7 +950,7 @@ server <- function(input, output, session) {
     }) # end lw jobs plot
     
     ######## Generate Plot for LW Capacity ##############
-
+    
     output$lw_cap_projections_output <- renderPlotly({
         lw_cap <- calculate_land_wind_om_jobs(
             county = input$lw_counties_input,
@@ -852,7 +963,7 @@ server <- function(input, output, session) {
             induced_jobs = 131
         )
         
- 
+        
         # Generate capacity plot based on user selection
         lw_cap_plot <- ggplot() +
             geom_point(
@@ -865,6 +976,7 @@ server <- function(input, output, session) {
                 color = "#3A8398"
             ) +
             scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
+            scale_y_continuous(breaks = scales::breaks_pretty(n = 4)) +
             labs(y = "Capacity (GW)", title = "Annual Online Capacity (GW)") +
             theme_minimal() +
             theme(axis.title.x = element_blank())

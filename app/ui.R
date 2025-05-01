@@ -514,7 +514,7 @@ body <- dashboardBody( #### set theme ####
                                                                 title = "Info text here"
                                                             )),
                                           choices = unique(counties$County),
-                                          selected = c('Ventura'),
+                                          selected = c('Santa Barbara'),
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
                                       ), # Select job type input ----
@@ -538,7 +538,7 @@ body <- dashboardBody( #### set theme ####
                                                                 style = "color:#0072B2;",
                                                                 title = "Info text here"
                                                             )),
-                                          value = 0,
+                                          value = 0.95,
                                           # placeholder — will be updated
                                           min = 0
                                       ), 
@@ -551,7 +551,7 @@ body <- dashboardBody( #### set theme ####
                                                                 style = "color:#0072B2;",
                                                                 title = "Info text here"
                                                             )),
-                                          value = 0,
+                                          value = 0.95,
                                           min = 0
                                       )
                                       
@@ -561,9 +561,6 @@ body <- dashboardBody( #### set theme ####
                                   # leaflet box ----
                                   box(
                                       width = 8,
-                                      
-                                      # title
-                                      title = tags$strong('California Central Coast Counties'),
                                       
                                       leafletOutput(outputId = 'land_wind_map_output') |>
                                           withSpinner(type = 1, color = '#09847A')
