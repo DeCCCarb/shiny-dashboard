@@ -86,7 +86,7 @@ body <- dashboardBody( #### set theme ####
                                               )
                                           )
                                           
-                                      ) # END background info box),),
+                                      ) # END background info box)
                                   ), # END left hand column),
                                   ##### right hand column  #####
                                   column(width = 6, ###### First fluidRow (citation box) ######
