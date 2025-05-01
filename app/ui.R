@@ -591,7 +591,7 @@ body <- dashboardBody( #### set theme ####
 # OIL WELL CAPPING TAB ----
                           tabItem(tabName = 'well_cap', 
                                   
-                                  FluidRow( ##### first fluid row #####
+                                  fluidRow( ##### first fluid row #####
                                       
                                       box(
                                           width = 4, title = 'Oil Well Capping', 
