@@ -75,16 +75,6 @@ body <- dashboardBody( #### set theme ####
                                           # use columns to create white space on sides
                                           #column(1),
                                           column(12, includeMarkdown("text/intro.md")),
-                                          #column(1),
-                                          tags$img(
-                                              src = "teamwork-engineer-wearing-safety-uniform.jpg",
-                                              alt = 'Photo of people working in front of a wind turbine',
-                                              style = 'max-width: 100%',
-                                              tags$h6(
-                                                  'Image Source:',
-                                                  tags$a(href = 'https://bren.ucsb.edu/projects/modeling-impact-decarbonization-labor-californias-central-coast', 'Bren MEDS Capstone Projects')
-                                              )
-                                          )
                                           
                                       ) # END background info box)
                                   ), # END left hand column),
@@ -94,7 +84,7 @@ body <- dashboardBody( #### set theme ####
                                              box(
                                                  width = NULL,
                                                  
-                                                 title = tagList(icon('sourcetree'), tags$strong('Data Source')),
+                                                 title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools')),
                                                  column(1),
                                                  column(10, includeMarkdown('text/citation.md')),
                                                  column(1)
@@ -106,16 +96,16 @@ body <- dashboardBody( #### set theme ####
                                          fluidRow( ###### Second fluidRow (disclaimer box) ######
                                              box(
                                                  width = NULL, 
-                                                 title = tagList(icon('user'), tags$strong('Hosted By')),
+                                                 title = tagList(icon('user'), tags$strong('Our Partners')),
                                                  column(1),
                                                  column(10, includeMarkdown('text/disclaimer.md')),
                                                  column(1)
                                                  
                                              ) # END disclaimer box
                                          ), # END 2nd fluidRow
-                                         # Begin third fluidRow with counties map
+                                        # Begin third fluidRow with counties map
                                          fluidRow(
-                                             # Add Box for TMap
+                                           #  Add Box for TMap
                                              box(
                                                  width = NULL,
                                                  tags$img(
@@ -126,7 +116,7 @@ body <- dashboardBody( #### set theme ####
                                                      width = '500px',
                                                      tags$h6('Made using TMap', tags$a(href = 'Made using TMap and USData.'))
                                                  ) # End tags$img
-                                             ) # End CCC TMap box) ) ), ) 
+                                             ) # End CCC TMap box)
                                          )# End FluidRow
                                   )
                           ),
