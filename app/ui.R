@@ -1,13 +1,9 @@
-
-
 # Dashboard header ----
-header <- dashboardHeader(# title ----
-                          title = 'Labor Impacts of Decarbonization', # Tentative title
+header <- dashboardHeader(title = 'Labor Impacts of Decarbonization', # Tentative title
                           titleWidth = 800)
-
-# dashboard sidebar ---
+# Dashboard sidebar ----
 sidebar <- dashboardSidebar(
-    ##### sidebarMenu: tabNames  #######
+###### initialize tab names ######
     sidebarMenu(
         menuItem(
             text = 'Project Overview',
@@ -56,8 +52,8 @@ sidebar <- dashboardSidebar(
     
 )
 
-# dashboard body ----
-body <- dashboardBody(# set theme ----
+# Dashboard body ----
+body <- dashboardBody( #### set theme ####
                       use_theme('dashboard-fresh-theme.css'), 
                       tags$head(
                           tags$script(HTML("
@@ -66,12 +62,12 @@ body <- dashboardBody(# set theme ----
       });
     "))
                       ), # HTML Hover tip
-                      # tabItems ----
-                      tabItems(# Project overview tab item ---
-                          tabItem(tabName = 'overview', # left hand column ----
+                      tabItems(
+# PROJECT OVERVIEW TAB ITEM ----
+                          tabItem(tabName = 'overview', ##### left hand column  #####
                                   column(
                                       width = 6,
-                                      # background info box ----
+                                      ###### background info box  ######
                                       box(
                                           width = NULL,
                                           title = tagList(icon('solar-panel')),
@@ -92,10 +88,9 @@ body <- dashboardBody(# set theme ----
                                           
                                       ) # END background info box),),
                                   ), # END left hand column),
-                                  # right hand column ----
-                                  column(width = 6, # first fluidRow ----
+                                  ##### right hand column  #####
+                                  column(width = 6, ###### first fluidRow (citation box) ######
                                          fluidRow(
-                                             # citation box ----
                                              box(
                                                  width = NULL,
                                                  
@@ -104,13 +99,13 @@ body <- dashboardBody(# set theme ----
                                                  column(10, includeMarkdown('text/citation.md')),
                                                  column(1)
                                                  
-                                             ) # END citation box),),
-                                         ), # END first fluidRow),
+                                             ) # END citation box
+                                         ), # END first fluidRow
+                                         
                                          # Create another fluidRow
-                                         fluidRow(
-                                             # # # disclaimer box ----
+                                         fluidRow( ###### second fluidRow (disclaimer box) ######
                                              box(
-                                                 width = NULL,
+                                                 width = NULL, 
                                                  title = tagList(icon('user'), tags$strong('Hosted By')),
                                                  column(1),
                                                  column(10, includeMarkdown('text/disclaimer.md')),
@@ -141,31 +136,25 @@ body <- dashboardBody(# set theme ----
                           
                           
                           
-                          
-                          ########## FLOATING OFFSHORE WIND TAB ###########
+# FLOATING OFFSHORE WIND TAB ----
                           
                           tabItem(
                               
                               tabName = 'f_osw',
-                              # Create a fluidRow
                               
-                              fluidRow(
+                              
+                              fluidRow( ##### first fluidRow (picker inputs) #####
                                   
-                                  # input box ----
-                                  
-                                  
-                                  box(
+                                   box(
                                       width = 4,
                                       
                                       title = tags$strong('Floating Offshore Wind Project Inputs'),
                                       
                                       
-                                      # pickerInputs ----
-                                      
                                       shinyjs::useShinyjs(),
                                       
                                       # Enable shinyjs
-                                      # year range slider input ----
+                                      ###### year range slider input ######
                                       sliderInput(
                                           inputId = 'year_range_input',
                                           label = tags$span(
@@ -212,7 +201,7 @@ body <- dashboardBody(# set theme ----
                                                                      });
                                                                    "
                                           )
-                                      ), # Select job type input ----
+                                      ),  ###### job type input  ######
                                       pickerInput(
                                           inputId = 'job_type_input',
                                           label =
@@ -229,7 +218,7 @@ body <- dashboardBody(# set theme ----
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
                                       ), 
-                                      # Enter Numeric Input for initial capacity -----
+                                      ###### initial capacity input  ######
                                       numericInput(
                                           inputId = 'initial_capacity_input',
                                           label =
@@ -243,7 +232,7 @@ body <- dashboardBody(# set theme ----
                                           value = 0.1,
                                           min = 0
                                       ), 
-                                      # Enter Numeric Input for final capacity -----
+                                      ###### final capacity input  ######
                                       numericInput(
                                           inputId = 'final_capacity_input',
                                           label =
@@ -257,7 +246,7 @@ body <- dashboardBody(# set theme ----
                                           value = 15,
                                           min = 0
                                       ), 
-                                      # Select Port/No Port
+                                      ###### port input  ######
                                       pickerInput(
                                           inputId = 'osw_port_input',
                                           label =
@@ -277,7 +266,7 @@ body <- dashboardBody(# set theme ----
                                       
                                   ), # END input box
                                   
-                                  #leaflet box ----
+                                  ###### map output  ######
                                   box(
                                       width = 8,
                                       
@@ -286,17 +275,12 @@ body <- dashboardBody(# set theme ----
                                       
                                   ), # END leaflet box
                                   
-                              ), 
-                              
-                              # END  1st fluidRow
+                              ), # END  1st fluidRow
                               
                               
-                              fluidRow(
+                              fluidRow( ##### second fluidRow (plotly outputs) #####
                                   
-                                  ######### Interactive Plotly Output for OSW ##########
-                                  
-                                  # Jobs projections plot ----
-                                  box(
+                                  box( ###### jobs projections plot ######
                                       width = 7,
                                       # Create a plot based on input
                                       #  title = tags$strong('Labor Impact'),
@@ -304,8 +288,7 @@ body <- dashboardBody(# set theme ----
                                           withSpinner(type = 1, color = '#09847A')
                                   ), 
                                   
-                                  # Capacity projections plot ----
-                                  box(
+                                  box( ###### capacity projections plot ######
                                       width = 5,
                                       plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
                                           withSpinner(type = 1, color = '#09847A')
@@ -316,24 +299,17 @@ body <- dashboardBody(# set theme ----
                               
                           ), # END floating offshore wind tabITEM
                           
-                          ######### UTILITY SOLAR TAB #########
+# UTILITY SOLAR TAB ----
                           tabItem(
                               
                               tabName = 'utility',
                               
-                              # Create a fluidRow ---
-                              
-                              fluidRow(
+                              fluidRow( ##### first fluidRow (picker inputs) #####
                                   
-                                  # input box ----
-                                  
-                                  box(
+                                  box( ###### county input ######
                                       width = 4, title = tags$strong('Pick a County'), 
                                       
-                                      # pickerInputs ----
-                                      
-                                      # Enter Slider Input for year range
-                                      sliderInput(
+                                      sliderInput( ###### year range slider input ######
                                           inputId = 'year_range_input_utility',
                                           label = 'Year Range (CHOOSE BETTER LABEL)',
                                           min = 2025,
@@ -343,7 +319,7 @@ body <- dashboardBody(# set theme ----
                                           ticks = TRUE,
                                           sep = ""
                                       ), 
-                                      pickerInput(
+                                      pickerInput( ###### county input ######
                                           inputId = 'county_input',
                                           label = 'Select a County:',
                                           choices = unique(counties$County),
@@ -351,25 +327,24 @@ body <- dashboardBody(# set theme ----
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
                                       ), 
-                                      # Select job type input ----
-                                      pickerInput(
+
+                                      pickerInput( ###### job type input ######
                                           inputId = 'utility_job_type_input',
                                           label = 'Select Direct, Induced, or Indirect',
                                           choices = c('direct', 'induced', 'indirect'),
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
                                       ), 
-                                      
-                                      # Enter Numeric Input for initial capacity -----
-                                      numericInput(
+
+                                      numericInput( ###### initial capacity input  ######
                                           inputId = 'initial_mw_utility_input',
                                           label = 'Please input your initial capacity (MW).',
                                           value = 0,
                                           # placeholder — will be updated
                                           min = 0
                                       ), 
-                                      # Enter Numeric Input for final capacity -----
-                                      numericInput(
+                                      
+                                      numericInput( ###### final capacity input  ######
                                           inputId = 'final_mw_utility_input',
                                           label = 'Please input your final capacity (MW).',
                                           value = 0,
@@ -378,8 +353,7 @@ body <- dashboardBody(# set theme ----
                                       
                                   ), # END input box
                                   
-                                  #leaflet box ----
-                                  box(
+                                  box( ###### map output  ######
                                       width = 6,
                                       
                                       # title
@@ -396,10 +370,9 @@ body <- dashboardBody(# set theme ----
                                   
                               ),
                               
-                              fluidRow( # Start new fluidRow
+                              fluidRow( ##### second fluidRow (plotly outputs) #####
                                   
-                                  # Projections table box -----
-                                  box(
+                                  box( ###### table output --> add in maps here! ######
                                       width = 12,
                                       # Create a table based on input
                                       title = tags$strong('Utility Solar Job Impacts'),
@@ -411,21 +384,17 @@ body <- dashboardBody(# set theme ----
                               
                           ),    # End Utility Solar tabItem
                           
-                          
+# ROOFTOP SOLAR TAB ----                          
                           tabItem(
-                              tabName = 'rooftop', # Create a fluid row
-                              # Create a fluidRow --
+                              tabName = 'rooftop',
                               
-                              fluidRow(
-                                  # input box ----
+                              fluidRow( ##### first fluidRow (picker inputs) #####
+
                                   box(
                                       width = 4,
                                       title = tags$strong('Pick a County'),
                                       
-                                      # pickerInputs ----
-                                      
-                                      # Enter slider Input for start year
-                                      sliderInput(
+                                      sliderInput( ###### year range slider input ######
                                           inputId = 'year_range_input_roof',
                                           label = 'Year Range (CHOOSE BETTER LABEL)',
                                           min = 2025,
@@ -435,7 +404,7 @@ body <- dashboardBody(# set theme ----
                                           ticks = TRUE,
                                           sep = ""
                                       ),
-                                      pickerInput(
+                                      pickerInput( ###### county input ######
                                           inputId = 'roof_counties_input',
                                           label = 'Select a County:',
                                           choices = unique(counties$County),
@@ -443,24 +412,24 @@ body <- dashboardBody(# set theme ----
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
                                       ),
-                                      # Select job type input ----
-                                      pickerInput(
+
+                                      pickerInput( ###### job type input ######
                                           inputId = 'roof_job_type_input',
                                           label = 'Select Direct, Induced, or Indirect',
                                           choices = c('direct', 'induced', 'indirect'),
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
                                       ),
-                                      # Enter Numeric Input for initial capacity -----
-                                      numericInput(
+                                      
+                                      numericInput( ###### initial capacity input ######
                                           inputId = 'initial_mw_roof_input',
                                           label = 'Please input your initial capacity (MW).',
                                           value = 0,
                                           # placeholder — will be updated
                                           min = 0
                                       ),
-                                      # Enter Numeric Input for final capacity -----
-                                      numericInput(
+
+                                      numericInput( ###### final capacity input ######
                                           inputId = 'final_mw_roof_input',
                                           label = 'Please input your final capacity (MW).',
                                           value = 0,
@@ -473,9 +442,7 @@ body <- dashboardBody(# set theme ----
                                   # END input box
                                   
                                   
-                                  #leaflet box ----
-                                  
-                                  box(
+                                 box( ###### map output ######
                                       
                                       width = 7,
                                       
@@ -488,10 +455,8 @@ body <- dashboardBody(# set theme ----
                                   
                               ), # End first fluidRow  
                               
-                              fluidRow(
-                                  # Projections table box -----
-                                  
-                                  
+                              fluidRow( ##### second fluidRow (outputs) #####
+                                   
                                   box(
                                       width = 12,
                                       # Create a table based on input
