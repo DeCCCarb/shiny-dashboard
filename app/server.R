@@ -1014,7 +1014,7 @@ server <- function(input, output, session) {
             #scale_x_discrete(breaks = scales::breaks_pretty(n=5)) +
             labs(
                 title = paste(
-                    'Direct fossil fuel employment phaseout 2025–2045:',
+                    'Total Fossil Fuel jobs 2025–2045:',
                     gsub("_", " ", input$phaseout_setback_input),
                     'policy',
                     input$phaseout_setback_existing_input
