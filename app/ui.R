@@ -486,11 +486,11 @@ body <- dashboardBody( #### set theme ####
                                       
                                       sliderInput( ###### year range slider input ######
                                           inputId = 'input_lw_years',
-                                          label = tags$span('Year Construction Starts - Year to Meet Target',
+                                          label = tags$span('Start Year - Year to Meet Target',
                                                             tags$i(
                                                                 class = "glyphicon glyphicon-info-sign", 
                                                                 style = "color:#0072B2;",
-                                                                title = "Info text here"
+                                                                title = "Input the range of years for analysis, starting with the year associated with inital capacity and ending with the year to meet capacity targets."
                                                             )),
                                           min = 2025,
                                           max = 2045,
@@ -509,7 +509,7 @@ body <- dashboardBody( #### set theme ####
                                                             tags$i(
                                                                 class = "glyphicon glyphicon-info-sign", 
                                                                 style = "color:#0072B2;",
-                                                                title = "Info text here"
+                                                                title = "County that land wind project will be based. Currently, Santa Barbara County is the only Tri-county with land wind (Strauss Wind Project)."
                                                             )),
                                           choices = unique(counties$County),
                                           selected = c('Santa Barbara'),
@@ -522,7 +522,7 @@ body <- dashboardBody( #### set theme ####
                                                             tags$i(
                                                                 class = "glyphicon glyphicon-info-sign",
                                                                 style = "color:#0072B2;",
-                                                                title = "Info text here"
+                                                                title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare)."
                                                             )),
                                           choices = c('direct', 'indirect', 'induced'),
                                           multiple = FALSE,
@@ -535,10 +535,9 @@ body <- dashboardBody( #### set theme ####
                                                             tags$i(
                                                                 class = "glyphicon glyphicon-info-sign",
                                                                 style = "color:#0072B2;",
-                                                                title = "Info text here"
+                                                                title = "Existing land wind capacity (GW) in selected county. If no existing wind farms, enter size (capacity) of initial construction project. Default 0.95 GW is 2025 nameplate capacity of Strauss Wind Farm in Santa Barbara County."
                                                             )),
-                                          value = 0.95,
-                                          # placeholder — will be updated
+                                          value = 0.95,  # Nameplate capacity (GW) of Strauss Wind Farm
                                           min = 0
                                       ), 
                                       
@@ -548,7 +547,7 @@ body <- dashboardBody( #### set theme ####
                                                             tags$i(
                                                                 class = "glyphicon glyphicon-info-sign",
                                                                 style = "color:#0072B2;",
-                                                                title = "Info text here"
+                                                                title = "Capacity (GW) to come online in year specified to meet targets above. Default matches current capacity in Santa Barbara County, as no county goals for land wind expansion are currently defined."
                                                             )),
                                           value = 0.95,
                                           min = 0
