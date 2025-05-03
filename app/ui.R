@@ -200,9 +200,7 @@ body <- dashboardBody( #### set theme ####
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")
-                                                  
-                                              ), 
+                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
                                           choices = c('direct', # Change to capital
                                                       'indirect', 'induced'),
                                           multiple = FALSE,
@@ -637,12 +635,18 @@ body <- dashboardBody( #### set theme ####
                                           
                                           pickerInput( ###### setback distance input ######
                                               inputId = 'phaseout_setback_input',
-                                              label = 'Select Setback Policy',
+                                              label = tags$span(
+                                                  'Select Setback Policy Distance', 
+                                                  tags$i(
+                                                      class = "glyphicon glyphicon-info-sign", 
+                                                      style = "color:#0072B2;",
+                                                      title = "The current California state setback policy is 3200 feet. We've selected 2500 ft by default to closely resemble it.")
+                                              ),
                                               choices = c(
-                                                  'setback_1000ft',
-                                                  'setback_2500ft',
-                                                  'setback_5280ft',
-                                                  'no_setback'
+                                                  '1000 ft' = 'setback_1000ft',
+                                                  '2500 ft' = 'setback_2500ft',
+                                                  '5280 ft' = 'setback_5280ft',
+                                                  'No setback' = 'no_setback'
                                               ),
                                               selected = c('setback_2500ft'),
                                               multiple = FALSE,
@@ -653,12 +657,18 @@ body <- dashboardBody( #### set theme ####
                                           
                                           pickerInput( ###### setback existing input ######
                                               inputId = 'phaseout_setback_existing_input',
-                                              label = 'Should the setback policy apply to existing wells?',
+                                              label = tags$span(
+                                                  'Should the setback policy apply to existing wells?', 
+                                                  tags$i(
+                                                      class = "glyphicon glyphicon-info-sign", 
+                                                      style = "color:#0072B2;",
+                                                      title = "If the setback policy only applies to new wells, it is unlikely that progress will be made at the rate that we need.")
+                                              ),
                                               choices = c(
                                                   'Setback policy applies to new and existing wells' = 0,
                                                   'Setback policy applies only to new wells' = 1
                                               ),
-                                              selected = 1,
+                                              selected = 0,
                                               multiple = FALSE,
                                               options = pickerOptions(actionsBox = TRUE)
                                           )
@@ -677,7 +687,7 @@ body <- dashboardBody( #### set theme ####
                                   
                                   
                                   fluidRow( ##### Second fluid row (plotly outputs) #####
-                                           box( ###### output table ######
+                                           box( ###### Phaseout plot ######
                                                width = 12,
                                                # Create a table based on input
                                                title = tags$strong('Labor Impact'),
