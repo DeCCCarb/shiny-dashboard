@@ -1028,6 +1028,67 @@ server <- function(input, output, session) {
         
     })
     
+    
+##### OIL CAPPING #####
+    # Oil capping leaflet map output ----
+    output$capping_map_output <- renderLeaflet({
+        
+        # Well counts, number of jobs, and label coordinates
+        well_count <- c(1977, 3188, 337)
+        label_coords <- data.frame(
+            name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
+            lng = c(-120.0301, -121.0508, -119.1265),
+            lat = c(34.53742, 35.40949, 34.35622)
+        )
+        
+        # Prepare the county data with label text
+        ca_counties <- ca_counties |>
+            mutate(
+                label_text = paste0("<b>", name, " County </b><br>Oil Wells: ", well_count)
+            )
+        
+        # Filter the data to the selected county only for both polygon and label
+        label_data <- ca_counties |>
+            filter(name == input$county_wells_input) |>
+            left_join(label_coords, by = "name") |>
+            st_drop_geometry()
+        
+        # Set up the map
+        leaflet_map <- leaflet() |>
+            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            setView(lng = -120.298189, lat = 34.820830, zoom = 8)
+        
+        # Add the polygon for the selected county only (hide others)
+        leaflet_map <- leaflet_map |>
+            addPolygons(
+                data = ca_counties |> filter(name == input$county_wells_input),  # Only add selected county's polygon
+                color = "forestgreen", 
+                opacity = 0.7,
+            )
+        
+        # Add label only for the selected county if a county is selected
+        if (!is.null(input$county_wells_input)) {
+            leaflet_map <- leaflet_map |>
+                addLabelOnlyMarkers(
+                    lng = label_data$lng,
+                    lat = label_data$lat,
+                    label = lapply(label_data$label_text, HTML),
+                    labelOptions = labelOptions(
+                        noHide = TRUE,
+                        direction = 'left',
+                        textsize = "12px",
+                        opacity = 0.9
+                    )
+                )
+        }
+        
+        leaflet_map
+    })
+    
+    
+    
+    
+    
     #phaseout leaflet map output ----
     output$phaseout_county_map_output <- renderLeaflet({
         counties_input <- reactive({
