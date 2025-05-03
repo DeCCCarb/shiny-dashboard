@@ -578,20 +578,40 @@ body <- dashboardBody( #### set theme ####
 # OIL WELL CAPPING TAB ----
                           tabItem(tabName = 'well_cap', 
                                   
-                                  fluidRow( ##### first fluid row #####
-                                      
-                                      box(
-                                          width = 4, title = 'Oil Well Capping', 
-                                          
-                                          pickerInput( ###### county input ######
-                                              
-                                              inputId = 'county_wells_input',
-                                              choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
-                                              multiple = FALSE
-                                          ) # End county picker
-                                          
-                                      ) # End box for inputs?) 
-                                  ) # End first fluidRow
+                                  ##### left hand column #####
+                                  column(width = 4,
+                                        # fluidRow( ##### top left fluid row #####
+                                                   
+                                                   box(width = 12,
+                                                       title = 'Oil Well Capping', 
+                                                       
+                                                       pickerInput( ###### county input ######
+                                                                    
+                                                                    inputId = 'county_wells_input',
+                                                                    choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
+                                                                    multiple = FALSE
+                                                       ) # End county picker
+                                                       
+                                                   ) # End box for inputs?) 
+                                      #   ) # End top left fluidRow
+                                         ), # END left hand column
+                                  
+                                  ##### right hand column #####
+                                  column(width = 8,
+                                     #    fluidRow( ##### top right fluid row #####
+                                                   
+                                                   box( ###### map output ######
+                                                        width = 12,
+                                                        leafletOutput(outputId = 'capping_map_output',
+                                                                      height = "800px") |>
+                                                            withSpinner(type = 1, color = '#09847A')
+                                                        
+                                                        
+                                                   ),  # END leaflet box
+                                      #   ) # End top right fluidRow
+                                         ) # END right hand column
+                                  
+                                  
                           ), # end well capping tab item
                           
 # FOSSIL FUEL PHASEOUT TAB ----
