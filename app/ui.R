@@ -583,7 +583,9 @@ body <- dashboardBody( #### set theme ####
                                         # fluidRow( ##### top left fluid row #####
                                                    
                                                    box(width = 12,
+
                                                        title = 'Capping Existing Onshore Oil Wells', 
+
                                                        
                                                        pickerInput( ###### county input ######
                                                                     

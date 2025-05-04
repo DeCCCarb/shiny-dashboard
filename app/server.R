@@ -1045,6 +1045,7 @@ server <- function(input, output, session) {
                                     "<br>",
                                     "<br> Capping all idle & active wells from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
                                     )
+
             )
         
         # Filter the data to the selected county only for both polygon and label
