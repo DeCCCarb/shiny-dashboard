@@ -1029,16 +1029,22 @@ server <- function(input, output, session) {
         
         # Well counts, number of jobs, and label coordinates
         well_count <- c(1977, 3188, 337)
+        n_jobs <- c(494, 797, 84)
+        annual_jobs <- c(25, 40, 4)
         label_coords <- data.frame(
             name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
-            lng = c(-120.0301, -121.0508, -119.1265),
-            lat = c(34.53742, 35.40949, 34.35622)
+            lng = c(-120.7201, -121.0508, -119.4855),
+            lat = c(34.58742, 35.40949, 34.35622)
         )
         
         # Prepare the county data with label text
         ca_counties <- ca_counties |>
             mutate(
-                label_text = paste0("<b>", name, " County </b><br>Oil Wells: ", well_count)
+                label_text = paste0("<b><u><font size = '2.5'>", name, " County </b></u></font><br>Total Oil & Gas Wells: ", well_count,
+                                    "<br> Total FTE Jobs: ", n_jobs,
+                                    "<br>",
+                                    "<br> Capping all idle & active wells from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
+                                    )
             )
         
         # Filter the data to the selected county only for both polygon and label

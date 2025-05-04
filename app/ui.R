@@ -138,7 +138,7 @@ body <- dashboardBody( #### set theme ####
                                    box(
                                       width = 4,
                                       
-                                      title = tags$strong('Floating Offshore Wind Project Inputs'),
+                                      title = tags$strong('Floating Offshore Wind Development'),
                                       
                                       
                                       shinyjs::useShinyjs(),
@@ -583,11 +583,12 @@ body <- dashboardBody( #### set theme ####
                                         # fluidRow( ##### top left fluid row #####
                                                    
                                                    box(width = 12,
-                                                       title = 'Oil Well Capping', 
+                                                       title = 'Capping Existing Onshore Oil Wells', 
                                                        
                                                        pickerInput( ###### county input ######
                                                                     
                                                                     inputId = 'county_wells_input',
+                                                                    label = "County",
                                                                     choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
                                                                     multiple = FALSE
                                                        ) # End county picker
@@ -624,7 +625,7 @@ body <- dashboardBody( #### set theme ####
                                           
                                            pickerInput( ###### county input ######
                                               inputId = 'phaseout_counties_input',
-                                              label = 'Select a County:',
+                                              label = 'Select a County',
                                               choices = c('Santa Barbara', 'San Luis Obispo', 'Ventura'),
                                               selected = c('Ventura'),
                                               multiple = FALSE,
