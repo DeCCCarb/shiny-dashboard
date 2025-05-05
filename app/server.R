@@ -169,57 +169,126 @@ server <- function(input, output, session) {
     ) # end osw map observe event
     
     
-    # Utility PV map ----
-    output$utility_county_map_output <- renderLeaflet({
-        counties_input <- reactive({
-            if (!is.null(input$county_input)) {
-                ca_counties |> filter(name %in% input$county_input)
-            } else {
-                ca_counties
-            }
-        })
+    ###### Utility Solar Leaflet Map #######
+    
+    
+    # Reactive counties input for utility pv Map
+    counties_input_utility <- reactive({
+        if (!is.null(input$county_input)) {
+            ca_counties |> filter(name %in% input$county_input)
+        } else {
+            ca_counties
+        }
+    })
+    
+    # Reactive job calculations for selected counties
+    utility_all_jobs <- reactive({
         
-        icons <- awesomeIcons(
-            icon = 'helmet-safety',
-            iconColor = 'black',
-            library = 'fa',
-            markerColor = "orange"
+        # Calculation of rooftop solar jobs (construction and operations)
+        county_utility_pv_om <- calculate_pv_om_jobs(
+            county = input$county_input,
+            technology = "Utility PV",
+            ambition = "High",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 0.2,
+            indirect_jobs = 0,
+            induced_jobs = 0
         )
         
-        leaflet_map <- leaflet() |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -119.698189,
-                    lat = 34.420830,
-                    zoom = 7) |>
-            addPolygons(data = counties_input())
+        county_utility_pv_const <- calculate_pv_construction_jobs(
+            county = input$county_input,
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            technology = "Utility PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 1.6,
+            indirect_jobs = 0.6,
+            induced_jobs = 0.4
+        )
         
-        # Only add ports if selected
-        if (!is.null(input$port_input) &&
-            length(input$port_input) > 0) {
-            ports <- data.frame(
-                port_name = c("Hueneme", "San Luis Obispo"),
-                address = c(
-                    "Port of Hueneme, Port Hueneme, CA 93041",
-                    "699 Embarcadero, Morro Bay, CA 93442"
-                )
-            ) |>
-                filter(port_name %in% input$port_input) |>
-                tidygeocoder::geocode(address = address, method = "osm")
+        county_utility <- rbind(county_utility_pv_const, county_utility_pv_om) |>
+            filter(type %in% input$utility_job_type_input) |>
+            select(-ambition)
+    }) # End reactive to get number of jobs
+    
+    # Reactive county labels with job summaries
+    utility_job_labels <- reactive({
+        jobs <- utility_all_jobs()
+        counties_sf <- counties_input_utility()
+        
+        job_summaries <- jobs |>
+            group_by(county, occupation) |>
+            summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = 'drop') |>
+            tidyr::pivot_wider(names_from = occupation, values_from = n_jobs, values_fill = 0)
+        
+        counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
+        
+        counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
+                                             "<b> <br>", counties_with_labels$name, " County </b><br>",
+                                             "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
+                                             "O&M: ", scales::comma(counties_with_labels$`O&M`)
+        )
+        
+        counties_with_labels
+    }) # End reactive county labels 
+    
+    # Render Utility leaflet map
+    output$utility_map_output <- renderLeaflet({
+        counties_sf <- utility_job_labels()
+        
+        # Get the coordinates of the centroids
+        label_coords <- sf::st_coordinates(sf::st_centroid(counties_sf))
+        
+        # Define specific offsets for each county
+        county_offsets <- list(
+            "Santa Barbara" = c(x = -0.70, y = 0.04),  
+            "San Luis Obispo" = c(x = -0.5, y = -0.2), 
+            "Ventura" = c(x = -0.4, y = 0) 
+        )
+        
+        # Apply the county-specific offsets for each county
+        for (i in 1:nrow(counties_sf)) {
+            county_name <- counties_sf$name[i]
             
-            leaflet_map <- leaflet_map |>
-                addAwesomeMarkers(
-                    data = ports,
-                    lng = ports$long,
-                    lat = ports$lat,
-                    icon = icons,
-                    popup = paste('Port', ports$port_name)
-                )
+            # Retrieve the corresponding offset for this county
+            offset <- county_offsets[[county_name]]
             
-            
+            # Apply the offset to the centroid coordinates
+            label_coords[i, 1] <- label_coords[i, 1] + offset["x"]
+            label_coords[i, 2] <- label_coords[i, 2] + offset["y"]
         }
         
-        leaflet_map
-    })
+        # Convert the label coordinates into an sf object for plotting
+        label_points <- st_as_sf(
+            data.frame(lng = label_coords[, 1], lat = label_coords[, 2]),
+            coords = c("lng", "lat"),
+            crs = st_crs(counties_sf)
+        )
+        
+        # Generate the leaflet map with labels at the adjusted centroids
+        leaflet(counties_sf) |>
+            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            addPolygons(
+                color = "darkgreen",
+                opacity = 0.7
+            ) |>
+            addLabelOnlyMarkers(
+                data = label_points,
+                label = lapply(counties_sf$label, HTML),
+                labelOptions = labelOptions(
+                    noHide = TRUE,
+                    direction = 'left',
+                    textsize = "12px",
+                    opacity = 0.9
+                )
+            )
+    }) # End render leaflet map
     
     # Make the default values of UTILITY capacity in the UI react to user input using renderUI------
     observeEvent(input$county_input, {
@@ -246,7 +315,7 @@ server <- function(input, output, session) {
         updateNumericInput(session, inputId = 'final_mw_utility_input', value = final_val)
     })
     ##### Utility Jobs Output #######
-    output$utility_jobs_output <- renderTable({
+    output$utility_jobs_output <- renderPlotly({
         county_utility_pv_om <- calculate_pv_om_jobs(
             county = input$county_input,
             technology = "Utility PV",
@@ -279,8 +348,94 @@ server <- function(input, output, session) {
             filter(type %in% input$utility_job_type_input) |>
             select(-ambition)
         
-        return(county_utility)
+        #### Generate plot for Utility ----
+        utility_plot <- ggplot(county_utility,
+                            aes(
+                                x = as.factor(year),
+                                y = round(n_jobs, 0),
+                                group = occupation
+                            )) +
+            geom_col(aes(fill = occupation, text = purrr::map(
+                paste0(occupation, " jobs: ", scales::comma(round(n_jobs, 0))), HTML
+            ))) +
+            scale_fill_manual(
+                labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
+                values = c("#3A8398", "#A3BDBE")
+            ) +
+            scale_y_continuous(labels = scales::comma) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+            labs(
+                title = glue::glue(
+                    "Projected {input$utility_job_type_input} jobs in CA Central Coast from Utility Solar development"
+                ),
+                y = "FTE Jobs"
+            ) +
+            theme_minimal() +
+            theme(
+                # Axes
+                axis.title.x = element_blank(),
+                axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
+                
+                # Legend
+                legend.title = element_blank(),
+                legend.position = "bottom"
+                
+            )
+        
+        
+        
+        plotly::ggplotly(utility_plot, tooltip = c("text"))  |>
+            layout(hovermode = "x unified",
+                   legend = list(x = 0.7, 
+                                 xanchor = 'left',
+                                 yanchor = 'top',
+                                 orientation = 'h',
+                                 title = "Occupation"))
+        
     })
+    
+    # Generate capacity plot based on user selection ---
+    output$utility_cap_projections_output <- renderPlotly({
+        # O&M Roof ---
+        
+        utility <- calculate_pv_om_jobs(
+            county = input$roof_counties_input,
+            technology = "Utility PV",
+            ambition = "High",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 0.2,
+            indirect_jobs = 0,
+            induced_jobs = 0
+        )
+        
+        
+        
+        ######## Generate Capacity Plot for Utility ##############
+        
+        utility_cap_plot <- ggplot() +
+            geom_point(
+                data = utility,
+                aes(x = as.factor(year), 
+                    y = total_capacity_mw,
+                    text = purrr::map(
+                        paste0("Capacity: ", round(total_capacity_mw, 2), " MW"), HTML
+                    )),
+                color = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
+            labs(y = "Capacity (MW)", title = "Annual Online Capacity (MW)") +
+            theme_minimal() +
+            theme(axis.title.x = element_blank())
+        
+        
+        
+        plotly::ggplotly(utility_cap_plot, tooltip = "text") |>
+            layout(hovermode = "x unified") 
+        
+    }) # End Utility capacity plot
     
     
     # County selection
@@ -611,7 +766,7 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(roof_cap_plot, tooltip = "text") |>
-            layout(hovermode = "x unified")
+            layout(hovermode = "x unified") 
         
     }) # End Rooftop capacity plot
     
