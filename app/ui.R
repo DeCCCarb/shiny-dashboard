@@ -347,7 +347,7 @@ body <- dashboardBody( #### set theme ####
                                       # title
                                       title = tags$strong('California Central Coast Counties'),
                                       
-                                      leafletOutput(outputId = 'utility_county_map_output') |>
+                                      leafletOutput(outputId = 'utility_map_output') |>
                                           withSpinner(type = 1, color = '#09847A')
                                       
                                       
@@ -361,12 +361,18 @@ body <- dashboardBody( #### set theme ####
                               fluidRow( ##### Second fluidRow (plotly outputs) #####
                                   
                                   box( ###### table output --> add in maps here! ######
-                                      width = 12,
+                                      width = 7,
                                       # Create a table based on input
                                       title = tags$strong('Utility Solar Job Impacts'),
-                                      tableOutput(outputId = 'utility_jobs_output') |> # Changed to table output to show data
+                                      plotly::plotlyOutput(outputId = 'utility_jobs_output') |> # Changed to table output to show data
                                           withSpinner(type = 1, color = '#09847A')
-                                  ) # End Box
+                                  ), # End Box
+                                  box(###### capacity projections plot ######
+                                       width = 5,
+                                       plotly::plotlyOutput(outputId = 'utility_cap_projections_output') |>
+                                           withSpinner(type = 1, color = '#09847A')
+                                  )
+                                  
                                   
                               ) # END  2nd fluidRow
                               
@@ -458,7 +464,7 @@ body <- dashboardBody( #### set theme ####
                                                withSpinner(type = 1, color = '#09847A')
                                       )
                                  # )
-                              )# END  2nd fluidRow)
+                              ) # END  2nd fluidRow)
                               
                           ),  # End Rooftop Solar tabItem
                           
