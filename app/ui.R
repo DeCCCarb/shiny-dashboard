@@ -380,11 +380,11 @@ body <- dashboardBody( #### set theme ####
 
                                   box(
                                       width = 4,
-                                      title = tags$strong('Pick a County'),
+                                      title = tags$strong('Rooftop Solar Job Impacts'),
                                       
                                       sliderInput( ###### year range slider input ######
                                           inputId = 'year_range_input_roof',
-                                          label = 'Year Range (CHOOSE BETTER LABEL)',
+                                          label = 'Year Construction Starts - Year to Meet Target',
                                           min = 2025,
                                           max = 2045,
                                           value = c(2025, 2045),
@@ -394,7 +394,7 @@ body <- dashboardBody( #### set theme ####
                                       ),
                                       pickerInput( ###### county input ######
                                           inputId = 'roof_counties_input',
-                                          label = 'Select a County:',
+                                          label = 'Select Your County:',
                                           choices = unique(counties$County),
                                           selected = c('Ventura'),
                                           multiple = FALSE,
@@ -436,7 +436,7 @@ body <- dashboardBody( #### set theme ####
                                       
                                       # title
                                       title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
-                                      leafletOutput(outputId = 'roof_county_map_output') |>
+                                      leafletOutput(outputId = 'roof_map_output') |>
                                           withSpinner(type = 1, color = '#09847A')
                                       
                                   ) # END leaflet box
@@ -445,14 +445,19 @@ body <- dashboardBody( #### set theme ####
                               
                               fluidRow( ##### Second fluidRow (outputs) #####
                                    
-                                  box(
-                                      width = 12,
+                                  box( ###### Rooftop plotly output #####
+                                      width = 7,
                                       # Create a table based on input
                                       title = tags$strong('Rooftop Solar Job Impacts'),
                                       plotlyOutput(outputId = 'roof_jobs_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A'
-                                          )
-                                  )
+                                          withSpinner(type = 1, color = '#09847A')
+                                  ), 
+                                      box( ###### capacity projections plot ######
+                                           width = 5,
+                                           plotly::plotlyOutput(outputId = 'roof_cap_projections_output') |>
+                                               withSpinner(type = 1, color = '#09847A')
+                                      )
+                                 # )
                               )# END  2nd fluidRow)
                               
                           ),  # End Rooftop Solar tabItem
