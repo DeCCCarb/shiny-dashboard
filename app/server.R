@@ -468,8 +468,8 @@ server <- function(input, output, session) {
         
     }) # End OSW capacity plot
     
-    
-    # Make the default values of capacity in the UI react to user input using renderUI------
+######## Rooftop Solar ##########
+    # Make the default values of capacity in the UI react to user input using renderUI-
     observeEvent(input$roof_counties_input, {
         # Requires a county input
         req(input$roof_counties_input)
@@ -495,7 +495,7 @@ server <- function(input, output, session) {
     })
     
     
-    # Render the table with rooftop solar values
+    ##### Rooftop Solar Job Projections ####### 
     output$roof_jobs_output <- renderPlotly({
         # Calculation of rooftop solar jobs (construction and operations)
         county_roof_pv_om <- calculate_pv_om_jobs(
@@ -527,30 +527,93 @@ server <- function(input, output, session) {
         county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
             filter(type %in% input$roof_job_type_input) |>
             select(-ambition)
-        
-        roof_plot <- ggplot(county_roof, aes(
-            x = year,
-            y = n_jobs,
-            group = occupation
-        )) +
-            geom_col(aes(fill = occupation)) +
+        #### Generate plot for Roof ----
+        roof_plot <- ggplot(county_roof,
+                           aes(
+                               x = as.factor(year),
+                               y = round(n_jobs, 0),
+                               group = occupation
+                           )) +
+            geom_col(aes(fill = occupation, text = purrr::map(
+                paste0(occupation, " jobs: ", scales::comma(round(n_jobs, 0))), HTML
+            ))) +
             scale_fill_manual(
                 labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
-                values = c("#4a4e69", "#9a8c98")
+                values = c("#3A8398", "#A3BDBE")
             ) +
-            scale_y_continuous(limits = c(0, 2000)) +
+            scale_y_continuous(labels = scales::comma) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
             labs(
                 title = glue::glue(
-                    "Projected {input$job_type_input} jobs in CA Central Coast from Rooftop Solar development"
+                    "Projected {input$roof_job_type_input} jobs in CA Central Coast from Rooftop Solar development"
                 ),
                 y = "FTE Jobs"
             ) +
-            theme_minimal()
+            theme_minimal() +
+            theme(
+                # Axes
+                axis.title.x = element_blank(),
+                axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
+                
+                # Legend
+                legend.title = element_blank(),
+                legend.position = "bottom"
+                
+            )
         
         
-        return(ggplotly(roof_plot))
+        
+        plotly::ggplotly(roof_plot, tooltip = c("text"))  |>
+            layout(hovermode = "x unified",
+                   legend = list(x = 0.7, 
+                                 xanchor = 'left',
+                                 yanchor = 'top',
+                                 orientation = 'h',
+                                 title = "Occupation"))
     })
     
+    # Generate capacity plot based on user selection ---
+    output$roof_cap_projections_output <- renderPlotly({
+        # O&M Roof ---
+        
+        roof <- calculate_pv_om_jobs(
+            county = input$roof_counties_input,
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.2,
+            indirect_jobs = 0,
+            induced_jobs = 0
+        )
+        
+        
+        
+        ######## Generate Capacity Plot for Rooftop ##############
+        
+        roof_cap_plot <- ggplot() +
+            geom_point(
+                data = roof,
+                aes(x = as.factor(year), 
+                    y = total_capacity_mw,
+                    text = purrr::map(
+                        paste0("Capacity: ", round(total_capacity_mw, 2), " MW"), HTML
+                    )),
+                color = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
+            labs(y = "Capacity (MW)", title = "Annual Online Capacity (MW)") +
+            theme_minimal() +
+            theme(axis.title.x = element_blank())
+        
+        
+        
+        plotly::ggplotly(roof_cap_plot, tooltip = "text") |>
+            layout(hovermode = "x unified")
+        
+    }) # End Rooftop capacity plot
     
     # EXPORT ROOFTOP JOBS AS PDF #############
     
@@ -579,58 +642,179 @@ server <- function(input, output, session) {
         
     )
     
+    ###### Rooftop Solar Leaflet Map #######
     
-    output$roof_county_map_output <- renderLeaflet({
-        counties_input <- reactive({
-            if (!is.null(input$roof_counties_input)) {
-                ca_counties |> filter(name %in% input$roof_counties_input)
-            } else {
-                ca_counties
-            }
-        })
-        
-        icons <- awesomeIcons(
-            icon = 'helmet-safety',
-            iconColor = 'black',
-            library = 'fa',
-            markerColor = "orange"
-        )
-        
-        leaflet_map <- leaflet() |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -119.698189,
-                    lat = 34.420830,
-                    zoom = 7) |>
-            addPolygons(data = counties_input())
-        
-        # Only add ports if selected
-        if (!is.null(input$port_input) &&
-            length(input$port_input) > 0) {
-            ports <- data.frame(
-                port_name = c("Hueneme", "San Luis Obispo"),
-                address = c(
-                    "Port of Hueneme, Port Hueneme, CA 93041",
-                    "699 Embarcadero, Morro Bay, CA 93442"
-                )
-            ) |>
-                filter(port_name %in% input$port_input) |>
-                tidygeocoder::geocode(address = address, method = "osm")
-            
-            leaflet_map <- leaflet_map |>
-                addAwesomeMarkers(
-                    data = ports,
-                    lng = ports$long,
-                    lat = ports$lat,
-                    icon = icons,
-                    popup = paste('Port', ports$port_name)
-                )
+    
+    # Reactive counties input for Land Wind Map
+    counties_input_roof <- reactive({
+        if (!is.null(input$roof_counties_input)) {
+            ca_counties |> filter(name %in% input$roof_counties_input)
+        } else {
+            ca_counties
         }
-        
-        
-        
-        leaflet_map
     })
     
+    # Reactive job calculations for selected counties
+    roof_all_jobs <- reactive({
+        
+        # Calculation of rooftop solar jobs (construction and operations)
+        county_roof_pv_om <- calculate_pv_om_jobs(
+            county = input$roof_counties_input,
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.2,
+            indirect_jobs = 0,
+            induced_jobs = 0
+        )
+        
+        county_roof_pv_const <- calculate_pv_construction_jobs(
+            county = input$roof_counties_input,
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            technology = "Rooftop PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 1.6,
+            indirect_jobs = 0.6,
+            induced_jobs = 0.4
+        )
+        
+        county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
+            filter(type %in% input$roof_job_type_input) |>
+            select(-ambition)
+    }) # End reactive to get number of jobs
+    
+    # Reactive county labels with job summaries
+    roof_job_labels <- reactive({
+        jobs <- roof_all_jobs()
+        counties_sf <- counties_input_roof()
+        
+        job_summaries <- jobs |>
+            group_by(county, occupation) |>
+            summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = 'drop') |>
+            tidyr::pivot_wider(names_from = occupation, values_from = n_jobs, values_fill = 0)
+        
+        counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
+        
+        counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
+                                             "<b> <br>", counties_with_labels$name, " County </b><br>",
+                                             "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
+                                             "O&M: ", scales::comma(counties_with_labels$`O&M`)
+        )
+        
+        counties_with_labels
+    }) # End reactive county labels 
+    
+    # Render rooftop leaflet map
+    output$roof_map_output <- renderLeaflet({
+        counties_sf <- roof_job_labels()
+        
+        # Get the coordinates of the centroids
+        label_coords <- sf::st_coordinates(sf::st_centroid(counties_sf))
+        
+        # Define specific offsets for each county
+        county_offsets <- list(
+            "Santa Barbara" = c(x = -0.70, y = 0.04),  
+            "San Luis Obispo" = c(x = -0.5, y = -0.2), 
+            "Ventura" = c(x = -0.4, y = 0) 
+        )
+        
+        # Apply the county-specific offsets for each county
+        for (i in 1:nrow(counties_sf)) {
+            county_name <- counties_sf$name[i]
+            
+            # Retrieve the corresponding offset for this county
+            offset <- county_offsets[[county_name]]
+            
+            # Apply the offset to the centroid coordinates
+            label_coords[i, 1] <- label_coords[i, 1] + offset["x"]
+            label_coords[i, 2] <- label_coords[i, 2] + offset["y"]
+        }
+        
+        # Convert the label coordinates into an sf object for plotting
+        label_points <- st_as_sf(
+            data.frame(lng = label_coords[, 1], lat = label_coords[, 2]),
+            coords = c("lng", "lat"),
+            crs = st_crs(counties_sf)
+        )
+        
+        # Generate the leaflet map with labels at the adjusted centroids
+        leaflet(counties_sf) |>
+            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            addPolygons(
+                color = "darkgreen",
+                opacity = 0.7
+            ) |>
+            addLabelOnlyMarkers(
+                data = label_points,
+                label = lapply(counties_sf$label, HTML),
+                labelOptions = labelOptions(
+                    noHide = TRUE,
+                    direction = 'left',
+                    textsize = "12px",
+                    opacity = 0.9
+                )
+            )
+    }) # End render leaflet map
+    
+    
+    # output$roof_county_map_output <- renderLeaflet({
+    #     counties_input <- reactive({
+    #         if (!is.null(input$roof_counties_input)) {
+    #             ca_counties |> filter(name %in% input$roof_counties_input)
+    #         } else {
+    #             ca_counties
+    #         }
+    #     })
+    #     
+    #     icons <- awesomeIcons(
+    #         icon = 'helmet-safety',
+    #         iconColor = 'black',
+    #         library = 'fa',
+    #         markerColor = "orange"
+    #     )
+    #     
+    #     leaflet_map <- leaflet() |>
+    #         addProviderTiles(providers$Stadia.StamenTerrain) |>
+    #         setView(lng = -119.698189,
+    #                 lat = 34.420830,
+    #                 zoom = 7) |>
+    #         addPolygons(data = counties_input())
+    #     
+    #     # Only add ports if selected
+    #     if (!is.null(input$port_input) &&
+    #         length(input$port_input) > 0) {
+    #         ports <- data.frame(
+    #             port_name = c("Hueneme", "San Luis Obispo"),
+    #             address = c(
+    #                 "Port of Hueneme, Port Hueneme, CA 93041",
+    #                 "699 Embarcadero, Morro Bay, CA 93442"
+    #             )
+    #         ) |>
+    #             filter(port_name %in% input$port_input) |>
+    #             tidygeocoder::geocode(address = address, method = "osm")
+    #         
+    #         leaflet_map <- leaflet_map |>
+    #             addAwesomeMarkers(
+    #                 data = ports,
+    #                 lng = ports$long,
+    #                 lat = ports$lat,
+    #                 icon = icons,
+    #                 popup = paste('Port', ports$port_name)
+    #             )
+    #     }
+    #     
+    #     
+    #     
+    #     leaflet_map
+    # })
+    # 
     
     
     # Change UI Rooftop ambition targets --
