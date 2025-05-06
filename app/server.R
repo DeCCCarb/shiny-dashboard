@@ -1357,7 +1357,9 @@ server <- function(input, output, session) {
             theme_minimal() +
             theme(axis.title.x = element_blank())
         
-        plotly::ggplotly(phaseout_plot, tooltip = "text")
+        plotly::ggplotly(phaseout_plot, tooltip = "text") |>
+            layout(hovermode = "x unified") 
+
         
     })
     
