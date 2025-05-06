@@ -29,7 +29,7 @@ library(readxl)
 counties <- read_excel(here::here('app','data', 'ccc-coords.xlsx'))
 
 
-job_projections <- read_csv(here::here('app','data','county_oil_employment_projections.csv')) %>% 
+job_projections <- read_csv(here::here('app','data','subset_county_results.csv')) %>% 
     filter(county %in% c('Santa Barbara','San Luis Obispo','Ventura'))
 
 

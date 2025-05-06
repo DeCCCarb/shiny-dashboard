@@ -654,15 +654,16 @@ body <- dashboardBody( #### set theme ####
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "The current California state setback policy is 3200 feet. We've selected 2500 ft by default to closely resemble it.")
+                                                      title = "The current California state setback policy is 3200 feet.")
                                               ),
                                               choices = c(
                                                   '1000 ft' = 'setback_1000ft',
                                                   '2500 ft' = 'setback_2500ft',
+                                                  '3200 ft' = 'setback_3200ft',
                                                   '5280 ft' = 'setback_5280ft',
                                                   'No setback' = 'no_setback'
                                               ),
-                                              selected = c('setback_2500ft'),
+                                              selected = c('setback_3200ft'),
                                               multiple = FALSE,
                                               options = pickerOptions(actionsBox = TRUE
                                               )
