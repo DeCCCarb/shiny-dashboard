@@ -30,6 +30,18 @@ server <- function(input, output, session) {
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
+        } else if (input$tabs == "rooftop" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Rooftop Solar Development tab!"),
+                list(element = "#roof_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
+                list(element = "#roof_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#roof_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#roof_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
         }
     })
     
@@ -54,6 +66,18 @@ server <- function(input, output, session) {
                 list(element = "#util_map_box", intro = "This map shows the total jobs created by county."),
                 list(element = "#util_jobs_plot_box", intro = "Here are the projected job impacts over time."),
                 list(element = "#util_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
+        } else if (input$tabs == "rooftop" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Rooftop Solar Development tab!"),
+                list(element = "#roof_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
+                list(element = "#roof_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#roof_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#roof_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
                 list(
                     element = ".sidebar-toggle",
                     intro = "We recommend collapsing the sidebar using this button to get more space."

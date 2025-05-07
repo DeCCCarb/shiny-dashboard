@@ -454,8 +454,9 @@ body <- dashboardBody( introjsUI(),
                                           value = 0,
                                           min = 0
                                       ),
-                                      downloadButton('export_roof')
+                                      downloadButton('export_roof'),
                                       
+                                      id = "roof_inputs_box"  # for tutorial
                                   ), 
                                   
                                   # END input box
@@ -468,7 +469,9 @@ body <- dashboardBody( introjsUI(),
                                       # title
                                       title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
                                       leafletOutput(outputId = 'roof_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      
+                                      id = "roof_map_box"  # for tutorial
                                       
                                   ) # END leaflet box
                                   
@@ -481,12 +484,14 @@ body <- dashboardBody( introjsUI(),
                                       # Create a table based on input
                                       title = tags$strong('Rooftop Solar Job Impacts'),
                                       plotlyOutput(outputId = 'roof_jobs_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "roof_job_plot_box"  # for tutorial
                                   ), 
                                       box( ###### capacity projections plot ######
                                            width = 5,
                                            plotly::plotlyOutput(outputId = 'roof_cap_projections_output') |>
-                                               withSpinner(type = 1, color = '#09847A')
+                                               withSpinner(type = 1, color = '#09847A'),
+                                           id = "roof_capacity_plot_box"  # for tutorial
                                       )
                                  # )
                               ) # END  2nd fluidRow)
