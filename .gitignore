@@ -1,4 +1,6 @@
 /app/data/
+/app/.DS_Store
+# /app/data/.DS_Store
 .DS_Store
 .Rproj.user
 .Rhistory
