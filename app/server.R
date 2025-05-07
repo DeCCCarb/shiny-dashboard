@@ -5,6 +5,7 @@ server <- function(input, output, session) {
     
     # Automatically start tutorial on first session load ----
     shown_tutorials <- reactiveValues(
+        # Start with all visits being false
         f_osw = FALSE,
         utility = FALSE,
         rooftop = FALSE,
@@ -518,7 +519,7 @@ server <- function(input, output, session) {
             filter(type %in% input$utility_job_type_input) |>
             select(-ambition)
         
-        #### Generate plot for Utility ----
+        #### Utility Jobs Plot ####
         utility_plot <- ggplot(county_utility,
                             aes(
                                 x = as.factor(year),
@@ -555,6 +556,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(utility_plot, tooltip = c("text"))  |>
+            config(utility_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified",
                    legend = list(x = 0.7, 
                                  xanchor = 'left',
@@ -583,7 +594,7 @@ server <- function(input, output, session) {
         
         
         
-        ######## Generate Capacity Plot for Utility ##############
+        ##### Utility Capacity Plot #####
         
         utility_cap_plot <- ggplot() +
             geom_point(
@@ -603,6 +614,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(utility_cap_plot, tooltip = "text") |>
+            config(utility_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified") 
         
     }) # End Utility capacity plot
@@ -872,7 +893,7 @@ server <- function(input, output, session) {
         county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
             filter(type %in% input$roof_job_type_input) |>
             select(-ambition)
-        #### Generate plot for Roof ----
+        ##### Rooftop Job Plot #####
         roof_plot <- ggplot(county_roof,
                            aes(
                                x = as.factor(year),
@@ -909,6 +930,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(roof_plot, tooltip = c("text"))  |>
+            config(roof_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified",
                    legend = list(x = 0.7, 
                                  xanchor = 'left',
@@ -936,7 +967,7 @@ server <- function(input, output, session) {
         
         
         
-        ######## Generate Capacity Plot for Rooftop ##############
+        ##### Rooftop Capacity Plot #####
         
         roof_cap_plot <- ggplot() +
             geom_point(
@@ -956,6 +987,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(roof_cap_plot, tooltip = "text") |>
+            config(roof_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified") 
         
     }) # End Rooftop capacity plot
@@ -1434,7 +1475,7 @@ server <- function(input, output, session) {
             filter(type %in% input$lw_job_type_input) |> # Filter to inputted job type
             filter(county %in% input$lw_counties_input)
         
-        ######## Generate Plot for LW Jobs ##############
+        ##### LW Jobs Plot #####
         lw_plot <- ggplot(lw_all,
                           aes(
                               x = as.factor(year),
@@ -1469,6 +1510,16 @@ server <- function(input, output, session) {
             )
         
         plotly::ggplotly(lw_plot, tooltip = c("text"))  |>
+            config(lw_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified",
                    legend = list(x = 0.7, 
                                  xanchor = 'left',
@@ -1478,7 +1529,7 @@ server <- function(input, output, session) {
         
     }) # end lw jobs plot
     
-    ######## Generate Plot for LW Capacity ##############
+    ##### LW Capacity Plot #####
     
     output$lw_cap_projections_output <- renderPlotly({
         lw_cap <- calculate_land_wind_om_jobs(
@@ -1513,6 +1564,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(lw_cap_plot, tooltip = "text") |>
+            config(lw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified")
         
     }) # End LW capacity plot
@@ -1531,13 +1592,13 @@ server <- function(input, output, session) {
         )
     })
     
-    
+    ##### Phaseout Jobs Plot #####
     output$phaseout_plot <- renderPlotly({
         phaseout_plot <- filtered_data() %>%
             ggplot(aes(
                 x = as.factor(year),
-                y = total_emp,
-                text = paste("Year:", year, "<br>Jobs:", total_emp)
+                y = round(total_emp, 0),
+                text = paste("Year:", year, "<br>Jobs:", scales::comma(round(total_emp, 0)))
             )) +
             geom_col(position = "dodge", fill = "#A3BDBE") +
             labs(
@@ -1548,10 +1609,20 @@ server <- function(input, output, session) {
             theme(axis.title.x = element_blank())
         
         plotly::ggplotly(phaseout_plot, tooltip = "text") |>
+            config(phaseout_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified") 
 
         
-    })
+    }) # End phaseout jobs plot
     
     
 ##### OIL CAPPING #####
