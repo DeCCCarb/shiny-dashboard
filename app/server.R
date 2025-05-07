@@ -1,8 +1,9 @@
 
 server <- function(input, output, session) {
+    
 ##### Tutorials #####
     
-    # Automatically start tutorial on first session load
+    # Automatically start tutorial on first session load ----
     once <- reactiveVal(TRUE)
     observeEvent(input$tabs, {
         if (input$tabs == "f_osw" && once()) {
@@ -18,10 +19,70 @@ server <- function(input, output, session) {
                 )
             )))
             once(FALSE) # only run the first time a user visits the tab
+        } else if (input$tabs == "utility" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Utility Solar Development tab!"),
+                list(element = "#util_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
+                list(element = "#util_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#util_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#util_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
+        } else if (input$tabs == "rooftop" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Rooftop Solar Development tab!"),
+                list(element = "#roof_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
+                list(element = "#roof_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#roof_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#roof_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
+        } else if (input$tabs == "lb_wind" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Land-Based Wind Development tab!"),
+                list(element = "#lw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
+                list(element = "#lw_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#lw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#lw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
+        } else if (input$tabs == "well_cap" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Onshore Oil Well Capping tab! \n
+                     Why cap oil wells? ... \n
+                     What is this reporting on? ... \n
+                     Why does it look different from the other tabs?"),
+                list(element = "#lw_inputs_box", intro = "Start by choosing a county to report."),
+                list(element = "#lw_map_box", intro = "This map shows the total jobs created by county."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
+        } else if (input$tabs == "phaseout" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Fossil Fuel Phaseout tab! What does this even mean?"),
+                list(element = "#phaseout_inputs_box", intro = "Start by adjusting assumptions for county and setback policy."),
+                list(element = "#phaseout_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#phaseout_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
         }
     })
     
-    # Play tutorial when "Show Tutorial" button is pressed
+    # Play tutorial when "Show Tutorial" button is pressed ----
     observeEvent(input$show_osw_tutorial, {
         if (input$tabs == "f_osw") {
             introjs(session, options = list(steps = list(
@@ -35,9 +96,70 @@ server <- function(input, output, session) {
                     intro = "You can collapse or expand the sidebar using this button to get more space."
                 )
             )))
+        } else if (input$tabs == "utility" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Utility Solar Development tab!"),
+                list(element = "#util_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
+                list(element = "#util_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#util_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#util_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
+        } else if (input$tabs == "rooftop" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Rooftop Solar Development tab!"),
+                list(element = "#roof_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
+                list(element = "#roof_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#roof_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#roof_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
+        } else if (input$tabs == "lb_wind" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Land-Based Wind Development tab!"),
+                list(element = "#lw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
+                list(element = "#lw_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#lw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#lw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
+        } else if (input$tabs == "well_cap" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = HTML("👋 Welcome to the Onshore Oil Well Capping tab! \n
+                     Why cap oil wells? ... \n
+                     What is this reporting on? ... \n
+                     Why does it look different from the other tabs?")),  # HOW TO FIX TEXT FORMATTING?
+                list(element = "#lw_inputs_box", intro = "Start by choosing a county to report."),
+                list(element = "#lw_map_box", intro = "This map shows the total jobs created by county."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
+        } else if (input$tabs == "phaseout" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Fossil Fuel Phaseout tab! What does this even mean?"),
+                list(element = "#phaseout_inputs_box", intro = "Start by adjusting assumptions for county and setback policy."),
+                list(element = "#phaseout_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#phaseout_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
+                )
+            )))
         }
         })
-
+    
+##### END Tutorials #####
     
      # Create reactive port for OSW map
     
