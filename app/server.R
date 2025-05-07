@@ -1,5 +1,24 @@
 
 server <- function(input, output, session) {
+
+##### Reactive Title #####
+    observe({
+        title_text <- switch(input$tabs,
+                             "f_osw"     = "Floating Offshore Wind",
+                             "utility"   = "Utility Solar",
+                             "rooftop"   = "Rooftop Solar",
+                             "lb_wind"   = "Land-Based Wind",
+                             "well_cap"  = "Onshore Oil Well Capping",
+                             "phaseout"  = "Fossil Fuel Phaseout",
+                             "overview" = "Welcome",
+                             
+        )
+        
+        output$dynamic_header_title <- renderUI({
+            tags$span(title_text)
+        })
+    })
+##### END Reactive Title #####
     
 ##### Tutorials #####
     
