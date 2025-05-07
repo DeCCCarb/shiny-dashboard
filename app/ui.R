@@ -580,15 +580,18 @@ body <- dashboardBody( introjsUI(),
                                                             )),
                                           value = 0.95,
                                           min = 0
-                                      )
+                                      ),
                                       
+                                      id = "lw_inputs_box"  # for tutorial
                                   ),  # End input box
                                   
                                   box( ###### map output ######
                                       width = 8,
                                       
                                       leafletOutput(outputId = 'land_wind_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                     
+                                       id = "lw_map_box"  # for tutorial
                                       
                                       
                                   ),  # END leaflet box
@@ -602,13 +605,16 @@ body <- dashboardBody( introjsUI(),
                                       # Create a plot based on input
                                       #  title = tags$strong('Labor Impact'),
                                       plotly::plotlyOutput(outputId = 'land_wind_jobs_plot_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      
+                                      id = "lw_jobs_plot_box"  # for tutorial
                                   ), 
                                   
                                   box( ###### capacity projections plot ######
                                       width = 5,
                                       plotly::plotlyOutput(outputId = 'lw_cap_projections_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "lw_capacity_plot_box"  # for tutorial
                                   )
                                   
                                   
