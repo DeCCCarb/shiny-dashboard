@@ -11,6 +11,7 @@ library(shinyWidgets)
 library(plotly)
 library(shinyjs)
 library(glue)
+library(rintrojs)
 
 library(gridExtra)
 library(mapview)
