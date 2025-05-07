@@ -627,38 +627,36 @@ body <- dashboardBody( introjsUI(),
                                   
                                   ##### left hand column #####
                                   column(width = 4,
-                                        # fluidRow( ##### top left fluid row #####
-                                                   
-                                                   box(width = 12,
+                                         box(width = 12,
+                                             
+                                             title = 'Capping Existing Onshore Oil Wells', 
+                                             
+                                             
+                                             pickerInput( ###### county input ######
+                                                          
+                                                          inputId = 'county_wells_input',
+                                                          label = "County",
+                                                          choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
+                                                          multiple = FALSE
+                                             ), # End county picker
+                                             
+                                             id = "cap_inputs_box" # for tutorial
+                                             
+                                         ) # End box for inputs 
 
-                                                       title = 'Capping Existing Onshore Oil Wells', 
-
-                                                       
-                                                       pickerInput( ###### county input ######
-                                                                    
-                                                                    inputId = 'county_wells_input',
-                                                                    label = "County",
-                                                                    choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
-                                                                    multiple = FALSE
-                                                       ) # End county picker
-                                                       
-                                                   ) # End box for inputs?) 
-                                      #   ) # End top left fluidRow
                                          ), # END left hand column
                                   
                                   ##### right hand column #####
                                   column(width = 8,
-                                     #    fluidRow( ##### top right fluid row #####
-                                                   
-                                                   box( ###### map output ######
-                                                        width = 12,
-                                                        leafletOutput(outputId = 'capping_map_output',
-                                                                      height = "800px") |>
-                                                            withSpinner(type = 1, color = '#09847A')
-                                                        
-                                                        
-                                                   ),  # END leaflet box
-                                      #   ) # End top right fluidRow
+
+                                         box( ###### map output ######
+                                              width = 12,
+                                              leafletOutput(outputId = 'capping_map_output',
+                                                            height = "800px") |>
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              
+                                              id = "cap_map_box" # for tutorial
+                                            ),  # END leaflet box
                                          ) # END right hand column
                                   
                                   
@@ -722,7 +720,10 @@ body <- dashboardBody( introjsUI(),
                                               selected = 0,
                                               multiple = FALSE,
                                               options = pickerOptions(actionsBox = TRUE)
-                                          )
+                                          ),
+                                          
+                                          id = "phaseout_inputs_box" # for tutorial
+                                          
                                       ), # END input box
                                       
                                        box( ###### map output ######
@@ -730,7 +731,9 @@ body <- dashboardBody( introjsUI(),
                                           width = 6, # title
                                           title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
                                           leafletOutput(outputId = 'phaseout_county_map_output') |>
-                                              withSpinner(type = 1, color = '#09847A')
+                                              withSpinner(type = 1, color = '#09847A'),
+                                          
+                                          id = "phaseout_map_box" # for tutorial
                                           
                                       ) # END leaflet box
                                       
@@ -743,7 +746,9 @@ body <- dashboardBody( introjsUI(),
                                                # Create a table based on input
                                                title = tags$strong('Labor Impact'),
                                                plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
-                                                   withSpinner(type = 1, color = '#09847A')
+                                                   withSpinner(type = 1, color = '#09847A'),
+                                               
+                                               id = "phaseout_jobs_plot_box" # for tutorial
                                            ) # END plot box
                                            
                                   ) # END 2nd fluid row)    
