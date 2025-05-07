@@ -190,6 +190,15 @@ server <- function(input, output, session) {
     
 ##### END Tutorials #####
     
+##### Download Button In Header Reactive to Current Tab #####
+    output$export_pdf_button <- renderUI({
+        current_tab <- input$tabs
+        if (current_tab %in% c("f_osw", "utility", "rooftop", "lb_wind", "well_cap", "phaseout")) {
+            downloadButton(outputId = paste0("export_", current_tab), label = NULL, icon = icon("file-pdf"))
+        }
+    })
+    
+    
      # Create reactive port for OSW map
     
     port_input <- reactive({
@@ -278,12 +287,12 @@ server <- function(input, output, session) {
             # Generate and format label
             osw_map_label <- HTML(
                 paste(
-                    "<b>Total Jobs in Central Coast</b>",
+                    "<b>Total FTE Jobs in Central Coast</b>",
                     "<br>",
-                    "- Construction:",
+                    "Construction:",
                     scales::comma(const_njobs_label),
                     "<br>",
-                    "- O&M:",
+                    "O&M:",
                     scales::comma(om_njobs_label)
                 )
             )
@@ -656,7 +665,7 @@ server <- function(input, output, session) {
     
     
     ####### EXPORT OSW AS PDF #############
-    output$export_osw <- downloadHandler(
+    output$export_f_osw <- downloadHandler(
         filename = "osw-jobs.pdf",
         
         content = function(file) {

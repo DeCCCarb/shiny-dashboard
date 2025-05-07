@@ -8,7 +8,15 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                               style = "margin-top: 10px; margin-right: 10px;",
                               actionButton("show_osw_tutorial", label = NULL, icon = icon("question-circle"),
                                            class = "btn btn-default", style = "color: #007BFF;")
+                          ),
+                          
+                          # PDF Export Button (UI placeholder; real one comes from renderUI)
+                          tags$li(
+                              class = "dropdown",
+                              style = "margin-top: 10px; margin-right: 10px;",
+                              uiOutput("export_pdf_button")
                           ))
+
 # Dashboard sidebar ----
 sidebar <- dashboardSidebar(
     collapsed = FALSE,
@@ -263,7 +271,7 @@ body <- dashboardBody( introjsUI(),
                                           selected = NULL,
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
-                                      ), downloadButton('export_osw', label = 'Export as PDF'),
+                                      ), 
                                       
                                       id = "osw_inputs_box"  # for tutorial
                                   ), # END input box
