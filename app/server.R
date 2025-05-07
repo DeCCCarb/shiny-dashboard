@@ -1,6 +1,45 @@
 
 server <- function(input, output, session) {
-    # Create reactive port for OSW map
+##### Tutorials #####
+    
+    # Automatically start tutorial on first session load
+    once <- reactiveVal(TRUE)
+    observeEvent(input$tabs, {
+        if (input$tabs == "f_osw" && once()) {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Floating Offshore Wind Development tab!"),
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
+                list(element = "#osw_map_box", intro = "This map shows the offshore wind development location."),
+                list(element = "#jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "You can collapse or expand the sidebar using this button to get more space."
+                )
+            )))
+            once(FALSE) # only run the first time a user visits the tab
+        }
+    })
+    
+    # Play tutorial when "Show Tutorial" button is pressed
+    observeEvent(input$show_osw_tutorial, {
+        if (input$tabs == "f_osw") {
+            introjs(session, options = list(steps = list(
+                list(intro = "👋 Welcome to the Floating Offshore Wind Development tab!"),
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions."),
+                list(element = "#osw_map_box", intro = "This map shows wind development."),
+                list(element = "#jobs_plot_box", intro = "Projected job impacts."),
+                list(element = "#capacity_plot_box", intro = "Expected capacity growth."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "You can collapse or expand the sidebar using this button to get more space."
+                )
+            )))
+        }
+        })
+
+    
+     # Create reactive port for OSW map
     
     port_input <- reactive({
         data.frame(

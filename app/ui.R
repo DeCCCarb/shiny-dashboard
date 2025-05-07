@@ -1,10 +1,20 @@
 # Dashboard header ----
 header <- dashboardHeader(title = 'Labor Impacts of Decarbonization', # Tentative title
-                          titleWidth = 800)
+                          titleWidth = 800,
+                          
+                          # Add tutorial button to the header
+                          tags$li(
+                              class = "dropdown",
+                              style = "margin-top: 10px; margin-right: 10px;",
+                              actionButton("show_osw_tutorial", label = NULL, icon = icon("question-circle"),
+                                           class = "btn btn-default", style = "color: #007BFF;")
+                          ))
 # Dashboard sidebar ----
 sidebar <- dashboardSidebar(
+    collapsed = FALSE,
 ###### initialize tab names ######
     sidebarMenu(
+        id = "tabs",
         menuItem(
             text = 'Project Overview',
             tabName = 'overview',
@@ -53,13 +63,22 @@ sidebar <- dashboardSidebar(
 )
 
 # Dashboard body ----
-body <- dashboardBody( #### set theme ####
+body <- dashboardBody( introjsUI(),
+                       #### set theme ####
                       use_theme('dashboard-fresh-theme.css'), 
                       tags$head(
                           tags$script(HTML("
       $(document).on('shiny:connected', function() {
         $('[title]').tooltip({ placement: 'right' });
       });
+      
+      // Update Sidebar Width
+   //   $(document).ready(function() {
+//        var newWidth = '200px';
+//        $('.main-sidebar').css('width', newWidth);
+//        $('.content-wrapper').css('margin-left', newWidth);
+//        $('.main-footer').css('margin-left', newWidth);
+//      });
     "))
                       ), # HTML Hover tip
                       tabItems(
@@ -131,8 +150,7 @@ body <- dashboardBody( #### set theme ####
                           tabItem(
                               
                               tabName = 'f_osw',
-                              
-                              
+
                               fluidRow( ##### First fluidRow (picker inputs) #####
                                   
                                    box(
@@ -249,18 +267,20 @@ body <- dashboardBody( #### set theme ####
                                           selected = NULL,
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
-                                      ), downloadButton('export_osw', label = 'Export as PDF')
+                                      ), downloadButton('export_osw', label = 'Export as PDF'),
                                       
-                                      
+                                      id = "osw_inputs_box"  # for tutorial
                                   ), # END input box
                                   
                                   ###### map output  ######
                                   box(
+                                     # actionButton("show_osw_tutorial", "Show Tutorial", icon = icon("question-circle")),
+                                      
                                       width = 8,
                                       
                                       leafletOutput(outputId = 'osw_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
-                                      
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "osw_map_box"  # for tutorial
                                   ), # END leaflet box
                                   
                               ), # END  1st fluidRow
@@ -273,13 +293,15 @@ body <- dashboardBody( #### set theme ####
                                       # Create a plot based on input
                                       #  title = tags$strong('Labor Impact'),
                                       plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "jobs_plot_box" # for tutorial
                                   ), 
                                   
                                   box( ###### capacity projections plot ######
                                       width = 5,
                                       plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "capacity_plot_box" # for tutorial
                                   )
                                   
                                   
