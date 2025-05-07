@@ -294,14 +294,14 @@ body <- dashboardBody( introjsUI(),
                                       #  title = tags$strong('Labor Impact'),
                                       plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
                                           withSpinner(type = 1, color = '#09847A'),
-                                      id = "jobs_plot_box" # for tutorial
+                                      id = "osw_jobs_plot_box" # for tutorial
                                   ), 
                                   
                                   box( ###### capacity projections plot ######
                                       width = 5,
                                       plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
                                           withSpinner(type = 1, color = '#09847A'),
-                                      id = "capacity_plot_box" # for tutorial
+                                      id = "osw_capacity_plot_box" # for tutorial
                                   )
                                   
                                   
@@ -359,8 +359,9 @@ body <- dashboardBody( introjsUI(),
                                           label = 'Please input your final capacity (MW).',
                                           value = 0,
                                           min = 0
-                                      )
+                                      ),
                                       
+                                      id = "util_inputs_box"
                                   ), # END input box
                                   
                                   box( ###### map output  ######
@@ -370,9 +371,9 @@ body <- dashboardBody( introjsUI(),
                                       title = tags$strong('California Central Coast Counties'),
                                       
                                       leafletOutput(outputId = 'utility_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
                                       
-                                      
+                                      id = "util_map_box"  # for tutorial
                                       
                                   ), 
                                   
@@ -382,17 +383,19 @@ body <- dashboardBody( introjsUI(),
                               
                               fluidRow( ##### Second fluidRow (plotly outputs) #####
                                   
-                                  box( ###### table output --> add in maps here! ######
+                                  box( ###### Utility Job Plot ######
                                       width = 7,
-                                      # Create a table based on input
                                       title = tags$strong('Utility Solar Job Impacts'),
-                                      plotly::plotlyOutput(outputId = 'utility_jobs_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A')
-                                  ), # End Box
-                                  box(###### capacity projections plot ######
+                                      plotly::plotlyOutput(outputId = 'utility_jobs_output') |> 
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "util_jobs_plot_box"  # for tutorial
+                                  ), # End util job Box
+                                  
+                                  box(###### utility capacity plot ######
                                        width = 5,
                                        plotly::plotlyOutput(outputId = 'utility_cap_projections_output') |>
-                                           withSpinner(type = 1, color = '#09847A')
+                                           withSpinner(type = 1, color = '#09847A'),
+                                      id = "util_capacity_plot_box"  # for tutorial
                                   )
                                   
                                   
