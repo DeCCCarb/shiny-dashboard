@@ -23,7 +23,6 @@ This repository holds our code for the development and deployment of our shiny d
 │   │   │   ├── CA_Counties.shp
 │   │   │   ├── CA_Counties.shp.xml
 │   │   │   └──  CA_Counties.shx
-│   │   ├── .DS_Store
 │   │   ├── ccc-coords.xlsx
 │   │   ├── county_oil_employment_projections.csv
 │   │   ├── osw.csv
@@ -42,7 +41,6 @@ This repository holds our code for the development and deployment of our shiny d
 │   │   ├── california_counties_map1.png
 │   │   ├── dashboard-fresh-themes.css
 │   │   └── teamwork-engineer-wearing-safety-uniform.jpg
-│   ├── .DS_Store
 │   ├── global.R
 │   ├── server.R
 │   └──  ui.R
@@ -56,7 +54,6 @@ This repository holds our code for the development and deployment of our shiny d
 │   ├── scratch-tmap.R
 │   ├── scratch.qmd
 │   └──  server_scratch.R
-├── .DS_Store
 ├── .gitignore
 ├── README.md
 └── shiny-dashboard.Rproj
