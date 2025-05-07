@@ -1708,9 +1708,6 @@ server <- function(input, output, session) {
     })
     
     
-    
-    
-    
     #phaseout leaflet map output ----
     output$phaseout_county_map_output <- renderLeaflet({
         counties_input <- reactive({
@@ -1728,12 +1725,51 @@ server <- function(input, output, session) {
             markerColor = "orange"
         )
         
+        label_coords <- data.frame(
+            name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
+            lng = c(-120.7201, -121.0508, -119.4855),
+            lat = c(34.58742, 35.40949, 34.35622)
+        )
+        
+        # Prepare the county data with label text
+        ca_counties <- ca_counties |>
+            mutate(
+                label_text = paste0("text")
+                
+            )
+        
+        # Filter the data to the selected county only for both polygon and label
+        label_data <- ca_counties |>
+            filter(name == input$phaseout_counties_input) |>
+            left_join(label_coords, by = "name") |>
+            st_drop_geometry()
+        
         leaflet_map <- leaflet() |>
             addProviderTiles(providers$Stadia.StamenTerrain) |>
             setView(lng = -119.698189,
                     lat = 34.420830,
                     zoom = 7) |>
-            addPolygons(data = counties_input())
+            addPolygons(
+                data = ca_counties |> filter(name == input$phaseout_counties_input),  # Only add selected county's polygon
+                color = "forestgreen", 
+                opacity = 0.7,
+            )
+        
+        # Add label only for the selected county if a county is selected
+        if (!is.null(input$county_wells_input)) {
+            leaflet_map <- leaflet_map |>
+                addLabelOnlyMarkers(
+                    lng = label_data$lng,
+                    lat = label_data$lat,
+                    label = lapply(label_data$label_text, HTML),
+                    labelOptions = labelOptions(
+                        noHide = TRUE,
+                        direction = 'left',
+                        textsize = "12px",
+                        opacity = 0.9
+                    )
+                )
+        }
         
         leaflet_map
     })
