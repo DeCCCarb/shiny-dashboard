@@ -37,11 +37,11 @@ Our analysis focuses on the following technologies:
 
 ### Technologies Not Included
 
-Our literature review revealed to us that the above technologies were going to be especially impactful in the next 20 years in this region. However, there are many other clean energy technologies, the development of which will contribute to the clean economy. Some of those technologies are:
+Other technologies we did not focus our analysis on:
 
 - Battery Storage  
 - Geothermal
 
 ---
 
-*If you're interested in replicating this analysis for other technologies, please reach out to us.*
+*For an in depth look at our methods, please refer to our Technical Documentation in the Tool Documentation Tab.*
