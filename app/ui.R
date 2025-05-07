@@ -485,7 +485,7 @@ body <- dashboardBody( introjsUI(),
                                       title = tags$strong('Rooftop Solar Job Impacts'),
                                       plotlyOutput(outputId = 'roof_jobs_output') |> # Changed to table output to show data
                                           withSpinner(type = 1, color = '#09847A'),
-                                      id = "roof_job_plot_box"  # for tutorial
+                                      id = "roof_jobs_plot_box"  # for tutorial
                                   ), 
                                       box( ###### capacity projections plot ######
                                            width = 5,
@@ -493,7 +493,7 @@ body <- dashboardBody( introjsUI(),
                                                withSpinner(type = 1, color = '#09847A'),
                                            id = "roof_capacity_plot_box"  # for tutorial
                                       )
-                                 # )
+
                               ) # END  2nd fluidRow)
                               
                           ),  # End Rooftop Solar tabItem
