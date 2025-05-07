@@ -37,7 +37,6 @@ This repository holds our code for the development and deployment of our shiny d
 │   │   ├── disclaimer.md
 │   │   └──  intro.md
 │   ├── www/
-│   │   ├── .sass_cache_keys
 │   │   ├── california_counties_map1.png
 │   │   ├── dashboard-fresh-themes.css
 │   │   └── teamwork-engineer-wearing-safety-uniform.jpg
