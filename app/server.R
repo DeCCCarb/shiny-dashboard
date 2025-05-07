@@ -4,22 +4,27 @@ server <- function(input, output, session) {
 ##### Tutorials #####
     
     # Automatically start tutorial on first session load ----
-    once <- reactiveVal(TRUE)
+    shown_tutorials <- reactiveValues(
+        # Start with all visits being false
+        f_osw = FALSE,
+        utility = FALSE,
+        rooftop = FALSE,
+        lb_wind = FALSE,
+        well_cap = FALSE,
+        phaseout = FALSE
+    )
     observeEvent(input$tabs, {
-        if (input$tabs == "f_osw" && once()) {
+        if (input$tabs == "f_osw" && !shown_tutorials$f_osw) {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Floating Offshore Wind Development tab!"),
                 list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
                 list(element = "#osw_map_box", intro = "This map shows the offshore wind development location."),
-                list(element = "#jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
+                list(element = "#osw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#osw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space.")
             )))
-            once(FALSE) # only run the first time a user visits the tab
-        } else if (input$tabs == "utility" && once()) {
+            shown_tutorials$f_osw <- TRUE # only run the first time a user visits the tab
+        } else if (input$tabs == "utility" && !shown_tutorials$utility) {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Utility Solar Development tab!"),
                 list(element = "#util_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
@@ -31,7 +36,8 @@ server <- function(input, output, session) {
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
-        } else if (input$tabs == "rooftop" && once()) {
+            shown_tutorials$utility <- TRUE # only run the first time a user visits the tab
+        } else if (input$tabs == "rooftop" && !shown_tutorials$rooftop) {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Rooftop Solar Development tab!"),
                 list(element = "#roof_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
@@ -43,7 +49,8 @@ server <- function(input, output, session) {
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
-        } else if (input$tabs == "lb_wind" && once()) {
+            shown_tutorials$rooftop <- TRUE # only run the first time a user visits the tab
+        } else if (input$tabs == "lb_wind" && !shown_tutorials$lb_wind) {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Land-Based Wind Development tab!"),
                 list(element = "#lw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
@@ -55,20 +62,22 @@ server <- function(input, output, session) {
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
-        } else if (input$tabs == "well_cap" && once()) {
+            shown_tutorials$lb_wind <- TRUE # only run the first time a user visits the tab
+        } else if (input$tabs == "well_cap" && !shown_tutorials$well_cap) {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Onshore Oil Well Capping tab! \n
                      Why cap oil wells? ... \n
                      What is this reporting on? ... \n
                      Why does it look different from the other tabs?"),
-                list(element = "#lw_inputs_box", intro = "Start by choosing a county to report."),
-                list(element = "#lw_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#cap_inputs_box", intro = "Start by choosing a county to report."),
+                list(element = "#cap_map_box", intro = "This map shows the total jobs created by county."),
                 list(
                     element = ".sidebar-toggle",
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
-        } else if (input$tabs == "phaseout" && once()) {
+            shown_tutorials$well_cap <- TRUE # only run the first time a user visits the tab
+        } else if (input$tabs == "phaseout" && !shown_tutorials$phaseout) {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Fossil Fuel Phaseout tab! What does this even mean?"),
                 list(element = "#phaseout_inputs_box", intro = "Start by adjusting assumptions for county and setback policy."),
@@ -79,6 +88,7 @@ server <- function(input, output, session) {
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
+            shown_tutorials$phaseout <- TRUE # only run the first time a user visits the tab
         }
     })
     
@@ -89,14 +99,14 @@ server <- function(input, output, session) {
                 list(intro = "👋 Welcome to the Floating Offshore Wind Development tab!"),
                 list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions."),
                 list(element = "#osw_map_box", intro = "This map shows wind development."),
-                list(element = "#jobs_plot_box", intro = "Projected job impacts."),
-                list(element = "#capacity_plot_box", intro = "Expected capacity growth."),
+                list(element = "#osw_jobs_plot_box", intro = "Projected job impacts."),
+                list(element = "#osw_capacity_plot_box", intro = "Expected capacity growth."),
                 list(
                     element = ".sidebar-toggle",
                     intro = "You can collapse or expand the sidebar using this button to get more space."
                 )
             )))
-        } else if (input$tabs == "utility" && once()) {
+        } else if (input$tabs == "utility") {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Utility Solar Development tab!"),
                 list(element = "#util_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
@@ -108,7 +118,7 @@ server <- function(input, output, session) {
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
-        } else if (input$tabs == "rooftop" && once()) {
+        } else if (input$tabs == "rooftop") {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Rooftop Solar Development tab!"),
                 list(element = "#roof_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
@@ -120,7 +130,7 @@ server <- function(input, output, session) {
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
-        } else if (input$tabs == "lb_wind" && once()) {
+        } else if (input$tabs == "lb_wind") {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Land-Based Wind Development tab!"),
                 list(element = "#lw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
@@ -132,20 +142,20 @@ server <- function(input, output, session) {
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
-        } else if (input$tabs == "well_cap" && once()) {
+        } else if (input$tabs == "well_cap") {
             introjs(session, options = list(steps = list(
                 list(intro = HTML("👋 Welcome to the Onshore Oil Well Capping tab! \n
                      Why cap oil wells? ... \n
                      What is this reporting on? ... \n
                      Why does it look different from the other tabs?")),  # HOW TO FIX TEXT FORMATTING?
-                list(element = "#lw_inputs_box", intro = "Start by choosing a county to report."),
-                list(element = "#lw_map_box", intro = "This map shows the total jobs created by county."),
+                list(element = "#cap_inputs_box", intro = "Start by choosing a county to report."),
+                list(element = "#cap_map_box", intro = "This map shows the total jobs created by county."),
                 list(
                     element = ".sidebar-toggle",
                     intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
-        } else if (input$tabs == "phaseout" && once()) {
+        } else if (input$tabs == "phaseout") {
             introjs(session, options = list(steps = list(
                 list(intro = "👋 Welcome to the Fossil Fuel Phaseout tab! What does this even mean?"),
                 list(element = "#phaseout_inputs_box", intro = "Start by adjusting assumptions for county and setback policy."),
@@ -509,7 +519,7 @@ server <- function(input, output, session) {
             filter(type %in% input$utility_job_type_input) |>
             select(-ambition)
         
-        #### Generate plot for Utility ----
+        #### Utility Jobs Plot ####
         utility_plot <- ggplot(county_utility,
                             aes(
                                 x = as.factor(year),
@@ -546,6 +556,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(utility_plot, tooltip = c("text"))  |>
+            config(utility_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified",
                    legend = list(x = 0.7, 
                                  xanchor = 'left',
@@ -574,7 +594,7 @@ server <- function(input, output, session) {
         
         
         
-        ######## Generate Capacity Plot for Utility ##############
+        ##### Utility Capacity Plot #####
         
         utility_cap_plot <- ggplot() +
             geom_point(
@@ -594,6 +614,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(utility_cap_plot, tooltip = "text") |>
+            config(utility_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified") 
         
     }) # End Utility capacity plot
@@ -863,7 +893,7 @@ server <- function(input, output, session) {
         county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
             filter(type %in% input$roof_job_type_input) |>
             select(-ambition)
-        #### Generate plot for Roof ----
+        ##### Rooftop Job Plot #####
         roof_plot <- ggplot(county_roof,
                            aes(
                                x = as.factor(year),
@@ -900,6 +930,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(roof_plot, tooltip = c("text"))  |>
+            config(roof_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified",
                    legend = list(x = 0.7, 
                                  xanchor = 'left',
@@ -927,7 +967,7 @@ server <- function(input, output, session) {
         
         
         
-        ######## Generate Capacity Plot for Rooftop ##############
+        ##### Rooftop Capacity Plot #####
         
         roof_cap_plot <- ggplot() +
             geom_point(
@@ -947,6 +987,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(roof_cap_plot, tooltip = "text") |>
+            config(roof_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified") 
         
     }) # End Rooftop capacity plot
@@ -1425,7 +1475,7 @@ server <- function(input, output, session) {
             filter(type %in% input$lw_job_type_input) |> # Filter to inputted job type
             filter(county %in% input$lw_counties_input)
         
-        ######## Generate Plot for LW Jobs ##############
+        ##### LW Jobs Plot #####
         lw_plot <- ggplot(lw_all,
                           aes(
                               x = as.factor(year),
@@ -1460,6 +1510,16 @@ server <- function(input, output, session) {
             )
         
         plotly::ggplotly(lw_plot, tooltip = c("text"))  |>
+            config(lw_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified",
                    legend = list(x = 0.7, 
                                  xanchor = 'left',
@@ -1469,7 +1529,7 @@ server <- function(input, output, session) {
         
     }) # end lw jobs plot
     
-    ######## Generate Plot for LW Capacity ##############
+    ##### LW Capacity Plot #####
     
     output$lw_cap_projections_output <- renderPlotly({
         lw_cap <- calculate_land_wind_om_jobs(
@@ -1504,6 +1564,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(lw_cap_plot, tooltip = "text") |>
+            config(lw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified")
         
     }) # End LW capacity plot
@@ -1522,13 +1592,13 @@ server <- function(input, output, session) {
         )
     })
     
-    
+    ##### Phaseout Jobs Plot #####
     output$phaseout_plot <- renderPlotly({
         phaseout_plot <- filtered_data() %>%
             ggplot(aes(
                 x = as.factor(year),
-                y = total_emp,
-                text = paste("Year:", year, "<br>Jobs:", total_emp)
+                y = round(total_emp, 0),
+                text = paste("Year:", year, "<br>Jobs:", scales::comma(round(total_emp, 0)))
             )) +
             geom_col(position = "dodge", fill = "#A3BDBE") +
             labs(
@@ -1539,10 +1609,20 @@ server <- function(input, output, session) {
             theme(axis.title.x = element_blank())
         
         plotly::ggplotly(phaseout_plot, tooltip = "text") |>
+            config(phaseout_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified") 
 
         
-    })
+    }) # End phaseout jobs plot
     
     
 ##### OIL CAPPING #####
