@@ -1,10 +1,20 @@
 # Dashboard header ----
 header <- dashboardHeader(title = 'Labor Impacts of Decarbonization', # Tentative title
-                          titleWidth = 800)
+                          titleWidth = 800,
+                          
+                          # Add tutorial button to the header
+                          tags$li(
+                              class = "dropdown",
+                              style = "margin-top: 10px; margin-right: 10px;",
+                              actionButton("show_osw_tutorial", label = NULL, icon = icon("question-circle"),
+                                           class = "btn btn-default", style = "color: #007BFF;")
+                          ))
 # Dashboard sidebar ----
 sidebar <- dashboardSidebar(
+    collapsed = FALSE,
 ###### initialize tab names ######
     sidebarMenu(
+        id = "tabs",
         menuItem(
             text = 'Project Overview',
             tabName = 'overview',
@@ -53,13 +63,22 @@ sidebar <- dashboardSidebar(
 )
 
 # Dashboard body ----
-body <- dashboardBody( #### set theme ####
+body <- dashboardBody( introjsUI(),
+                       #### set theme ####
                       use_theme('dashboard-fresh-theme.css'), 
                       tags$head(
                           tags$script(HTML("
       $(document).on('shiny:connected', function() {
         $('[title]').tooltip({ placement: 'right' });
       });
+      
+      // Update Sidebar Width
+   //   $(document).ready(function() {
+//        var newWidth = '200px';
+//        $('.main-sidebar').css('width', newWidth);
+//        $('.content-wrapper').css('margin-left', newWidth);
+//        $('.main-footer').css('margin-left', newWidth);
+//      });
     "))
                       ), # HTML Hover tip
                       tabItems(
@@ -131,8 +150,7 @@ body <- dashboardBody( #### set theme ####
                           tabItem(
                               
                               tabName = 'f_osw',
-                              
-                              
+
                               fluidRow( ##### First fluidRow (picker inputs) #####
                                   
                                    box(
@@ -249,18 +267,20 @@ body <- dashboardBody( #### set theme ####
                                           selected = NULL,
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
-                                      ), downloadButton('export_osw', label = 'Export as PDF')
+                                      ), downloadButton('export_osw', label = 'Export as PDF'),
                                       
-                                      
+                                      id = "osw_inputs_box"  # for tutorial
                                   ), # END input box
                                   
                                   ###### map output  ######
                                   box(
+                                     # actionButton("show_osw_tutorial", "Show Tutorial", icon = icon("question-circle")),
+                                      
                                       width = 8,
                                       
                                       leafletOutput(outputId = 'osw_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
-                                      
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "osw_map_box"  # for tutorial
                                   ), # END leaflet box
                                   
                               ), # END  1st fluidRow
@@ -273,13 +293,15 @@ body <- dashboardBody( #### set theme ####
                                       # Create a plot based on input
                                       #  title = tags$strong('Labor Impact'),
                                       plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "osw_jobs_plot_box" # for tutorial
                                   ), 
                                   
                                   box( ###### capacity projections plot ######
                                       width = 5,
                                       plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "osw_capacity_plot_box" # for tutorial
                                   )
                                   
                                   
@@ -337,8 +359,9 @@ body <- dashboardBody( #### set theme ####
                                           label = 'Please input your final capacity (MW).',
                                           value = 0,
                                           min = 0
-                                      )
+                                      ),
                                       
+                                      id = "util_inputs_box"
                                   ), # END input box
                                   
                                   box( ###### map output  ######
@@ -348,9 +371,9 @@ body <- dashboardBody( #### set theme ####
                                       title = tags$strong('California Central Coast Counties'),
                                       
                                       leafletOutput(outputId = 'utility_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
                                       
-                                      
+                                      id = "util_map_box"  # for tutorial
                                       
                                   ), 
                                   
@@ -360,17 +383,19 @@ body <- dashboardBody( #### set theme ####
                               
                               fluidRow( ##### Second fluidRow (plotly outputs) #####
                                   
-                                  box( ###### table output --> add in maps here! ######
+                                  box( ###### Utility Job Plot ######
                                       width = 7,
-                                      # Create a table based on input
                                       title = tags$strong('Utility Solar Job Impacts'),
-                                      plotly::plotlyOutput(outputId = 'utility_jobs_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A')
-                                  ), # End Box
-                                  box(###### capacity projections plot ######
+                                      plotly::plotlyOutput(outputId = 'utility_jobs_output') |> 
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "util_jobs_plot_box"  # for tutorial
+                                  ), # End util job Box
+                                  
+                                  box(###### utility capacity plot ######
                                        width = 5,
                                        plotly::plotlyOutput(outputId = 'utility_cap_projections_output') |>
-                                           withSpinner(type = 1, color = '#09847A')
+                                           withSpinner(type = 1, color = '#09847A'),
+                                      id = "util_capacity_plot_box"  # for tutorial
                                   )
                                   
                                   
@@ -429,8 +454,9 @@ body <- dashboardBody( #### set theme ####
                                           value = 0,
                                           min = 0
                                       ),
-                                      downloadButton('export_roof')
+                                      downloadButton('export_roof'),
                                       
+                                      id = "roof_inputs_box"  # for tutorial
                                   ), 
                                   
                                   # END input box
@@ -443,7 +469,9 @@ body <- dashboardBody( #### set theme ####
                                       # title
                                       title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
                                       leafletOutput(outputId = 'roof_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      
+                                      id = "roof_map_box"  # for tutorial
                                       
                                   ) # END leaflet box
                                   
@@ -456,12 +484,14 @@ body <- dashboardBody( #### set theme ####
                                       # Create a table based on input
                                       title = tags$strong('Rooftop Solar Job Impacts'),
                                       plotlyOutput(outputId = 'roof_jobs_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "roof_job_plot_box"  # for tutorial
                                   ), 
                                       box( ###### capacity projections plot ######
                                            width = 5,
                                            plotly::plotlyOutput(outputId = 'roof_cap_projections_output') |>
-                                               withSpinner(type = 1, color = '#09847A')
+                                               withSpinner(type = 1, color = '#09847A'),
+                                           id = "roof_capacity_plot_box"  # for tutorial
                                       )
                                  # )
                               ) # END  2nd fluidRow)
@@ -550,15 +580,18 @@ body <- dashboardBody( #### set theme ####
                                                             )),
                                           value = 0.95,
                                           min = 0
-                                      )
+                                      ),
                                       
+                                      id = "lw_inputs_box"  # for tutorial
                                   ),  # End input box
                                   
                                   box( ###### map output ######
                                       width = 8,
                                       
                                       leafletOutput(outputId = 'land_wind_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                     
+                                       id = "lw_map_box"  # for tutorial
                                       
                                       
                                   ),  # END leaflet box
@@ -572,13 +605,16 @@ body <- dashboardBody( #### set theme ####
                                       # Create a plot based on input
                                       #  title = tags$strong('Labor Impact'),
                                       plotly::plotlyOutput(outputId = 'land_wind_jobs_plot_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      
+                                      id = "lw_jobs_plot_box"  # for tutorial
                                   ), 
                                   
                                   box( ###### capacity projections plot ######
                                       width = 5,
                                       plotly::plotlyOutput(outputId = 'lw_cap_projections_output') |>
-                                          withSpinner(type = 1, color = '#09847A')
+                                          withSpinner(type = 1, color = '#09847A'),
+                                      id = "lw_capacity_plot_box"  # for tutorial
                                   )
                                   
                                   
@@ -591,38 +627,36 @@ body <- dashboardBody( #### set theme ####
                                   
                                   ##### left hand column #####
                                   column(width = 4,
-                                        # fluidRow( ##### top left fluid row #####
-                                                   
-                                                   box(width = 12,
+                                         box(width = 12,
+                                             
+                                             title = 'Capping Existing Onshore Oil Wells', 
+                                             
+                                             
+                                             pickerInput( ###### county input ######
+                                                          
+                                                          inputId = 'county_wells_input',
+                                                          label = "County",
+                                                          choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
+                                                          multiple = FALSE
+                                             ), # End county picker
+                                             
+                                             id = "cap_inputs_box" # for tutorial
+                                             
+                                         ) # End box for inputs 
 
-                                                       title = 'Capping Existing Onshore Oil Wells', 
-
-                                                       
-                                                       pickerInput( ###### county input ######
-                                                                    
-                                                                    inputId = 'county_wells_input',
-                                                                    label = "County",
-                                                                    choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
-                                                                    multiple = FALSE
-                                                       ) # End county picker
-                                                       
-                                                   ) # End box for inputs?) 
-                                      #   ) # End top left fluidRow
                                          ), # END left hand column
                                   
                                   ##### right hand column #####
                                   column(width = 8,
-                                     #    fluidRow( ##### top right fluid row #####
-                                                   
-                                                   box( ###### map output ######
-                                                        width = 12,
-                                                        leafletOutput(outputId = 'capping_map_output',
-                                                                      height = "800px") |>
-                                                            withSpinner(type = 1, color = '#09847A')
-                                                        
-                                                        
-                                                   ),  # END leaflet box
-                                      #   ) # End top right fluidRow
+
+                                         box( ###### map output ######
+                                              width = 12,
+                                              leafletOutput(outputId = 'capping_map_output',
+                                                            height = "800px") |>
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              
+                                              id = "cap_map_box" # for tutorial
+                                            ),  # END leaflet box
                                          ) # END right hand column
                                   
                                   
@@ -686,7 +720,10 @@ body <- dashboardBody( #### set theme ####
                                               selected = 0,
                                               multiple = FALSE,
                                               options = pickerOptions(actionsBox = TRUE)
-                                          )
+                                          ),
+                                          
+                                          id = "phaseout_inputs_box" # for tutorial
+                                          
                                       ), # END input box
                                       
                                        box( ###### map output ######
@@ -694,7 +731,9 @@ body <- dashboardBody( #### set theme ####
                                           width = 6, # title
                                           title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
                                           leafletOutput(outputId = 'phaseout_county_map_output') |>
-                                              withSpinner(type = 1, color = '#09847A')
+                                              withSpinner(type = 1, color = '#09847A'),
+                                          
+                                          id = "phaseout_map_box" # for tutorial
                                           
                                       ) # END leaflet box
                                       
@@ -707,7 +746,9 @@ body <- dashboardBody( #### set theme ####
                                                # Create a table based on input
                                                title = tags$strong('Labor Impact'),
                                                plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
-                                                   withSpinner(type = 1, color = '#09847A')
+                                                   withSpinner(type = 1, color = '#09847A'),
+                                               
+                                               id = "phaseout_jobs_plot_box" # for tutorial
                                            ) # END plot box
                                            
                                   ) # END 2nd fluid row)    
