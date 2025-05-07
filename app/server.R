@@ -14,7 +14,7 @@ server <- function(input, output, session) {
                 list(element = "#capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
                 list(
                     element = ".sidebar-toggle",
-                    intro = "You can collapse or expand the sidebar using this button to get more space."
+                    intro = "We recommend collapsing the sidebar using this button to get more space."
                 )
             )))
             once(FALSE) # only run the first time a user visits the tab
@@ -577,7 +577,7 @@ server <- function(input, output, session) {
             osw_all <- rbind(osw_construction, osw_om) |>
                 filter(type %in% input$job_type_input) # Filter to inputted job type
             
-            ######## Generate Plot for OSW ##############
+            ######## OSW Job Plot ##############
             osw_plot <- ggplot(osw_all,
                                aes(
                                    x = as.factor(year),
@@ -612,6 +612,16 @@ server <- function(input, output, session) {
                 )
             
             plotly::ggplotly(osw_plot, tooltip = c("text"))  |>
+                config(osw_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                            'zoomIn', 'zoomOut','select',
+                                                            'resetScale', 'lasso'),
+                       displaylogo = FALSE,
+                       toImageButtonOptions = list(
+                           format = "jpeg",
+                           width = 1000,
+                           height = 700,
+                           scale = 15
+                       )) |>
                 layout(hovermode = "x unified",
                        legend = list(x = 0.7, 
                                      xanchor = 'left',
@@ -638,7 +648,7 @@ server <- function(input, output, session) {
             induced_jobs = 131
         )
         
-        ######## Generate Capacity Plot for OSW ##############
+        ######## OSW Capacity Plot ##############
         
         osw_cap_plot <- ggplot() +
             geom_point(
@@ -658,6 +668,16 @@ server <- function(input, output, session) {
         
         
         plotly::ggplotly(osw_cap_plot, tooltip = "text") |>
+            config(osw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 900,
+                       height = 700,
+                       scale = 15
+                   )) |>
             layout(hovermode = "x unified")
         
     }) # End OSW capacity plot
