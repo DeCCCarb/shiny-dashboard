@@ -365,7 +365,7 @@ body <- dashboardBody( introjsUI(),
                                   ), # END input box
                                   
                                   box( ###### map output  ######
-                                      width = 6,
+                                      width = 8,
                                       
                                       # title
                                       title = tags$strong('California Central Coast Counties'),
@@ -385,7 +385,6 @@ body <- dashboardBody( introjsUI(),
                                   
                                   box( ###### Utility Job Plot ######
                                       width = 7,
-                                      title = tags$strong('Utility Solar Job Impacts'),
                                       plotly::plotlyOutput(outputId = 'utility_jobs_output') |> 
                                           withSpinner(type = 1, color = '#09847A'),
                                       id = "util_jobs_plot_box"  # for tutorial
@@ -464,7 +463,7 @@ body <- dashboardBody( introjsUI(),
                                   
                                  box( ###### map output ######
                                       
-                                      width = 7,
+                                      width = 8,
                                       
                                       # title
                                       title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
@@ -481,9 +480,7 @@ body <- dashboardBody( introjsUI(),
                                    
                                   box( ###### Rooftop plotly output #####
                                       width = 7,
-                                      # Create a table based on input
-                                      title = tags$strong('Rooftop Solar Job Impacts'),
-                                      plotlyOutput(outputId = 'roof_jobs_output') |> # Changed to table output to show data
+                                      plotlyOutput(outputId = 'roof_jobs_output') |> 
                                           withSpinner(type = 1, color = '#09847A'),
                                       id = "roof_jobs_plot_box"  # for tutorial
                                   ), 
@@ -668,7 +665,7 @@ body <- dashboardBody( introjsUI(),
                                   fluidRow(  ##### First fluid row (picker inputs) #####
                                       
                                       box( 
-                                          width = 6, title = tags$strong('Pick a County'), 
+                                          width = 4, title = tags$strong('Pick a County'), 
                                           
                                            pickerInput( ###### county input ######
                                               inputId = 'phaseout_counties_input',
@@ -728,7 +725,7 @@ body <- dashboardBody( introjsUI(),
                                       
                                        box( ###### map output ######
                                           
-                                          width = 6, # title
+                                          width = 8, # title
                                           title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
                                           leafletOutput(outputId = 'phaseout_county_map_output') |>
                                               withSpinner(type = 1, color = '#09847A'),
