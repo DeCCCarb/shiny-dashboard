@@ -1,6 +1,6 @@
 # Dashboard header ----
-header <- dashboardHeader(title = 'Labor Impacts of Decarbonization', # Tentative title
-                          titleWidth = 800,
+header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
+                          titleWidth = 400,
                           
                           # Add tutorial button to the header
                           tags$li(
