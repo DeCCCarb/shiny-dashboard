@@ -130,7 +130,7 @@ server <- function(input, output, session) {
     })
     
     # Play tutorial when "Show Tutorial" button is pressed ----
-    observeEvent(input$show_osw_tutorial, {
+    observeEvent(input$show_tutorial, {
         if (input$tabs == "f_osw") {
             introjs(session, options = list(steps = list(
                 list(intro = "<div style='text-align:center'><b>
@@ -144,7 +144,7 @@ server <- function(input, output, session) {
                 
                 Use this tool to explore potential job creation under different capacity scenarios of floating offshore wind development.",
                      
-                     tooltipClass = "introjs-large",  # Custom class
+                     tooltipClass = "introjs-large"  # Custom class
                      
                 ),
                 list(element = "#osw_inputs_box", intro = 

@@ -6,7 +6,7 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                           tags$li(
                               class = "dropdown",
                               style = "margin-top: 10px; margin-right: 10px;",
-                              actionButton("show_osw_tutorial", label = NULL, icon = icon("question-circle"),
+                              actionButton("show_tutorial", label = NULL, icon = icon("question-circle"),
                                            class = "btn btn-default", style = "color: #007BFF;"),
                               id = "tutorial_button"
                           ),
