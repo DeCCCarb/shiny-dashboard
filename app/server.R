@@ -1870,15 +1870,10 @@ server <- function(input, output, session) {
             lat = c(34.58742, 35.40949, 34.35622)
         )
         
-<<<<<<< HEAD
-=======
-                
->>>>>>> 725ef13723641bf527a16edb178e890e84b27f29
         # Get filtered projection data based on inputs
         phaseout_projection_data <- phaseout_employment_projection(
             county_input = input$phaseout_counties_input,
             setback = input$phaseout_setback_input,
-<<<<<<< HEAD
             setback_existing_filter = input$phaseout_setback_existing_input,
         )
         
@@ -1893,9 +1888,6 @@ server <- function(input, output, session) {
             mutate(
                 label_text = paste0("<b> Total Projected Fossil Fuel Jobs </b>",
                                     "<br>", "in 2045 in ", name, " County: <br>", round(jobs_2045_total, 0))
-=======
-            setback_existing_filter = input$phaseout_setback_existing_input
->>>>>>> 725ef13723641bf527a16edb178e890e84b27f29
             )
         
         # Filter to 2045 and summarize total employment
