@@ -5,15 +5,19 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                           # Community Labor logo
                           tags$li(
                               class = "dropdown",
-                              tags$img(src = "communitylabor-logo.png", height = "40px", style = "margin-top: 10px; margin-right: 10px;"),
-                              style = "padding: 0 10px;"
+                              tags$a(
+                                  href = "https://laborcenter.ucsb.edu", target = "_blank",
+                              tags$img(src = "communitylabor-logo.png", height = "30px")),
+                              style = "padding: 0 px; display: flex; align-items: center;"
                           ),
                           
                           # 2035 logo
                           tags$li(
                               class = "dropdown",
-                              tags$img(src = "the2035initiative-logo.png", height = "40px", style = "margin-top: 10px; margin-right: 10px;"),
-                              style = "padding: 0 10px;"
+                              tags$a(
+                                  href = "https://www.2035initiative.com", target = "_blank",
+                              tags$img(src = "the2035initiative-logo.png", height = "30px")),
+                              style = "padding: 0 px; margin: 0; display: flex; align-items: center;"
                           ),
                           
                           # Add tutorial button to the header
