@@ -4,7 +4,7 @@ library(fresh)
 create_theme(
     
     adminlte_color(
-        light_blue = '#9CBEBE'
+        light_blue = '#DCE1E5'
         
         
     ),

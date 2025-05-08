@@ -15,7 +15,7 @@ server <- function(input, output, session) {
         )
         
         output$dynamic_header_title <- renderUI({
-            tags$span(title_text)
+            tags$span(title_text, style = "color: #3D4952; font-weight: bold;")
         })
     })
 ##### END Reactive Title #####
