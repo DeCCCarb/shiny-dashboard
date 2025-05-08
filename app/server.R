@@ -10,7 +10,7 @@ server <- function(input, output, session) {
                              "lb_wind"   = "Land-Based Wind",
                              "well_cap"  = "Onshore Oil Well Capping",
                              "phaseout"  = "Fossil Fuel Phaseout",
-                             "overview" = "Project Overview",
+                             "overview" = "Project Overview"
                              
         )
         
@@ -393,7 +393,7 @@ server <- function(input, output, session) {
                     addPolygons(
                         data = osw_all_counties,
                         color = 'forestgreen',
-                        opacity = 0.7,
+                        opacity = 0.7
                     ) |>
                     # Label each county with total jobs
                     addLabelOnlyMarkers(
@@ -1860,12 +1860,25 @@ server <- function(input, output, session) {
             lat = c(34.58742, 35.40949, 34.35622)
         )
         
-        # Prepare the county data with label text
-        ca_counties <- ca_counties |>
-            mutate(
-                label_text = paste0("text")
                 
+        # Get filtered projection data based on inputs
+        phaseout_projection_data <- phaseout_employment_projection(
+            county_input = input$phaseout_counties_input,
+            setback = input$phaseout_setback_input,
+            setback_existing_filter = input$phaseout_setback_existing_input
             )
+        
+        # Filter to 2045 and summarize total employment
+        jobs_2045_total <- phaseout_projection_data %>%
+            filter(year == 2045) %>%
+            summarise(total_jobs = sum(as.numeric(unlist(total_emp)), na.rm = TRUE)) %>%
+            pull(total_jobs)
+        
+        # Format label
+        jobs_label <- paste0(
+            "<b><font size='3'>Projected Total Fossil Fuel Employment in 2045:</font></b><br>",
+            "<font size='4'><b>", formatC(jobs_2045_total, format = "d", big.mark = ","), " FTE Jobs</b></font>"
+        )
         
         # Filter the data to the selected county only for both polygon and label
         label_data <- ca_counties |>
