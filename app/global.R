@@ -208,9 +208,9 @@ calculate_pv_construction_jobs <- function(county, start_year, end_year, technol
 calculate_osw_construction_jobs <- function(county, start_year, end_year, ambition, initial_capacity,
                                             target_capacity, direct_jobs, indirect_jobs, induced_jobs) {
     # initial capacity cannot be zero!
-    if (initial_capacity == 0 || initial_capacity < 0){
-        stop("initial_capacity must be a positive, non-zero number")
-    }
+    # if (initial_capacity == 0 || initial_capacity < 0){
+    #     stop("initial_capacity must be a positive, non-zero number")
+    # }
     
     # Create list of years
     year = start_year:end_year
@@ -303,9 +303,9 @@ calculate_osw_om_jobs <- function(county, start_year, end_year, ambition, initia
                                   target_capacity, direct_jobs, indirect_jobs, induced_jobs) {
     
     # initial capacity cannot be zero!
-    if (initial_capacity == 0 || initial_capacity < 0){
-        stop("initial_capacity must be a positive, non-zero number")
-    }
+    # if (initial_capacity == 0 || initial_capacity < 0){
+    #     stop("initial_capacity must be a positive, non-zero number")
+    # }
     
     # Create list of years
     year = start_year:end_year
