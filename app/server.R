@@ -48,17 +48,27 @@ server <- function(input, output, session) {
                      
                      tooltipClass = "introjs-large"  # Custom class
                 ),
-                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years, job type, and target capacity goals. <br><br>
-                     Default values are scaled from statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of job you would like to see. <br><br>
+                     Default capacity values are scaled from the statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
                      position = "right"),
-                list(element = "#osw_map_box", intro = "This map shows the offshore wind development location.",
+                list(element = "#osw_map_box", 
+                     intro = "This map shows the total <i>FTE job-years</i> created from your scenario for offshore wind development. <br><br> 
+                     You can think of each FTE job-year as one full-time job that lasts for one year.",
                      position = "left"),
-                list(element = "#osw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#osw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(element = "#osw_jobs_plot_box", 
+                     intro = "<b>Here are the projected jobs over time!</b> <br><br>
+                     In this plot, you will see the total annual jobs created in your scenario. Hover over this plot with your mouse to see the numbers divided into construction and operations & maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"
+                     ),
+                list(element = "#osw_capacity_plot_box", 
+                     intro = "And this chart shows annual up-and-running capacity over time. <br><br>
+                     Try hovering over points with your mouse, and try looking for that download button at the top-right."),
                 list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space."),
                 list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
                      you can use this button to download all outputs as a single PDF."),
-                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br> <b> Happy exploring! </b>")
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
             shown_tutorials$f_osw <- TRUE # only run the first time a user visits the tab
         } else if (input$tabs == "utility" && !shown_tutorials$utility) {
@@ -232,22 +242,39 @@ server <- function(input, output, session) {
     })
     
     
-     # Create reactive port for OSW map
+    #  # Create reactive port for OSW map
+    # 
+    # port_input <- reactive({
+    #     data.frame(
+    #         port_name = c("Hueneme", "San Luis Obispo"),
+    #         address = c(
+    #             "Port of Hueneme, Port Hueneme, CA 93041",
+    #             "699 Embarcadero, Morro Bay, CA 93442"
+    #         )
+    #     ) %>%
+    #         tidygeocoder::geocode(address = address, method = "osm") |>
+    #         filter(port_name == input$osw_port_input)
+    #     
+    #     
+    #     
+    # })
     
-    port_input <- reactive({
-        data.frame(
-            port_name = c("Hueneme", "San Luis Obispo"),
-            address = c(
-                "Port of Hueneme, Port Hueneme, CA 93041",
-                "699 Embarcadero, Morro Bay, CA 93442"
-            )
-        ) %>%
-            tidygeocoder::geocode(address = address, method = "osm") |>
-            filter(port_name == input$osw_port_input)
-        
-        
-        
-    })
+    # Define port coordinates
+    ports_df <- data.frame(
+        port_name = c("<center><b>Port Hueneme</b><br>Click for more on ports</center>", "<center><b>Port San Luis</b><br>Click for more on ports</center>"),
+        address = c(
+            "Port of Hueneme, Port Hueneme, CA 93041",
+            "699 Embarcadero, Morro Bay, CA 93442"
+        ),
+        popup = c(
+            "Construction of specialized wind ports is <i>central</i> to job creation in the Central Coast. <br>
+            What other info can we give about ports?",
+            "Construction of specialized wind ports is <i>central</i> to job creation in the Central Coast. <br>
+            What other info can we give about ports?"
+        )) |>
+        tidygeocoder::geocode(address = address, method = "osm")
+    
+    
     
     # Interactive OSW Map ----
     observeEvent(
@@ -255,13 +282,13 @@ server <- function(input, output, session) {
             input$year_range_input,
             input$job_type_input,
             input$initial_capacity_input,
-            input$final_capacity_input,
-            input$osw_port_input
+            input$final_capacity_input
+ #           input$osw_port_input
         ),
         {
             # OSW total jobs map label ----
             # Calculate annual jobs when port is in CC
-            if (!("No Central Coast Port" %in% input$osw_port_input)) {
+ #           if (!("No Central Coast Port" %in% input$osw_port_input)) {
                 # OSW O&M jobs
                 osw_om <- calculate_osw_om_jobs(
                     county = "Tri-county",
@@ -294,16 +321,16 @@ server <- function(input, output, session) {
                 
                 # Calculate annual jobs when port is NOT in CC
                 
-            } else {
-                # Return 0 jobs
-                osw_all <- data.frame(
-                    year = integer(),
-                    n_jobs = numeric(),
-                    occupation = character(),
-                    type = character(),
-                    stringsAsFactors = FALSE
-                )
-            }
+            # } else {
+            #     # Return 0 jobs
+            #     osw_all <- data.frame(
+            #         year = integer(),
+            #         n_jobs = numeric(),
+            #         occupation = character(),
+            #         type = character(),
+            #         stringsAsFactors = FALSE
+            #     )
+            # }
             
             # Calculate total construction jobs
             const_njobs_label <- osw_all |>
@@ -351,6 +378,14 @@ server <- function(input, output, session) {
                 
                 # Base map
                 leaflet_map <- leaflet() |>
+                    addAwesomeMarkers(
+                        data = ports_df,
+                        lng = ~long,
+                        lat = ~lat,
+                        icon = port_icon,
+                        popup = ~popup,
+                        label = lapply(ports_df$port_name, HTML)
+                    ) |>
                     addProviderTiles(providers$Stadia.StamenTerrain) |>
                     setView(lng = -120.698189,
                             lat = 34.420830,
@@ -374,26 +409,26 @@ server <- function(input, output, session) {
                 
                 
                 # Only add markers if ports are selected
-                if (!("No Central Coast Port" %in% input$osw_port_input)) {
-                    ports_df <- data.frame(
-                        port_name = c("Hueneme", "San Luis Obispo"),
-                        address = c(
-                            "Port of Hueneme, Port Hueneme, CA 93041",
-                            "699 Embarcadero, Morro Bay, CA 93442"
-                        )
-                    ) |>
-                        filter(port_name %in% input$osw_port_input) |>
-                        tidygeocoder::geocode(address = 'address', method = "osm")
-                    
-                    leaflet_map <- leaflet_map |>
-                        addAwesomeMarkers(
-                            data = ports_df,
-                            lng = ports_df$long,
-                            lat = ports_df$lat,
-                            icon = port_icon,
-                            popup = paste('Port:', ports_df$port_name)
-                        )
-                }
+                # if (!("No Central Coast Port" %in% input$osw_port_input)) {
+                #     ports_df <- data.frame(
+                #         port_name = c("Hueneme", "San Luis Obispo"),
+                #         address = c(
+                #             "Port of Hueneme, Port Hueneme, CA 93041",
+                #             "699 Embarcadero, Morro Bay, CA 93442"
+                #         )
+                #     ) |>
+                #         filter(port_name %in% input$osw_port_input) |>
+                #         tidygeocoder::geocode(address = 'address', method = "osm")
+                #     
+                #     leaflet_map <- leaflet_map |>
+                #         addAwesomeMarkers(
+                #             data = ports_df,
+                #             lng = ports_df$long,
+                #             lat = ports_df$lat,
+                #             icon = port_icon,
+                #             popup = paste('Port:', ports_df$port_name)
+                #         )
+                # }
                 
                 leaflet_map
             })
