@@ -6,7 +6,7 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                           tags$li(
                               class = "dropdown",
                               style = "margin-top: 10px; margin-right: 10px;",
-                              actionButton("show_osw_tutorial", label = NULL, icon = icon("question-circle"),
+                              actionButton("show_tutorial", label = NULL, icon = icon("question-circle"),
                                            class = "btn btn-default", style = "color: #007BFF;"),
                               id = "tutorial_button"
                           ),
@@ -102,6 +102,12 @@ body <- dashboardBody( introjsUI(),
         line-height: 1.6;
         text-align: center;
       }
+      
+            .introjs-wider {
+        max-width: none !important;
+      width: 400px !important;
+      }
+      
     ")), # END larger popup box styling
                       tabItems(
 # PROJECT OVERVIEW TAB ITEM ----
@@ -188,7 +194,7 @@ body <- dashboardBody( introjsUI(),
                                               tags$i(
                                                   class = "glyphicon glyphicon-info-sign", 
                                                   style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                  title = "Construction requires, on average, 5 years. Time to reach capacity goals must be greater than 5 years."
                                               )
                                           ), 
                                           min = 2025, 
@@ -199,7 +205,7 @@ body <- dashboardBody( introjsUI(),
                                           sep = ""
                                           
                                       ),
-                                      
+                                      # Make a year slider have a minimum range of 6 years
                                       tags$script(
                                           HTML("
                             // Wait until the document is ready
@@ -227,20 +233,6 @@ body <- dashboardBody( introjsUI(),
                                                                      });
                                                                    "
                                           )
-                                      ),  ###### job type input  ######
-                                      pickerInput(
-                                          inputId = 'job_type_input',
-                                          label =
-                                              tags$span(
-                                                  'Direct, Indirect, or Induced Jobs', 
-                                                  tags$i(
-                                                      class = "glyphicon glyphicon-info-sign", 
-                                                      style = "color:#0072B2;",
-                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
-                                          choices = c('direct', # Change to capital
-                                                      'indirect', 'induced'),
-                                          multiple = FALSE,
-                                          options = pickerOptions(actionsBox = TRUE)
                                       ), 
                                       ###### initial capacity input  ######
                                       numericInput(
@@ -265,27 +257,42 @@ body <- dashboardBody( introjsUI(),
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "Default values are based on the California Energy Commission’s 25 GW statewide target by 2045, with 60% assumed in the Tri-Counties, setting a regional goal of 15 GW.")
+                                                      title = "Enter total capacity to be up-and-running in the final year.")
                                               ),
                                           value = 15,
                                           min = 0
                                       ), 
-                                      ###### port input  ######
+                                      ###### job type input  ######
                                       pickerInput(
-                                          inputId = 'osw_port_input',
+                                          inputId = 'job_type_input',
                                           label =
                                               tags$span(
-                                                  'Offshore Wind Port Location', 
+                                                  'Direct, Indirect, or Induced Jobs', 
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "Majority of jobs will occur near the specialized wind port. Due to a lack of county specific targets and assuming transferable labor impacts among counties, the three counties are treated as a single region in this analysis. ")
-                                              ),
-                                          choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
-                                          selected = NULL,
+                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
+                                          choices = c('direct', # Change to capital
+                                                      'indirect', 'induced'),
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
                                       ), 
+                                      # ###### port input  ######
+                                      # pickerInput(
+                                      #     inputId = 'osw_port_input',
+                                      #     label =
+                                      #         tags$span(
+                                      #             'Offshore Wind Port Location', 
+                                      #             tags$i(
+                                      #                 class = "glyphicon glyphicon-info-sign", 
+                                      #                 style = "color:#0072B2;",
+                                      #                 title = "Specialized wind ports will be the ")
+                                      #         ),
+                                      #     choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
+                                      #     selected = NULL,
+                                      #     multiple = FALSE,
+                                      #     options = pickerOptions(actionsBox = TRUE)
+                                      # ), 
                                       
                                       id = "osw_inputs_box"  # for tutorial
                                   ), # END input box
