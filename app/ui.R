@@ -2,6 +2,20 @@
 header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                           titleWidth = 400,
                           
+                          # Community Labor logo
+                          tags$li(
+                              class = "dropdown",
+                              tags$img(src = "communitylabor-logo.png", height = "40px", style = "margin-top: 10px; margin-right: 10px;"),
+                              style = "padding: 0 10px;"
+                          ),
+                          
+                          # 2035 logo
+                          tags$li(
+                              class = "dropdown",
+                              tags$img(src = "the2035initiative-logo.png", height = "40px", style = "margin-top: 10px; margin-right: 10px;"),
+                              style = "padding: 0 10px;"
+                          ),
+                          
                           # Add tutorial button to the header
                           tags$li(
                               class = "dropdown",
@@ -90,6 +104,13 @@ body <- dashboardBody( introjsUI(),
         h1, h2, h3, h4, h5, h6, .box-title, .sidebar-menu li a {
           font-family: 'Commissioner', sans-serif;
         }
+        
+        /* Header title specifically */
+    .main-header .logo, 
+    .main-header .navbar {
+      font-family: 'Commissioner', sans-serif !important;
+      font-weight: 400;
+      font-size: 18px;
       ")),
                           tags$script(HTML("
       $(document).on('shiny:connected', function() {

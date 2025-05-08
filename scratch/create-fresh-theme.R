@@ -4,14 +4,14 @@ library(fresh)
 create_theme(
     
     adminlte_color(
-        light_blue = 'darkblue'
+        light_blue = '#9CBEBE'
         
         
     ),
     
     adminlte_global(
         
-        content_bg = '#FFFFFF'
+        content_bg = '#FFFFFF',
         
     ),
     
@@ -23,6 +23,8 @@ create_theme(
         width = '400px'
         
     ),
+    
+    
     
     output_file = here::here('app', 'www', 'dashboard-fresh-theme.css')
     
