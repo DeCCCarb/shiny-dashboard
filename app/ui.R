@@ -149,73 +149,71 @@ body <- dashboardBody( introjsUI(),
     ")), # END larger popup box styling
                       tabItems(
 # PROJECT OVERVIEW TAB ITEM ----
-                          tabItem(tabName = 'overview', ##### left hand column  #####
-                                  column(
-                                      width = 6,
-                                      ###### background info box  ######
-                                      box(
-                                          width = NULL,
-                                          title = tagList(icon('solar-panel')),
-                                          
-                                          # use columns to create white space on sides
-                                          #column(1),
-                                          column(12, includeMarkdown("text/intro.md")),
-                                          
-                                      ), # END background info box)
-                                      
-                                      ###### Image Carousel Box ######
-                                      box(
-                                          width = NULL,
-                                          title = tagList(icon("images"), tags$strong("WELCOME")),
-                                          slickROutput("image_carousel", width = "100%")
-                                      )
-                                      
-                                  ), # END left hand column),
-                                  ##### right hand column  #####
-                                  column(width = 6, ###### First fluidRow (citation box) ######
-                                         fluidRow(
-                                             box(
-                                                 width = NULL,
-                                                 
-                                                 title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools')),
-                                                 column(1),
-                                                 column(10, includeMarkdown('text/citation.md')),
-                                                 column(1)
-                                                 
-                                             ) # END citation box
-                                         ), # END first fluidRow
-                                         
-                                         # Create another fluidRow
-                                         fluidRow( ###### Second fluidRow (disclaimer box) ######
-                                             box(
-                                                 width = NULL, 
-                                                 title = tagList(icon('user'), tags$strong('Our Partners')),
-                                                 column(1),
-                                                 column(10, includeMarkdown('text/disclaimer.md')),
-                                                 column(1)
-                                                 
-                                             ) # END disclaimer box
-                                         ), # END 2nd fluidRow
-                                        # Begin third fluidRow with counties map
-                                         fluidRow(
-                                           #  Add Box for TMap
-                                             box(
-                                                 width = NULL,
-                                                 tags$img(
-                                                     src = "california_counties_map.png",
-                                                     alt = 'Map of California with SLO, Santa Barbara, and Ventura Counties highlighted',
-                                                     style = 'max-width: 100%',
-                                                     height = '500px',
-                                                     width = '500px',
-                                                     tags$h6('Made using TMap', tags$a(href = 'Made using TMap and USData.'))
-                                                 ) # End tags$img
-                                             ) # End CCC TMap box)
-                                         )# End FluidRow
-                                  )
-                          ),
-                          
-                          # END right hand column)),
-                          # END Project Overview tabItem
+tabItem(
+    tabName = 'overview',
+    
+    tags$head(
+        tags$style(HTML("
+      .slick-slide img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        display: block;
+        margin: auto;
+        object-fit: contain;
+      }
+    "))
+    ),
+    
+    # PAGE TITLE
+    fluidRow(
+        column(
+            width = 12,
+            tags$h1("Welcome to the Labor Impact Explorer for the California Central Coast", style = "text-align: center; padding-top: 10px;")
+        )
+    ),
+    
+    # IMAGE CAROUSEL (full width)
+    fluidRow(
+        column(
+            width = 12,
+            box(
+                width = NULL,
+                title = NULL,
+                solidHeader = TRUE,
+                div(
+                    style = "height: 600px; display: flex; justify-content: center; align-items: center;",
+                    slickROutput("image_carousel", width = "80%", height = "80%")
+                )
+            )
+        )
+    ),
+    
+    # ECONOMIC MODELING TOOLS BOX
+    fluidRow(
+        column(
+            width = 6,
+            box(
+                width = NULL,
+                title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools')),
+                column(1),
+                column(10, includeMarkdown('text/citation.md')),
+                column(1)
+            )
+        ),
+        column(
+            width = 6,
+            box(
+                width = NULL,
+                title = tagList(icon('user'), tags$strong('Our Partners')),
+                column(1),
+                column(10, includeMarkdown('text/disclaimer.md')),
+                column(1)
+            )
+        )
+    )
+),
                           
                           
                           
@@ -352,7 +350,7 @@ body <- dashboardBody( introjsUI(),
                                       
                                       id = "osw_map_box"  # for tutorial
                                       
-                                  ), # END leaflet box
+                                  ) # END leaflet box
                                   
                               ), # END  1st fluidRow
                               
@@ -476,7 +474,7 @@ body <- dashboardBody( introjsUI(),
                                       
                                       id = "util_map_box"  # for tutorial
                                       
-                                  ), 
+                                  )
                                   
                                   # END leaflet box
                                   
@@ -705,7 +703,7 @@ body <- dashboardBody( introjsUI(),
                                       ),
                                       
                                       id = "lw_inputs_box"  # for tutorial
-                                  ),  # End input box
+                                  ), # End input box
                                   
                                   box( ###### map output ######
                                       width = 8,
@@ -716,7 +714,7 @@ body <- dashboardBody( introjsUI(),
                                        id = "lw_map_box"  # for tutorial
                                       
                                       
-                                  ),  # END leaflet box
+                                  )  # END leaflet box
                                   
                               ), # End fluid Row
                               
@@ -781,7 +779,7 @@ body <- dashboardBody( introjsUI(),
                                                   withSpinner(type = 1, color = '#09847A'),
                                               
                                               id = "cap_map_box" # for tutorial
-                                            ),  # END leaflet box
+                                            )  # END leaflet box
                                          ) # END right hand column
                                   
                                   
