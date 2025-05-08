@@ -7,14 +7,17 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                               class = "dropdown",
                               style = "margin-top: 10px; margin-right: 10px;",
                               actionButton("show_osw_tutorial", label = NULL, icon = icon("question-circle"),
-                                           class = "btn btn-default", style = "color: #007BFF;")
+                                           class = "btn btn-default", style = "color: #007BFF;"),
+                              id = "tutorial_button"
                           ),
                           
                           # PDF Export Button (UI placeholder; real one comes from renderUI)
                           tags$li(
                               class = "dropdown",
                               style = "margin-top: 10px; margin-right: 10px;",
-                              uiOutput("export_pdf_button")
+                              uiOutput("export_pdf_button"),
+                              
+                              id = "pdf_button"
                           ))
 
 # Dashboard sidebar ----
@@ -89,6 +92,17 @@ body <- dashboardBody( introjsUI(),
 //      });
     "))
                       ), # HTML Hover tip
+                      
+                      # Make a larger popup box style
+                      tags$style(HTML("
+      .introjs-large {
+        max-width: none !important;
+      width: 500px !important;
+        font-size: 16px;
+        line-height: 1.6;
+        text-align: center;
+      }
+    ")), # END larger popup box styling
                       tabItems(
 # PROJECT OVERVIEW TAB ITEM ----
                           tabItem(tabName = 'overview', ##### left hand column  #####
@@ -237,7 +251,7 @@ body <- dashboardBody( introjsUI(),
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "Capacity (GW) for initial construction project, to go online 5 years following start year.")
+                                                      title = "Capacity (GW) for initial construction project, to go online 5 years following start year. Value must not be 0.")
                                               ),
                                           value = 0.1,
                                           min = 0
@@ -458,7 +472,7 @@ body <- dashboardBody( introjsUI(),
                                           max = 2045,
                                           value = c(2025, 2045),
                                           step = 1,
-                                          ticks = TRUE,
+                                          ticks = F,
                                           sep = ""
                                       ),
                                       pickerInput( ###### county input ######
@@ -513,8 +527,7 @@ body <- dashboardBody( introjsUI(),
                                           value = 0,
                                           min = 0
                                       ),
-                                      downloadButton('export_roof'),
-                                      
+
                                       id = "roof_inputs_box"  # for tutorial
                                   ), 
                                   
