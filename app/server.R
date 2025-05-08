@@ -1943,7 +1943,7 @@ server <- function(input, output, session) {
     ##### Project Overview image carousel #####
     output$image_carousel <- renderSlickR({
         slickR(
-            c("floating_osw.jpg", "utility_solar.jpg","rooftop_solar.jpg","smoke_stack.jpg") 
+            c("project_goal.png", "why_cc.png","focus_tech_floating_osw.png","focus_tech_rooftop_solar.png","focus_tech_utility_solar.png","focus_tech_lb_wind.png","focus_tech_oil_capping.png","other_tech.png") 
         )
     })
 }
