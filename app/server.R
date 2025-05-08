@@ -155,18 +155,28 @@ server <- function(input, output, session) {
                 Use this tool to explore potential job creation under different capacity scenarios of floating offshore wind development.",
                      
                      tooltipClass = "introjs-large"  # Custom class
-                     
                 ),
-                list(element = "#osw_inputs_box", intro = 
-                         "Start by adjusting assumptions for construction years, job type, and target capacity goals. <br><br>
-                     Default values are scaled from statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. "),
-                list(element = "#osw_map_box", intro = "This map shows the offshore wind development location."),
-                list(element = "#osw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#osw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of job you would like to see. <br><br>
+                     Default capacity values are scaled from the statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
+                     position = "right"),
+                list(element = "#osw_map_box", 
+                     intro = "This map shows the total <i>FTE job-years</i> created from your scenario for offshore wind development. <br><br> 
+                     You can think of each FTE job-year as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#osw_jobs_plot_box", 
+                     intro = "<b>Here are the projected jobs over time!</b> <br><br>
+                     In this plot, you will see the total annual jobs created in your scenario. Hover over this plot with your mouse to see the numbers divided into construction and operations & maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"
+                ),
+                list(element = "#osw_capacity_plot_box", 
+                     intro = "And this chart shows annual up-and-running capacity over time. <br><br>
+                     Try hovering over points with your mouse, and try looking for that download button at the top-right."),
                 list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space."),
                 list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
                      you can use this button to download all outputs as a single PDF."),
-                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br> <b> Happy exploring! </b>")
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
         } else if (input$tabs == "utility") {
             introjs(session, options = list(steps = list(
