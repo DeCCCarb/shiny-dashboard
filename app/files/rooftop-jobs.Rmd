@@ -1,9 +1,18 @@
 ---
 title: "Rooftop Solar Job Impacts"
-output: html_document
-fontsize: 12pt
-geometry: margin=0.8in
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+mainfont: "Avenir"
+fontsize: 11pt
+geometry: margin=.5in
 ---
+
+```{r logo, out.width="3.7in", echo=FALSE}
+knitr::include_graphics(here("app", "www", "the2035initiative-logo.png"))
+knitr::include_graphics(here("app", "www", "communitylabor-logo.png"))
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
@@ -12,43 +21,26 @@ library(usdata)
 library(tmap)
 library(tigris)
 library(ggplot2)
-```
+library(showtext)
+
+font_add_google("Commissioner")
+
+showtext_auto()
+
+first_year <-input$year_range_input_roof[1]
+final_year <-input$year_range_input_roof[2]
+final_cap <- input$final_mw_roof_input
+county <- input$roof_counties_input
 
 
-## For your Rooftop Solar project starting in `r input$year_range_input_roof[1]`, there `
-
-
-```{r, fig.height=3}
-california_counties <- counties(state = "CA", cb = TRUE) |> 
-    filter(NAME %in% input$roof_counties_input)
-
-california <- counties(state = "CA", cb = TRUE)
-
-bbox <- california |> 
-    filter(NAME %in% c('Monterey', 'Los Angeles'))
-
-ccc <- tm_shape(california, bbox = bbox) +
-    tm_fill(fill = '#f4f3ee') +
-    tm_shape(california_counties) +
-    tm_borders() + 
-    tm_polygons(col = '#09847A') +
-    tm_layout(
-        frame = FALSE,
-        main.title = " ",
-        main.title.position = "center",
-        bg.color = "#edf1efff",
-        fontfamily = "serif"
-    ) +
-    tm_legend(show = FALSE) +
-    tm_credits(text = glue("Total Jobs in {input$roof_counties_input}: "),
-               position = c('left', 'bottom'),
-               size = 1.5)
-
-ccc
-
-```
-
-```{r}
+counties_input_roof <- reactive({
+    if (!is.null(input$roof_counties_input)) {
+        ca_counties |> filter(name %in% input$roof_counties_input)
+    } else {
+        ca_counties
+    }
+})
+# Calculation of rooftop solar jobs (construction and operations)
 county_roof_pv_om <- calculate_pv_om_jobs(
     county = input$roof_counties_input,
     technology = "Rooftop PV",
@@ -80,24 +72,153 @@ county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
     select(-ambition)
 
 
-roof_plot <- ggplot(county_roof, aes(x = year, y = n_jobs, group = occupation)) +
-    geom_col(aes(fill = occupation)) +
-    scale_fill_manual(
-        labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
-        values = c("#4a4e69", "#9a8c98")
-    ) +
-    scale_y_continuous(limits = c(0, 2000)) +
-    labs(
-        title = glue(
-            "Projected {input$job_type_input} jobs in CA Central Coast from Rooftop Solar development"
-        ),
-        y = "FTE Jobs"
-    ) +
-    theme_minimal()
+jobs <- county_roof
+counties_sf <- counties_input_roof()
+
+job_summaries <- jobs |>
+    group_by(county, occupation) |>
+    summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = 'drop') |>
+    tidyr::pivot_wider(names_from = occupation,
+                       values_from = n_jobs,
+                       values_fill = 0)
+
+counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
+
+counties_with_labels$label <- paste0(
+    "<b> Total FTE jobs in </b>",
+    "<b> <br>",
+    counties_with_labels$name,
+    " County </b><br>",
+    "Construction: ",
+    scales::comma(counties_with_labels$Construction),
+    "<br>",
+    "O&M: ",
+    scales::comma(counties_with_labels$`O&M`)
+)
+
+construction <- scales::comma(counties_with_labels$Construction)
+om <- scales::comma(counties_with_labels$`O&M`)
+
+
+
+```
+
+
+
+## For the total duration of all projects needed to meet your capacity goal of `r final_cap` (MW) for Rooftop Solar by `r final_year`, there would be `r construction` construction and `r om` operations & maintenance jobs in `r county` County. 
+
+
+
+```{r, fig.align="center", fig.show='hold', fig.width = 5.25, fig.height = 3.5,warning=FALSE, message=FALSE, quiet=TRUE}
+county_roof_pv_om <- calculate_pv_om_jobs(
+    county = input$roof_counties_input,
+    technology = "Rooftop PV",
+    ambition = "High",
+    start_year = input$year_range_input_roof[1],
+    end_year = input$year_range_input_roof[2],
+    initial_capacity = input$initial_mw_roof_input,
+    final_capacity = input$final_mw_roof_input,
+    direct_jobs = 0.2,
+    indirect_jobs = 0,
+    induced_jobs = 0
+)
+
+county_roof_pv_const <- calculate_pv_construction_jobs(
+    county = input$roof_counties_input,
+    start_year = input$year_range_input_roof[1],
+    end_year = input$year_range_input_roof[2],
+    technology = "Rooftop PV",
+    ambition = "High",
+    initial_capacity = input$initial_mw_roof_input,
+    final_capacity = input$final_mw_roof_input,
+    direct_jobs = 1.6,
+    indirect_jobs = 0.6,
+    induced_jobs = 0.4
+)
+
+county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
+    filter(type %in% input$roof_job_type_input) |>
+    select(-ambition)
+
+
+##### Rooftop Job Plot #####
+        roof_plot <- ggplot(county_roof,
+                           aes(
+                               x = as.factor(year),
+                               y = round(n_jobs, 0),
+                               group = occupation
+                           )) +
+            geom_col(aes(fill = occupation, text = purrr::map(
+                paste0(occupation, " jobs: ", scales::comma(round(n_jobs, 0))), HTML
+            ))) +
+            scale_fill_manual(
+                labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
+                values = c("#3A8398", "#A3BDBE")
+            ) +
+            scale_y_continuous(labels = scales::comma) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+            labs(
+                title = glue::glue(
+                    "Projected {input$roof_job_type_input} jobs in {input$roof_counties_input} \nfrom Rooftop Solar development"
+                ),
+                y = "FTE Jobs"
+            ) +
+            theme_minimal() +
+            theme(
+                # Axes
+                axis.title.x = element_blank(),
+                axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
+                
+                # Legend
+                legend.title = element_blank(),
+                legend.position = "bottom",
+                text = element_text(family = 'Commissioner')
+                
+            )
 
 roof_plot
 
 ```
+
+
+```{r, fig.align="center", fig.show='hold', fig.width = 3.75, fig.height = 2.5, warning=FALSE, message=FALSE, quiet=TRUE}
+
+roof <- calculate_pv_om_jobs(
+            county = input$roof_counties_input,
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.2,
+            indirect_jobs = 0,
+            induced_jobs = 0
+        )
+        
+        
+        
+        ##### Rooftop Capacity Plot #####
+        
+        roof_cap_plot <- ggplot() +
+            geom_point(
+                data = roof,
+                aes(x = as.factor(year), 
+                    y = total_capacity_mw,
+                    text = purrr::map(
+                        paste0("Capacity: ", round(total_capacity_mw, 2), " MW"), HTML
+                    )),
+                color = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
+            labs(y = "Capacity (MW)", title = "Annual Online Capacity (MW)") +
+            theme_minimal() +
+            theme(axis.title.x = element_blank(),
+                  text = element_text(family = 'Commissioner'))
+
+roof_cap_plot
+```
+
 
 
 
