@@ -78,6 +78,19 @@ body <- dashboardBody( introjsUI(),
                        #### set theme ####
                       use_theme('dashboard-fresh-theme.css'), 
                       tags$head(
+                          tags$link(
+                              href = "https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&display=swap",
+                              rel = "stylesheet"
+                          ),
+                          tags$style(HTML("
+        body, .content-wrapper, .main-sidebar, .main-header {
+          font-family: 'Commissioner', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6, .box-title, .sidebar-menu li a {
+          font-family: 'Commissioner', sans-serif;
+        }
+      ")),
                           tags$script(HTML("
       $(document).on('shiny:connected', function() {
         $('[title]').tooltip({ placement: 'right' });
@@ -156,7 +169,7 @@ body <- dashboardBody( introjsUI(),
                                              box(
                                                  width = NULL,
                                                  tags$img(
-                                                     src = "california_counties_map1.png",
+                                                     src = "california_counties_map.png",
                                                      alt = 'Map of California with SLO, Santa Barbara, and Ventura Counties highlighted',
                                                      style = 'max-width: 100%',
                                                      height = '500px',
