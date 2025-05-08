@@ -10,7 +10,7 @@ server <- function(input, output, session) {
                              "lb_wind"   = "Land-Based Wind",
                              "well_cap"  = "Onshore Oil Well Capping",
                              "phaseout"  = "Fossil Fuel Phaseout",
-                             "overview" = "Project Overview",
+                             "overview" = "Project Overview"
                              
         )
         
@@ -155,18 +155,28 @@ server <- function(input, output, session) {
                 Use this tool to explore potential job creation under different capacity scenarios of floating offshore wind development.",
                      
                      tooltipClass = "introjs-large"  # Custom class
-                     
                 ),
-                list(element = "#osw_inputs_box", intro = 
-                         "Start by adjusting assumptions for construction years, job type, and target capacity goals. <br><br>
-                     Default values are scaled from statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. "),
-                list(element = "#osw_map_box", intro = "This map shows the offshore wind development location."),
-                list(element = "#osw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#osw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of job you would like to see. <br><br>
+                     Default capacity values are scaled from the statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
+                     position = "right"),
+                list(element = "#osw_map_box", 
+                     intro = "This map shows the total <i>FTE job-years</i> created from your scenario for offshore wind development. <br><br> 
+                     You can think of each FTE job-year as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#osw_jobs_plot_box", 
+                     intro = "<b>Here are the projected jobs over time!</b> <br><br>
+                     In this plot, you will see the total annual jobs created in your scenario. Hover over this plot with your mouse to see the numbers divided into construction and operations & maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"
+                ),
+                list(element = "#osw_capacity_plot_box", 
+                     intro = "And this chart shows annual up-and-running capacity over time. <br><br>
+                     Try hovering over points with your mouse, and try looking for that download button at the top-right."),
                 list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space."),
                 list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
                      you can use this button to download all outputs as a single PDF."),
-                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br> <b> Happy exploring! </b>")
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
         } else if (input$tabs == "utility") {
             introjs(session, options = list(steps = list(
@@ -393,7 +403,7 @@ server <- function(input, output, session) {
                     addPolygons(
                         data = osw_all_counties,
                         color = 'forestgreen',
-                        opacity = 0.7,
+                        opacity = 0.7
                     ) |>
                     # Label each county with total jobs
                     addLabelOnlyMarkers(
@@ -1860,12 +1870,37 @@ server <- function(input, output, session) {
             lat = c(34.58742, 35.40949, 34.35622)
         )
         
+        # Get filtered projection data based on inputs
+        phaseout_projection_data <- phaseout_employment_projection(
+            county_input = input$phaseout_counties_input,
+            setback = input$phaseout_setback_input,
+            setback_existing_filter = input$phaseout_setback_existing_input,
+        )
+        
+        # Filter to 2045 and summarize total employment
+        jobs_2045_total <- phaseout_projection_data %>%
+            filter(year == 2045) %>%
+            summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+            pull(total_jobs)
+        
         # Prepare the county data with label text
         ca_counties <- ca_counties |>
             mutate(
-                label_text = paste0("text")
-                
+                label_text = paste0("<b> Total Projected Fossil Fuel Jobs </b>",
+                                    "<br>", "in 2045 in ", name, " County: <br>", round(jobs_2045_total, 0))
             )
+        
+        # Filter to 2045 and summarize total employment
+        jobs_2045_total <- phaseout_projection_data %>%
+            filter(year == 2045) %>%
+            summarise(total_jobs = sum(as.numeric(unlist(total_emp)), na.rm = TRUE)) %>%
+            pull(total_jobs)
+        
+        # Format label
+        jobs_label <- paste0(
+            "<b><font size='3'>Projected Total Fossil Fuel Employment in 2045:</font></b><br>",
+            "<font size='4'><b>", formatC(jobs_2045_total, format = "d", big.mark = ","), " FTE Jobs</b></font>"
+        )
         
         # Filter the data to the selected county only for both polygon and label
         label_data <- ca_counties |>
@@ -1877,7 +1912,10 @@ server <- function(input, output, session) {
             addProviderTiles(providers$Stadia.StamenTerrain) |>
             setView(lng = -119.698189,
                     lat = 34.420830,
-                    zoom = 7) |>
+                    zoom = 7)
+        
+        # Add the polygon for the selected county only (hide others)
+        leaflet_map <- leaflet_map |>
             addPolygons(
                 data = ca_counties |> filter(name == input$phaseout_counties_input),  # Only add selected county's polygon
                 color = "forestgreen", 
@@ -1899,7 +1937,13 @@ server <- function(input, output, session) {
                     )
                 )
         }
-        
         leaflet_map
+    })
+    
+    ##### Project Overview image carousel #####
+    output$image_carousel <- renderSlickR({
+        slickR(
+            c("teamwork-engineer-wearing-safety-uniform.jpg", "california_counties_map1.png") 
+        )
     })
 }
