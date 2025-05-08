@@ -696,6 +696,32 @@ server <- function(input, output, session) {
             filter(County == input$county_input)
     })
     
+    ####### EXPORT UTILITY SOLAR AS PDF #############
+    output$export_utility <- downloadHandler(
+        filename = "utility-jobs.pdf",
+        
+        content = function(file) {
+            src <- normalizePath(here::here('app', 'files', 'utility-jobs.Rmd'))
+            
+            # Switch to a temp directory
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd), add = TRUE)
+            
+            file.copy(src, 'utility-jobs.Rmd', overwrite = TRUE)
+            
+            # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
+            output_file <- rmarkdown::render(
+                input = 'utility-jobs.Rmd',
+                output_format = "pdf_document",
+                output_file = "utility-jobs.pdf"
+            )
+            
+            # Copy the rendered PDF to the target location
+            file.copy(output_file, file, overwrite = TRUE)
+        }
+        
+    )
+    
     
     ####### EXPORT OSW AS PDF #############
     output$export_f_osw <- downloadHandler(
