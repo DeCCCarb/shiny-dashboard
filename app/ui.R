@@ -25,7 +25,9 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                               class = "dropdown",
                               style = "margin-top: 10px; margin-right: 10px;",
                               actionButton("show_tutorial", label = NULL, icon = icon("question-circle"),
-                                           class = "btn btn-default", style = "color: #007BFF;"),
+                                           class = "btn btn-default",
+                                           #style = "color: #007BFF;"
+                                           ),
                               id = "tutorial_button"
                           ),
                           
