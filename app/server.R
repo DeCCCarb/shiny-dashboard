@@ -1912,7 +1912,10 @@ server <- function(input, output, session) {
             addProviderTiles(providers$Stadia.StamenTerrain) |>
             setView(lng = -119.698189,
                     lat = 34.420830,
-                    zoom = 7) |>
+                    zoom = 7)
+        
+        # Add the polygon for the selected county only (hide others)
+        leaflet_map <- leaflet_map |>
             addPolygons(
                 data = ca_counties |> filter(name == input$phaseout_counties_input),  # Only add selected county's polygon
                 color = "forestgreen", 
@@ -1934,7 +1937,6 @@ server <- function(input, output, session) {
                     )
                 )
         }
-        
         leaflet_map
     })
     
