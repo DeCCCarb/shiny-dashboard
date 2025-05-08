@@ -28,10 +28,9 @@ font_add_google("Commissioner")
 
 showtext_auto()
 
-first_year <-input$year_range_input_roof[1]
-final_year <-input$year_range_input_roof[2]
+first_year <-input$year_range_input[1]
+final_year <-input$year_range_input[2]
 final_cap <- input$final_capacity_input
-
 
 # Calculate annual jobs when port is in CC
 if (!("No Central Coast Port" %in% input$osw_port_input)) {
