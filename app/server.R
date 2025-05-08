@@ -48,8 +48,11 @@ server <- function(input, output, session) {
                      
                      tooltipClass = "introjs-large"  # Custom class
                 ),
-                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
-                list(element = "#osw_map_box", intro = "This map shows the offshore wind development location."),
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years, job type, and target capacity goals. <br><br>
+                     Default values are scaled from statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
+                     position = "right"),
+                list(element = "#osw_map_box", intro = "This map shows the offshore wind development location.",
+                     position = "left"),
                 list(element = "#osw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
                 list(element = "#osw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
                 list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space."),
@@ -130,15 +133,30 @@ server <- function(input, output, session) {
     observeEvent(input$show_osw_tutorial, {
         if (input$tabs == "f_osw") {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Floating Offshore Wind Development tab!"),
-                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions."),
-                list(element = "#osw_map_box", intro = "This map shows wind development."),
-                list(element = "#osw_jobs_plot_box", intro = "Projected job impacts."),
-                list(element = "#osw_capacity_plot_box", intro = "Expected capacity growth."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "You can collapse or expand the sidebar using this button to get more space."
-                )
+                list(intro = "<div style='text-align:center'><b>
+                👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
+                
+                A new froniter for clean energy in California's Central Coast, 
+                floating offshore wind is predicted to power up to 3.5 million homes, 
+                marking a significant step towards California’s carbon neutrality goals.
+                
+                It is also bound to catalyze a new economy around clean energy in the region. <br><br>
+                
+                Use this tool to explore potential job creation under different capacity scenarios of floating offshore wind development.",
+                     
+                     tooltipClass = "introjs-large",  # Custom class
+                     
+                ),
+                list(element = "#osw_inputs_box", intro = 
+                         "Start by adjusting assumptions for construction years, job type, and target capacity goals. <br><br>
+                     Default values are scaled from statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. "),
+                list(element = "#osw_map_box", intro = "This map shows the offshore wind development location."),
+                list(element = "#osw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(element = "#osw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space."),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can use this button to download all outputs as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br> <b> Happy exploring! </b>")
             )))
         } else if (input$tabs == "utility") {
             introjs(session, options = list(steps = list(
