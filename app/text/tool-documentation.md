@@ -15,7 +15,7 @@ Depending on the technology, there are different assumptions for each of the def
 
 ---
 
-### Other Methods
+### More Methods
 - *Oil Well Capping:* In order to calculate the number of jobs produced from oil well capping, we must first calculate the rate at which all wells in the Central Coast will be capped. These projections come from [Deshmukh et al.](https://asu.elsevierpure.com/en/publications/equitable-low-carbon-transition-pathways-for-californias-oil-extr) We project a linear phaseout of the roughly 40,000 currently idle wells in the Central Coast from the present to 2045. Next, make a second linear projection if we were to phase out all 200,000 active wells in the Central Coast. 
 
 - *Fossil Fuel Phase Out:* [Deshmukh et al.](https://asu.elsevierpure.com/en/publications/equitable-low-carbon-transition-pathways-for-californias-oil-extr) developed an empirical model that projected job loss by county in California under different decarbonization policy scenarios. This analysis incorporates these projections to model job loss as California moves away from fossil fuels. 2025 employment projections from their model were validated against current employment data from the Bureau of Labor Statistics to ensure the projections’ continued accuracy and usability. Of Deshmukh et. al.’s scenarios, the 2500 foot setback policy with no excise tax most closely resembles current policy, reflecting the most probable projections under current conditions. All scenarios presented in Deshmukh et. al., including projections for a 90% carbon tax or business-as-usual approach, are to be visualized in the dashboard.
