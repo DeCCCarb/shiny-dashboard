@@ -12,7 +12,7 @@ library(plotly)
 library(shinyjs)
 library(glue)
 library(rintrojs)
-
+library(slickR)
 library(gridExtra)
 library(mapview)
 library(magick)

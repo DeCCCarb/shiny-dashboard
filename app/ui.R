@@ -123,7 +123,15 @@ body <- dashboardBody( introjsUI(),
                                           #column(1),
                                           column(12, includeMarkdown("text/intro.md")),
                                           
-                                      ) # END background info box)
+                                      ), # END background info box)
+                                      
+                                      ###### Image Carousel Box ######
+                                      box(
+                                          width = NULL,
+                                          title = tagList(icon("images"), tags$strong("WELCOME")),
+                                          slickROutput("image_carousel", width = "100%")
+                                      )
+                                      
                                   ), # END left hand column),
                                   ##### right hand column  #####
                                   column(width = 6, ###### First fluidRow (citation box) ######

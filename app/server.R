@@ -1870,11 +1870,24 @@ server <- function(input, output, session) {
             lat = c(34.58742, 35.40949, 34.35622)
         )
         
+        # Get filtered projection data based on inputs
+        phaseout_projection_data <- phaseout_employment_projection(
+            county_input = input$phaseout_counties_input,
+            setback = input$phaseout_setback_input,
+            setback_existing_filter = input$phaseout_setback_existing_input,
+        )
+        
+        # Filter to 2045 and summarize total employment
+        jobs_2045_total <- phaseout_projection_data %>%
+            filter(year == 2045) %>%
+            summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+            pull(total_jobs)
+        
         # Prepare the county data with label text
         ca_counties <- ca_counties |>
             mutate(
-                label_text = paste0("text")
-                
+                label_text = paste0("<b> Total Projected Fossil Fuel Jobs </b>",
+                                    "<br>", "in 2045 in ", name, " County: <br>", round(jobs_2045_total, 0))
             )
         
         # Filter the data to the selected county only for both polygon and label
@@ -1911,5 +1924,12 @@ server <- function(input, output, session) {
         }
         
         leaflet_map
+    })
+    
+    ##### Project Overview image carousel #####
+    output$image_carousel <- renderSlickR({
+        slickR(
+            c("teamwork-engineer-wearing-safety-uniform.jpg", "california_counties_map1.png") 
+        )
     })
 }
