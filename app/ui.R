@@ -1,14 +1,25 @@
 # Dashboard header ----
-header <- dashboardHeader(title = 'Labor Impacts of Decarbonization', # Tentative title
-                          titleWidth = 800,
+header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
+                          titleWidth = 400,
                           
                           # Add tutorial button to the header
                           tags$li(
                               class = "dropdown",
                               style = "margin-top: 10px; margin-right: 10px;",
-                              actionButton("show_osw_tutorial", label = NULL, icon = icon("question-circle"),
-                                           class = "btn btn-default", style = "color: #007BFF;")
+                              actionButton("show_tutorial", label = NULL, icon = icon("question-circle"),
+                                           class = "btn btn-default", style = "color: #007BFF;"),
+                              id = "tutorial_button"
+                          ),
+                          
+                          # PDF Export Button (UI placeholder; real one comes from renderUI)
+                          tags$li(
+                              class = "dropdown",
+                              style = "margin-top: 10px; margin-right: 10px;",
+                              uiOutput("export_pdf_button"),
+                              
+                              id = "pdf_button"
                           ))
+
 # Dashboard sidebar ----
 sidebar <- dashboardSidebar(
     collapsed = FALSE,
@@ -81,6 +92,23 @@ body <- dashboardBody( introjsUI(),
 //      });
     "))
                       ), # HTML Hover tip
+                      
+                      # Make a larger popup box style
+                      tags$style(HTML("
+      .introjs-large {
+        max-width: none !important;
+      width: 500px !important;
+        font-size: 16px;
+        line-height: 1.6;
+        text-align: center;
+      }
+      
+            .introjs-wider {
+        max-width: none !important;
+      width: 400px !important;
+      }
+      
+    ")), # END larger popup box styling
                       tabItems(
 # PROJECT OVERVIEW TAB ITEM ----
                           tabItem(tabName = 'overview', ##### left hand column  #####
@@ -95,7 +123,15 @@ body <- dashboardBody( introjsUI(),
                                           #column(1),
                                           column(12, includeMarkdown("text/intro.md")),
                                           
-                                      ) # END background info box)
+                                      ), # END background info box)
+                                      
+                                      ###### Image Carousel Box ######
+                                      box(
+                                          width = NULL,
+                                          title = tagList(icon("images"), tags$strong("WELCOME")),
+                                          slickROutput("image_carousel", width = "100%")
+                                      )
+                                      
                                   ), # END left hand column),
                                   ##### right hand column  #####
                                   column(width = 6, ###### First fluidRow (citation box) ######
@@ -155,13 +191,9 @@ body <- dashboardBody( introjsUI(),
                                   
                                    box(
                                       width = 4,
-                                      
-                                      title = tags$strong('Floating Offshore Wind Development'),
-                                      
-                                      
+
                                       shinyjs::useShinyjs(),
                                       
-                                      # Enable shinyjs
                                       ###### year range slider input ######
                                       sliderInput(
                                           inputId = 'year_range_input',
@@ -170,7 +202,7 @@ body <- dashboardBody( introjsUI(),
                                               tags$i(
                                                   class = "glyphicon glyphicon-info-sign", 
                                                   style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                  title = "Construction requires, on average, 5 years. Time to reach capacity goals must be greater than 5 years."
                                               )
                                           ), 
                                           min = 2025, 
@@ -181,7 +213,7 @@ body <- dashboardBody( introjsUI(),
                                           sep = ""
                                           
                                       ),
-                                      
+                                      # Make a year slider have a minimum range of 6 years
                                       tags$script(
                                           HTML("
                             // Wait until the document is ready
@@ -209,20 +241,6 @@ body <- dashboardBody( introjsUI(),
                                                                      });
                                                                    "
                                           )
-                                      ),  ###### job type input  ######
-                                      pickerInput(
-                                          inputId = 'job_type_input',
-                                          label =
-                                              tags$span(
-                                                  'Direct, Indirect, or Induced Job Impacts', 
-                                                  tags$i(
-                                                      class = "glyphicon glyphicon-info-sign", 
-                                                      style = "color:#0072B2;",
-                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
-                                          choices = c('direct', # Change to capital
-                                                      'indirect', 'induced'),
-                                          multiple = FALSE,
-                                          options = pickerOptions(actionsBox = TRUE)
                                       ), 
                                       ###### initial capacity input  ######
                                       numericInput(
@@ -233,7 +251,7 @@ body <- dashboardBody( introjsUI(),
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "Capacity (GW) for initial construction project, to go online 5 years following start year.")
+                                                      title = "Capacity (GW) for initial construction project, to go online 5 years following start year. Value must not be 0.")
                                               ),
                                           value = 0.1,
                                           min = 0
@@ -247,40 +265,55 @@ body <- dashboardBody( introjsUI(),
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "Default values are based on the California Energy Commission’s 25 GW statewide target by 2045, with 60% assumed in the Tri-Counties, setting a regional goal of 15 GW.")
+                                                      title = "Enter total capacity to be up-and-running in the final year.")
                                               ),
                                           value = 15,
                                           min = 0
                                       ), 
-                                      ###### port input  ######
+                                      ###### job type input  ######
                                       pickerInput(
-                                          inputId = 'osw_port_input',
+                                          inputId = 'job_type_input',
                                           label =
                                               tags$span(
-                                                  'Offshore Wind Port Location:', 
+                                                  'Direct, Indirect, or Induced Jobs', 
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "Majority of jobs will occur near the specialized wind port. Due to a lack of county specific targets and assuming transferable labor impacts among counties, the three counties are treated as a single region in this analysis. ")
-                                              ),
-                                          choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
-                                          selected = NULL,
+                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
+                                          choices = c('direct', # Change to capital
+                                                      'indirect', 'induced'),
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
-                                      ), downloadButton('export_osw', label = 'Export as PDF'),
+                                      ), 
+                                      # ###### port input  ######
+                                      # pickerInput(
+                                      #     inputId = 'osw_port_input',
+                                      #     label =
+                                      #         tags$span(
+                                      #             'Offshore Wind Port Location', 
+                                      #             tags$i(
+                                      #                 class = "glyphicon glyphicon-info-sign", 
+                                      #                 style = "color:#0072B2;",
+                                      #                 title = "Specialized wind ports will be the ")
+                                      #         ),
+                                      #     choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
+                                      #     selected = NULL,
+                                      #     multiple = FALSE,
+                                      #     options = pickerOptions(actionsBox = TRUE)
+                                      # ), 
                                       
                                       id = "osw_inputs_box"  # for tutorial
                                   ), # END input box
                                   
                                   ###### map output  ######
                                   box(
-                                     # actionButton("show_osw_tutorial", "Show Tutorial", icon = icon("question-circle")),
-                                      
                                       width = 8,
                                       
                                       leafletOutput(outputId = 'osw_map_output') |>
                                           withSpinner(type = 1, color = '#09847A'),
+                                      
                                       id = "osw_map_box"  # for tutorial
+                                      
                                   ), # END leaflet box
                                   
                               ), # END  1st fluidRow
@@ -290,17 +323,19 @@ body <- dashboardBody( introjsUI(),
                                   
                                   box( ###### jobs projections plot ######
                                       width = 7,
-                                      # Create a plot based on input
-                                      #  title = tags$strong('Labor Impact'),
-                                      plotly::plotlyOutput(outputId = 'model_jobs_output') |> # Changed to table output to show data
+                                      
+                                      plotly::plotlyOutput(outputId = 'model_jobs_output') |>
                                           withSpinner(type = 1, color = '#09847A'),
+                                      
                                       id = "osw_jobs_plot_box" # for tutorial
                                   ), 
                                   
                                   box( ###### capacity projections plot ######
                                       width = 5,
+                                      
                                       plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
                                           withSpinner(type = 1, color = '#09847A'),
+                                      
                                       id = "osw_capacity_plot_box" # for tutorial
                                   )
                                   
@@ -316,59 +351,87 @@ body <- dashboardBody( introjsUI(),
                               
                               fluidRow( ##### First fluidRow (picker inputs) #####
                                   
-                                  box( ###### county input ######
-                                      width = 4, title = tags$strong('Pick a County'), 
+                                  box(
+                                      width = 4,
+                                      
+                                      pickerInput( ###### county input ######
+                                                   inputId = 'county_input',
+                                                   label = tags$span(
+                                                       'County',
+                                                       tags$i(
+                                                           class = "glyphicon glyphicon-info-sign", 
+                                                           style = "color:#0072B2;",
+                                                           title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                       )),
+                                                   choices = unique(counties$County),
+                                                   selected = c('Ventura'),
+                                                   multiple = FALSE,
+                                                   options = pickerOptions(actionsBox = TRUE)
+                                      ), 
                                       
                                       sliderInput( ###### year range slider input ######
                                           inputId = 'year_range_input_utility',
-                                          label = 'Year Range (CHOOSE BETTER LABEL)',
+                                          label = tags$span(
+                                              'Year Construction Starts - Year To Meet Target',
+                                              tags$i(
+                                                  class = "glyphicon glyphicon-info-sign", 
+                                                  style = "color:#0072B2;",
+                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                              )),
                                           min = 2025,
                                           max = 2045,
                                           value = c(2025, 2045),
                                           step = 1,
-                                          ticks = TRUE,
+                                          ticks = F,
                                           sep = ""
-                                      ), 
-                                      pickerInput( ###### county input ######
-                                          inputId = 'county_input',
-                                          label = 'Select a County:',
-                                          choices = unique(counties$County),
-                                          selected = c('Ventura'),
-                                          multiple = FALSE,
-                                          options = pickerOptions(actionsBox = TRUE)
-                                      ), 
-
-                                      pickerInput( ###### job type input ######
-                                          inputId = 'utility_job_type_input',
-                                          label = 'Select Direct, Induced, or Indirect',
-                                          choices = c('direct', 'induced', 'indirect'),
-                                          multiple = FALSE,
-                                          options = pickerOptions(actionsBox = TRUE)
                                       ), 
 
                                       numericInput( ###### initial capacity input  ######
                                           inputId = 'initial_mw_utility_input',
-                                          label = 'Please input your initial capacity (MW).',
+                                          label = tags$span(
+                                              'Initial Capacity (MW)',
+                                              tags$i(
+                                                  class = "glyphicon glyphicon-info-sign", 
+                                                  style = "color:#0072B2;",
+                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                              )),
                                           value = 0,
-                                          # placeholder — will be updated
                                           min = 0
                                       ), 
                                       
                                       numericInput( ###### final capacity input  ######
                                           inputId = 'final_mw_utility_input',
-                                          label = 'Please input your final capacity (MW).',
+                                          label = tags$span(
+                                              'Target Capacity (MW)',
+                                              tags$i(
+                                                  class = "glyphicon glyphicon-info-sign", 
+                                                  style = "color:#0072B2;",
+                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                              )),
                                           value = 0,
                                           min = 0
                                       ),
                                       
-                                      id = "util_inputs_box"
+                                      pickerInput( ###### job type input ######
+                                                   inputId = 'utility_job_type_input',
+                                                   label =
+                                                       tags$span(
+                                                           'Direct, Indirect, or Induced Jobs', 
+                                                           tags$i(
+                                                               class = "glyphicon glyphicon-info-sign", 
+                                                               style = "color:#0072B2;",
+                                                               title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
+                                                   choices = c('direct', 'induced', 'indirect'),
+                                                   multiple = FALSE,
+                                                   options = pickerOptions(actionsBox = TRUE)
+                                      ), 
+                                      
+                                      id = "util_inputs_box" # for tutorial
+                                      
                                   ), # END input box
                                   
                                   box( ###### map output  ######
                                       width = 8,
-                                      
-                                      # title
-                                      title = tags$strong('California Central Coast Counties'),
                                       
                                       leafletOutput(outputId = 'utility_map_output') |>
                                           withSpinner(type = 1, color = '#09847A'),
@@ -410,38 +473,48 @@ body <- dashboardBody( introjsUI(),
 
                                   box(
                                       width = 4,
-                                      title = tags$strong('Rooftop Solar Job Impacts'),
                                       
+                                      pickerInput( ###### county input ######
+                                                   inputId = 'roof_counties_input',
+                                                   label = tags$span(
+                                                       'County',
+                                                       tags$i(
+                                                           class = "glyphicon glyphicon-info-sign", 
+                                                           style = "color:#0072B2;",
+                                                           title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                       )),
+                                                   choices = unique(counties$County),
+                                                   selected = c('Ventura'),
+                                                   multiple = FALSE,
+                                                   options = pickerOptions(actionsBox = TRUE)
+                                      ),
+
                                       sliderInput( ###### year range slider input ######
                                           inputId = 'year_range_input_roof',
-                                          label = 'Year Construction Starts - Year to Meet Target',
+                                          label = tags$span(
+                                              'Year Construction Starts - Year to Meet Target',
+                                              tags$i(
+                                                  class = "glyphicon glyphicon-info-sign", 
+                                                  style = "color:#0072B2;",
+                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                              )),
+                                              
                                           min = 2025,
                                           max = 2045,
                                           value = c(2025, 2045),
                                           step = 1,
-                                          ticks = TRUE,
+                                          ticks = F,
                                           sep = ""
-                                      ),
-                                      pickerInput( ###### county input ######
-                                          inputId = 'roof_counties_input',
-                                          label = 'Select Your County:',
-                                          choices = unique(counties$County),
-                                          selected = c('Ventura'),
-                                          multiple = FALSE,
-                                          options = pickerOptions(actionsBox = TRUE)
-                                      ),
-
-                                      pickerInput( ###### job type input ######
-                                          inputId = 'roof_job_type_input',
-                                          label = 'Select Direct, Induced, or Indirect',
-                                          choices = c('direct', 'induced', 'indirect'),
-                                          multiple = FALSE,
-                                          options = pickerOptions(actionsBox = TRUE)
                                       ),
                                       
                                       numericInput( ###### initial capacity input ######
                                           inputId = 'initial_mw_roof_input',
-                                          label = 'Please input your initial capacity (MW).',
+                                          label = tags$span('Initial Capacity (MW)',
+                                                            tags$i(
+                                              class = "glyphicon glyphicon-info-sign", 
+                                              style = "color:#0072B2;",
+                                              title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                          )),
                                           value = 0,
                                           # placeholder — will be updated
                                           min = 0
@@ -449,12 +522,29 @@ body <- dashboardBody( introjsUI(),
 
                                       numericInput( ###### final capacity input ######
                                           inputId = 'final_mw_roof_input',
-                                          label = 'Please input your final capacity (MW).',
+                                          label = tags$span('Target Capacity (MW)',
+                                                            tags$i(
+                                              class = "glyphicon glyphicon-info-sign", 
+                                              style = "color:#0072B2;",
+                                              title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                          )),
                                           value = 0,
                                           min = 0
                                       ),
-                                      downloadButton('export_roof'),
                                       
+                                      pickerInput( ###### job type input ######
+                                                   inputId = 'roof_job_type_input',
+                                                   label = tags$span('Direct, Indirect, of Induced Jobs',
+                                                                     tags$i(
+                                                                         class = "glyphicon glyphicon-info-sign", 
+                                                                         style = "color:#0072B2;",
+                                                                         title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                                     )),
+                                                   choices = c('direct', 'induced', 'indirect'),
+                                                   multiple = FALSE,
+                                                   options = pickerOptions(actionsBox = TRUE)
+                                      ),
+
                                       id = "roof_inputs_box"  # for tutorial
                                   ), 
                                   
@@ -465,8 +555,6 @@ body <- dashboardBody( introjsUI(),
                                       
                                       width = 8,
                                       
-                                      # title
-                                      title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
                                       leafletOutput(outputId = 'roof_map_output') |>
                                           withSpinner(type = 1, color = '#09847A'),
                                       
@@ -507,12 +595,23 @@ body <- dashboardBody( introjsUI(),
                                       
                                       width = 4,
                                       
-                                      title = tags$strong('Land Based Wind Development'),
-                                      
-                                      
+                                      pickerInput( ###### county input ######
+                                                   inputId = 'lw_counties_input',
+                                                   label = tags$span('County',
+                                                                     tags$i(
+                                                                         class = "glyphicon glyphicon-info-sign", 
+                                                                         style = "color:#0072B2;",
+                                                                         title = "County that land wind project will be based. Currently, Santa Barbara County is the only Tri-county with land wind (Strauss Wind Project)."
+                                                                     )),
+                                                   choices = unique(counties$County),
+                                                   selected = c('Santa Barbara'),
+                                                   multiple = FALSE,
+                                                   options = pickerOptions(actionsBox = TRUE)
+                                      ), 
+
                                       sliderInput( ###### year range slider input ######
                                           inputId = 'input_lw_years',
-                                          label = tags$span('Start Year - Year to Meet Target',
+                                          label = tags$span('Year Construction Starts - Year to Meet Target',
                                                             tags$i(
                                                                 class = "glyphicon glyphicon-info-sign", 
                                                                 style = "color:#0072B2;",
@@ -529,31 +628,6 @@ body <- dashboardBody( introjsUI(),
 
                                       verbatimTextOutput("input_lw_years"), 
                                       
-                                      pickerInput( ###### county input ######
-                                          inputId = 'lw_counties_input',
-                                          label = tags$span('County',
-                                                            tags$i(
-                                                                class = "glyphicon glyphicon-info-sign", 
-                                                                style = "color:#0072B2;",
-                                                                title = "County that land wind project will be based. Currently, Santa Barbara County is the only Tri-county with land wind (Strauss Wind Project)."
-                                                            )),
-                                          choices = unique(counties$County),
-                                          selected = c('Santa Barbara'),
-                                          multiple = FALSE,
-                                          options = pickerOptions(actionsBox = TRUE)
-                                      ), 
-                                      pickerInput( ###### job type input ######
-                                          inputId = 'lw_job_type_input',
-                                          label = tags$span('Direct, Indirect, or Induced Job Impacts',
-                                                            tags$i(
-                                                                class = "glyphicon glyphicon-info-sign",
-                                                                style = "color:#0072B2;",
-                                                                title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare)."
-                                                            )),
-                                          choices = c('direct', 'indirect', 'induced'),
-                                          multiple = FALSE,
-                                          options = pickerOptions(actionsBox = TRUE)
-                                      ),
                                       
                                       numericInput( ###### initial capacity input ######
                                           inputId = 'initial_gw_lw_input',
@@ -577,6 +651,19 @@ body <- dashboardBody( introjsUI(),
                                                             )),
                                           value = 0.95,
                                           min = 0
+                                      ),
+                                      
+                                      pickerInput( ###### job type input ######
+                                                   inputId = 'lw_job_type_input',
+                                                   label = tags$span('Direct, Indirect, or Induced Jobs',
+                                                                     tags$i(
+                                                                         class = "glyphicon glyphicon-info-sign",
+                                                                         style = "color:#0072B2;",
+                                                                         title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare)."
+                                                                     )),
+                                                   choices = c('direct', 'indirect', 'induced'),
+                                                   multiple = FALSE,
+                                                   options = pickerOptions(actionsBox = TRUE)
                                       ),
                                       
                                       id = "lw_inputs_box"  # for tutorial
@@ -626,13 +713,16 @@ body <- dashboardBody( introjsUI(),
                                   column(width = 4,
                                          box(width = 12,
                                              
-                                             title = 'Capping Existing Onshore Oil Wells', 
-                                             
-                                             
+
                                              pickerInput( ###### county input ######
                                                           
                                                           inputId = 'county_wells_input',
-                                                          label = "County",
+                                                          label = tags$span("County",
+                                                                            tags$i(
+                                                                                class = "glyphicon glyphicon-info-sign", 
+                                                                                style = "color:#0072B2;",
+                                                                                title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                                            )),
                                                           choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
                                                           multiple = FALSE
                                              ), # End county picker
@@ -665,11 +755,16 @@ body <- dashboardBody( introjsUI(),
                                   fluidRow(  ##### First fluid row (picker inputs) #####
                                       
                                       box( 
-                                          width = 4, title = tags$strong('Pick a County'), 
+                                          width = 4,
                                           
                                            pickerInput( ###### county input ######
                                               inputId = 'phaseout_counties_input',
-                                              label = 'Select a County',
+                                              label = tags$span('County',
+                                                                tags$i(
+                                                                    class = "glyphicon glyphicon-info-sign", 
+                                                                    style = "color:#0072B2;",
+                                                                    title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                                )),
                                               choices = c('Santa Barbara', 'San Luis Obispo', 'Ventura'),
                                               selected = c('Ventura'),
                                               multiple = FALSE,
@@ -681,7 +776,7 @@ body <- dashboardBody( introjsUI(),
                                           pickerInput( ###### setback distance input ######
                                               inputId = 'phaseout_setback_input',
                                               label = tags$span(
-                                                  'Select Setback Policy Distance', 
+                                                  'Setback Policy Distance', 
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
@@ -725,8 +820,7 @@ body <- dashboardBody( introjsUI(),
                                       
                                        box( ###### map output ######
                                           
-                                          width = 8, # title
-                                          title = tags$strong('California Central Coast Counties'), # Leaflet rendering from server
+                                          width = 8, 
                                           leafletOutput(outputId = 'phaseout_county_map_output') |>
                                               withSpinner(type = 1, color = '#09847A'),
                                           
@@ -741,7 +835,6 @@ body <- dashboardBody( introjsUI(),
                                            box( ###### Phaseout plot ######
                                                width = 12,
                                                # Create a table based on input
-                                               title = tags$strong('Labor Impact'),
                                                plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
                                                    withSpinner(type = 1, color = '#09847A'),
                                                

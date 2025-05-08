@@ -1,23 +1,37 @@
 ---
 title: "Floating Offshore Wind Job Impacts"
-output: pdf_document
-fontsize: 15pt
-geometry: margin=0.8in
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+mainfont: "Avenir"
+fontsize: 11pt
+geometry: margin=.5in
 ---
 
+
+```{r logo, out.width="3.7in", echo=FALSE}
+knitr::include_graphics(here("app", "www", "the2035initiative-logo.png"))
+knitr::include_graphics(here("app", "www", "communitylabor-logo.png"))
+```
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align="center")
 library(glue)
 library(usdata)
 library(tmap)
 library(tigris)
 library(ggplot2)
+library(showtext)
 
-first_year <-input$year_range_input_roof[1]
-final_year <-input$year_range_input_roof[2]
+font_add_google("Commissioner")
+
+showtext_auto()
+
+first_year <-input$year_range_input[1]
+final_year <-input$year_range_input[2]
 final_cap <- input$final_capacity_input
 
-
 # Calculate annual jobs when port is in CC
 if (!("No Central Coast Port" %in% input$osw_port_input)) {
     # OSW O&M jobs
@@ -85,159 +99,12 @@ osw_map_label <- paste(
 
 ```
 
-# For the duration of all projects needed to meet your capacity goal of (`r final_cap` GW) for Floating Offshore Wind by `r final_year`, there would be `r scales::comma(const_njobs_label)` construction jobs and `r scales::comma(om_njobs_label)` operations & maintenance jobs created. 
+## For the total duration of all projects needed to meet your capacity goal of `r final_cap` (GW) for Floating Offshore Wind by `r final_year`, there would be `r scales::comma(const_njobs_label)` construction and `r scales::comma(om_njobs_label)` operations & maintenance jobs. 
 
 
 
 
-```{r, fig.show='hold', fig.width = 4, warning=FALSE, message=FALSE, quiet=TRUE}
-
-
-# Calculate annual jobs when port is in CC
-if (!("No Central Coast Port" %in% input$osw_port_input)) {
-    # OSW O&M jobs
-    osw_om <- calculate_osw_om_jobs(
-        county = "Tri-county",
-        start_year = input$year_range_input[1],
-        end_year = input$year_range_input[2],
-        ambition = "High",
-        initial_capacity = input$initial_capacity_input,
-        target_capacity = input$final_capacity_input,
-        direct_jobs = 127,
-        indirect_jobs = 126,
-        induced_jobs = 131
-    )
-    
-    # OSW Construction
-    osw_construction <- calculate_osw_construction_jobs(
-        county = "Tri-County",
-        start_year = input$year_range_input[1],
-        end_year = input$year_range_input[2],
-        ambition = "High",
-        initial_capacity = input$initial_capacity_input,
-        target_capacity = input$final_capacity_input,
-        direct_jobs = 82,
-        indirect_jobs = 2571,
-        induced_jobs = 781
-    )
-    
-    # Bind together
-    osw_all <- rbind(osw_om, osw_construction) |>
-        filter(type == input$job_type_input)
-    
-    # Calculate annual jobs when port is NOT in CC
-} else {
-    # Return 0 jobs
-    osw_all <- data.frame(
-        year = integer(),
-        n_jobs = numeric(),
-        occupation = character(),
-        type = character(),
-        stringsAsFactors = FALSE
-    )
-}
-
-# Calculate total construction jobs
-const_njobs_label <- osw_all |>
-    filter(occupation == "Construction")
-
-const_njobs_label <- round(sum(const_njobs_label$n_jobs, na.rm = TRUE), 0)
-
-# Calculate total O&M jobs
-om_njobs_label <- osw_all |>
-    filter(occupation == "O&M")
-
-om_njobs_label <- round(sum(om_njobs_label$n_jobs, na.rm = TRUE), 0)
-
-# Generate and format label
-osw_map_label <- paste(
-        "Total Jobs in Central Coast", 
-        "\n- Construction:",
-        scales::comma(const_njobs_label), 
-        "\n- O&M:",
-        scales::comma(om_njobs_label)
-    )
-
-
-
-california_counties <- counties(state = "CA", cb = TRUE) |>
-    filter(NAME %in% c('Ventura', 'Santa Barbara', 'San Luis Obispo'))
-
-california <- counties(state = "CA", cb = TRUE)
-
-bbox <- california |>
-    filter(NAME %in% c('Monterey', 'Los Angeles'))
-
-ccc <- tm_shape(california, bbox = bbox) +
-    tm_fill(fill = '#f4f3ee') +
-    tm_shape(california_counties) +
-    tm_borders(col = 'black') +
-    tm_polygons(col = '#09847A') +
-    tm_layout(
-        frame = FALSE,
-        main.title = " ",
-        main.title.position = "center",
-        bg.color = "#edf1efff",
-        fontfamily = "serif",
-        title.size = 12,
-        asp = 0
-    ) +
-    tm_legend(show = FALSE) +
-    tm_credits(
-        text = osw_map_label,
-        position = c('left', 'bottom'),
-        size = 5
-    )
-
-ccc
-
-```
-
-```{r, fig.show='hold', fig.width = 6, fig.height = 4, warning=FALSE, message=FALSE, quiet=TRUE}
-# O&M OSW ---
-        osw <- calculate_osw_om_jobs(
-            county = "Tri-county",
-            start_year = input$year_range_input[1],
-            end_year = input$year_range_input[2],
-            ambition = "High",
-            initial_capacity = input$initial_capacity_input,
-            target_capacity = input$final_capacity_input,
-            direct_jobs = 127,
-            indirect_jobs = 126,
-            induced_jobs = 131
-        )
-        
-        ######## Generate Plot for OSW ##############
-        
-        osw_cap_plot <- ggplot() +
-            geom_point(data = osw, 
-                       aes(x = as.factor(year), y = total_capacity_gw),
-                       color = "#A3BDBE") +
-            geom_point(data = osw,
-                       aes(x = as.factor(year), y = new_capacity_gw),
-                       color = "#3A8398") +
-            scale_x_discrete(breaks = scales::breaks_pretty(n=4)) +
-            labs(y = "Capacity (GW)",
-                 title = "Capacity Growth Rate to Meet Target ") +
-            theme_minimal() +
-            theme(
-                axis.title.x = element_blank(),
-            )
-osw_cap_plot
-
-```
-
-```{r stacked-plots, fig.show='hold', fig.height=4, fig.width=6, warning=FALSE, message=FALSE}
-# First plot
-# print(ccc)
-# cat("\n\n")
-# # Second plot
-# print(osw_cap_plot)
-
-```
-
-
-```{r, fig.show='hold', fig.width = 6, fig.height = 4,warning=FALSE, message=FALSE, quiet=TRUE}
+```{r, fig.align="center", fig.show='hold', fig.width = 5.25, fig.height = 3.5,warning=FALSE, message=FALSE, quiet=TRUE}
 # Floating Offshore Wind ------
         if ("No Central Coast Port" %in% input$osw_port_input) {
             # Generate a dummy df to preserve x and y axis
@@ -259,7 +126,7 @@ osw_cap_plot
                     "text",
                     x = as.factor(median(years)),
                     y = 1000,
-                    label = "No Port in Central Coast — job projections are 0",
+                    label = "No Port in Central Coast\n — job projections are 0",
                     size = 5,
                     color = "gray30"
                 ) +
@@ -267,7 +134,8 @@ osw_cap_plot
                 theme(
                     axis.title.x = element_blank(),
                     axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
-                    legend.position = "none"
+                    legend.position = "none",
+                    text = element_text(family = 'Commissioner')
                 )
             
             empty_plot
@@ -321,7 +189,7 @@ osw_cap_plot
             scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
             labs(
                 title = glue::glue(
-                    "Projected {input$job_type_input} jobs in CA Central Coast \nfrom Floating OSW development"
+                    "Projected {input$job_type_input} jobs in CA Central Coast\nfrom Floating OSW development"
                 ),
                 y = "FTE Jobs"
             ) +
@@ -333,7 +201,8 @@ osw_cap_plot
                 
                 # Legend
                 legend.title = element_blank(),
-                legend.position = "bottom"
+                legend.position = "bottom", 
+                 text = element_text(family = 'Commissioner')
                 
             )
         
@@ -341,4 +210,44 @@ osw_cap_plot
     }
 
 ```
+
+
+```{r, fig.align="center", fig.show='hold', fig.width = 3.75, fig.height = 2.5, warning=FALSE, message=FALSE, quiet=TRUE}
+# O&M OSW ---
+        osw <- calculate_osw_om_jobs(
+            county = "Tri-county",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High",
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 127,
+            indirect_jobs = 126,
+            induced_jobs = 131
+        )
+        
+        ######## Generate Plot for OSW ##############
+        
+        osw_cap_plot <- ggplot() +
+            geom_point(data = osw, 
+                       aes(x = as.factor(year), y = total_capacity_gw),
+                       color = "#A3BDBE") +
+            scale_x_discrete(breaks = scales::breaks_pretty(n=4)) +
+            labs(y = "Capacity (GW)",
+                 title = "Capacity Growth Rate to Meet Target ") +
+            theme_minimal() +
+            theme(
+                axis.title.x = element_blank(),
+                text = element_text(family = 'Commissioner')
+            ) 
+osw_cap_plot
+
+```
+
+
+
+
+
+
+
 

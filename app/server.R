@@ -1,5 +1,24 @@
 
 server <- function(input, output, session) {
+
+##### Reactive Title #####
+    observe({
+        title_text <- switch(input$tabs,
+                             "f_osw"     = "Floating Offshore Wind",
+                             "utility"   = "Utility Solar",
+                             "rooftop"   = "Rooftop Solar",
+                             "lb_wind"   = "Land-Based Wind",
+                             "well_cap"  = "Onshore Oil Well Capping",
+                             "phaseout"  = "Fossil Fuel Phaseout",
+                             "overview" = "Project Overview"
+                             
+        )
+        
+        output$dynamic_header_title <- renderUI({
+            tags$span(title_text)
+        })
+    })
+##### END Reactive Title #####
     
 ##### Tutorials #####
     
@@ -16,12 +35,40 @@ server <- function(input, output, session) {
     observeEvent(input$tabs, {
         if (input$tabs == "f_osw" && !shown_tutorials$f_osw) {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Floating Offshore Wind Development tab!"),
-                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
-                list(element = "#osw_map_box", intro = "This map shows the offshore wind development location."),
-                list(element = "#osw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#osw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
-                list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space.")
+                list(intro = "<div style='text-align:center'><b>
+                👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
+                
+                A new froniter for clean energy in California's Central Coast, 
+                floating offshore wind is predicted to power up to 3.5 million homes, 
+                marking a significant step towards California’s carbon neutrality goals.
+                
+                It is also bound to catalyze a new economy around clean energy in the region. <br><br>
+                
+                Use this tool to explore potential job creation under different capacity scenarios of floating offshore wind development.",
+                     
+                     tooltipClass = "introjs-large"  # Custom class
+                ),
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of job you would like to see. <br><br>
+                     Default capacity values are scaled from the statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
+                     position = "right"),
+                list(element = "#osw_map_box", 
+                     intro = "This map shows the total <i>FTE job-years</i> created from your scenario for offshore wind development. <br><br> 
+                     You can think of each FTE job-year as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#osw_jobs_plot_box", 
+                     intro = "<b>Here are the projected jobs over time!</b> <br><br>
+                     In this plot, you will see the total annual jobs created in your scenario. Hover over this plot with your mouse to see the numbers divided into construction and operations & maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"
+                     ),
+                list(element = "#osw_capacity_plot_box", 
+                     intro = "And this chart shows annual up-and-running capacity over time. <br><br>
+                     Try hovering over points with your mouse, and try looking for that download button at the top-right."),
+                list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space."),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can use this button to download all outputs as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
             shown_tutorials$f_osw <- TRUE # only run the first time a user visits the tab
         } else if (input$tabs == "utility" && !shown_tutorials$utility) {
@@ -93,18 +140,43 @@ server <- function(input, output, session) {
     })
     
     # Play tutorial when "Show Tutorial" button is pressed ----
-    observeEvent(input$show_osw_tutorial, {
+    observeEvent(input$show_tutorial, {
         if (input$tabs == "f_osw") {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Floating Offshore Wind Development tab!"),
-                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions."),
-                list(element = "#osw_map_box", intro = "This map shows wind development."),
-                list(element = "#osw_jobs_plot_box", intro = "Projected job impacts."),
-                list(element = "#osw_capacity_plot_box", intro = "Expected capacity growth."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "You can collapse or expand the sidebar using this button to get more space."
-                )
+                list(intro = "<div style='text-align:center'><b>
+                👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
+                
+                A new froniter for clean energy in California's Central Coast, 
+                floating offshore wind is predicted to power up to 3.5 million homes, 
+                marking a significant step towards California’s carbon neutrality goals.
+                
+                It is also bound to catalyze a new economy around clean energy in the region. <br><br>
+                
+                Use this tool to explore potential job creation under different capacity scenarios of floating offshore wind development.",
+                     
+                     tooltipClass = "introjs-large"  # Custom class
+                ),
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of job you would like to see. <br><br>
+                     Default capacity values are scaled from the statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
+                     position = "right"),
+                list(element = "#osw_map_box", 
+                     intro = "This map shows the total <i>FTE job-years</i> created from your scenario for offshore wind development. <br><br> 
+                     You can think of each FTE job-year as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#osw_jobs_plot_box", 
+                     intro = "<b>Here are the projected jobs over time!</b> <br><br>
+                     In this plot, you will see the total annual jobs created in your scenario. Hover over this plot with your mouse to see the numbers divided into construction and operations & maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"
+                ),
+                list(element = "#osw_capacity_plot_box", 
+                     intro = "And this chart shows annual up-and-running capacity over time. <br><br>
+                     Try hovering over points with your mouse, and try looking for that download button at the top-right."),
+                list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space."),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can use this button to download all outputs as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
         } else if (input$tabs == "utility") {
             introjs(session, options = list(steps = list(
@@ -171,22 +243,48 @@ server <- function(input, output, session) {
     
 ##### END Tutorials #####
     
-     # Create reactive port for OSW map
-    
-    port_input <- reactive({
-        data.frame(
-            port_name = c("Hueneme", "San Luis Obispo"),
-            address = c(
-                "Port of Hueneme, Port Hueneme, CA 93041",
-                "699 Embarcadero, Morro Bay, CA 93442"
-            )
-        ) %>%
-            tidygeocoder::geocode(address = address, method = "osm") |>
-            filter(port_name == input$osw_port_input)
-        
-        
-        
+##### Download Button In Header Reactive to Current Tab #####
+    output$export_pdf_button <- renderUI({
+        current_tab <- input$tabs
+        if (current_tab %in% c("f_osw", "utility", "rooftop", "lb_wind", "well_cap", "phaseout")) {
+            downloadButton(outputId = paste0("export_", current_tab), label = NULL, icon = icon("file-pdf"))
+        }
     })
+    
+    
+    #  # Create reactive port for OSW map
+    # 
+    # port_input <- reactive({
+    #     data.frame(
+    #         port_name = c("Hueneme", "San Luis Obispo"),
+    #         address = c(
+    #             "Port of Hueneme, Port Hueneme, CA 93041",
+    #             "699 Embarcadero, Morro Bay, CA 93442"
+    #         )
+    #     ) %>%
+    #         tidygeocoder::geocode(address = address, method = "osm") |>
+    #         filter(port_name == input$osw_port_input)
+    #     
+    #     
+    #     
+    # })
+    
+    # Define port coordinates
+    ports_df <- data.frame(
+        port_name = c("<center><b>Port Hueneme</b><br>Click for more on ports</center>", "<center><b>Port San Luis</b><br>Click for more on ports</center>"),
+        address = c(
+            "Port of Hueneme, Port Hueneme, CA 93041",
+            "699 Embarcadero, Morro Bay, CA 93442"
+        ),
+        popup = c(
+            "Construction of specialized wind ports is <i>central</i> to job creation in the Central Coast. <br>
+            What other info can we give about ports?",
+            "Construction of specialized wind ports is <i>central</i> to job creation in the Central Coast. <br>
+            What other info can we give about ports?"
+        )) |>
+        tidygeocoder::geocode(address = address, method = "osm")
+    
+    
     
     # Interactive OSW Map ----
     observeEvent(
@@ -194,13 +292,13 @@ server <- function(input, output, session) {
             input$year_range_input,
             input$job_type_input,
             input$initial_capacity_input,
-            input$final_capacity_input,
-            input$osw_port_input
+            input$final_capacity_input
+ #           input$osw_port_input
         ),
         {
             # OSW total jobs map label ----
             # Calculate annual jobs when port is in CC
-            if (!("No Central Coast Port" %in% input$osw_port_input)) {
+ #           if (!("No Central Coast Port" %in% input$osw_port_input)) {
                 # OSW O&M jobs
                 osw_om <- calculate_osw_om_jobs(
                     county = "Tri-county",
@@ -233,16 +331,16 @@ server <- function(input, output, session) {
                 
                 # Calculate annual jobs when port is NOT in CC
                 
-            } else {
-                # Return 0 jobs
-                osw_all <- data.frame(
-                    year = integer(),
-                    n_jobs = numeric(),
-                    occupation = character(),
-                    type = character(),
-                    stringsAsFactors = FALSE
-                )
-            }
+            # } else {
+            #     # Return 0 jobs
+            #     osw_all <- data.frame(
+            #         year = integer(),
+            #         n_jobs = numeric(),
+            #         occupation = character(),
+            #         type = character(),
+            #         stringsAsFactors = FALSE
+            #     )
+            # }
             
             # Calculate total construction jobs
             const_njobs_label <- osw_all |>
@@ -259,12 +357,12 @@ server <- function(input, output, session) {
             # Generate and format label
             osw_map_label <- HTML(
                 paste(
-                    "<b>Total Jobs in Central Coast</b>",
+                    "<b>Total FTE Jobs in Central Coast</b>",
                     "<br>",
-                    "- Construction:",
+                    "Construction:",
                     scales::comma(const_njobs_label),
                     "<br>",
-                    "- O&M:",
+                    "O&M:",
                     scales::comma(om_njobs_label)
                 )
             )
@@ -290,6 +388,14 @@ server <- function(input, output, session) {
                 
                 # Base map
                 leaflet_map <- leaflet() |>
+                    addAwesomeMarkers(
+                        data = ports_df,
+                        lng = ~long,
+                        lat = ~lat,
+                        icon = port_icon,
+                        popup = ~popup,
+                        label = lapply(ports_df$port_name, HTML)
+                    ) |>
                     addProviderTiles(providers$Stadia.StamenTerrain) |>
                     setView(lng = -120.698189,
                             lat = 34.420830,
@@ -297,7 +403,7 @@ server <- function(input, output, session) {
                     addPolygons(
                         data = osw_all_counties,
                         color = 'forestgreen',
-                        opacity = 0.7,
+                        opacity = 0.7
                     ) |>
                     # Label each county with total jobs
                     addLabelOnlyMarkers(
@@ -313,26 +419,26 @@ server <- function(input, output, session) {
                 
                 
                 # Only add markers if ports are selected
-                if (!("No Central Coast Port" %in% input$osw_port_input)) {
-                    ports_df <- data.frame(
-                        port_name = c("Hueneme", "San Luis Obispo"),
-                        address = c(
-                            "Port of Hueneme, Port Hueneme, CA 93041",
-                            "699 Embarcadero, Morro Bay, CA 93442"
-                        )
-                    ) |>
-                        filter(port_name %in% input$osw_port_input) |>
-                        tidygeocoder::geocode(address = 'address', method = "osm")
-                    
-                    leaflet_map <- leaflet_map |>
-                        addAwesomeMarkers(
-                            data = ports_df,
-                            lng = ports_df$long,
-                            lat = ports_df$lat,
-                            icon = port_icon,
-                            popup = paste('Port:', ports_df$port_name)
-                        )
-                }
+                # if (!("No Central Coast Port" %in% input$osw_port_input)) {
+                #     ports_df <- data.frame(
+                #         port_name = c("Hueneme", "San Luis Obispo"),
+                #         address = c(
+                #             "Port of Hueneme, Port Hueneme, CA 93041",
+                #             "699 Embarcadero, Morro Bay, CA 93442"
+                #         )
+                #     ) |>
+                #         filter(port_name %in% input$osw_port_input) |>
+                #         tidygeocoder::geocode(address = 'address', method = "osm")
+                #     
+                #     leaflet_map <- leaflet_map |>
+                #         addAwesomeMarkers(
+                #             data = ports_df,
+                #             lng = ports_df$long,
+                #             lat = ports_df$lat,
+                #             icon = port_icon,
+                #             popup = paste('Port:', ports_df$port_name)
+                #         )
+                # }
                 
                 leaflet_map
             })
@@ -635,9 +741,35 @@ server <- function(input, output, session) {
             filter(County == input$county_input)
     })
     
+    ####### EXPORT UTILITY SOLAR AS PDF #############
+    output$export_utility <- downloadHandler(
+        filename = "utility-jobs.pdf",
+        
+        content = function(file) {
+            src <- normalizePath(here::here('app', 'files', 'utility-jobs.Rmd'))
+            
+            # Switch to a temp directory
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd), add = TRUE)
+            
+            file.copy(src, 'utility-jobs.Rmd', overwrite = TRUE)
+            
+            # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
+            output_file <- rmarkdown::render(
+                input = 'utility-jobs.Rmd',
+                output_format = "pdf_document",
+                output_file = "utility-jobs.pdf"
+            )
+            
+            # Copy the rendered PDF to the target location
+            file.copy(output_file, file, overwrite = TRUE)
+        }
+        
+    )
+    
     
     ####### EXPORT OSW AS PDF #############
-    output$export_osw <- downloadHandler(
+    output$export_f_osw <- downloadHandler(
         filename = "osw-jobs.pdf",
         
         content = function(file) {
@@ -1003,7 +1135,7 @@ server <- function(input, output, session) {
     
     # EXPORT ROOFTOP JOBS AS PDF #############
     
-    output$export_roof <- downloadHandler(
+    output$export_rooftop <- downloadHandler(
         filename = "rooftop-jobs.pdf",
         
         content = function(file) {
@@ -1578,6 +1710,32 @@ server <- function(input, output, session) {
         
     }) # End LW capacity plot
     
+    ####### EXPORT LAND BASED WIND AS PDF #############
+    output$export_lw <- downloadHandler(
+        filename = "land-wind-jobs.pdf",
+        
+        content = function(file) {
+            src <- normalizePath(here::here('app', 'files', 'land-wind-jobs.Rmd'))
+            
+            # Switch to a temp directory
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd), add = TRUE)
+            
+            file.copy(src, 'land-wind-jobs.Rmd', overwrite = TRUE)
+            
+            # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
+            output_file <- rmarkdown::render(
+                input = 'land-wind-jobs.Rmd',
+                output_format = "pdf_document",
+                output_file = "land-wind-jobs.pdf"
+            )
+            
+            # Copy the rendered PDF to the target location
+            file.copy(output_file, file, overwrite = TRUE)
+        }
+        
+    )
+    
     
     # Define reactive data frame for filtered_data
     filtered_data <- reactive({
@@ -1689,9 +1847,6 @@ server <- function(input, output, session) {
     })
     
     
-    
-    
-    
     #phaseout leaflet map output ----
     output$phaseout_county_map_output <- renderLeaflet({
         counties_input <- reactive({
@@ -1709,6 +1864,50 @@ server <- function(input, output, session) {
             markerColor = "orange"
         )
         
+        label_coords <- data.frame(
+            name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
+            lng = c(-120.7201, -121.0508, -119.4855),
+            lat = c(34.58742, 35.40949, 34.35622)
+        )
+        
+        # Get filtered projection data based on inputs
+        phaseout_projection_data <- phaseout_employment_projection(
+            county_input = input$phaseout_counties_input,
+            setback = input$phaseout_setback_input,
+            setback_existing_filter = input$phaseout_setback_existing_input,
+        )
+        
+        # Filter to 2045 and summarize total employment
+        jobs_2045_total <- phaseout_projection_data %>%
+            filter(year == 2045) %>%
+            summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+            pull(total_jobs)
+        
+        # Prepare the county data with label text
+        ca_counties <- ca_counties |>
+            mutate(
+                label_text = paste0("<b> Total Projected Fossil Fuel Jobs </b>",
+                                    "<br>", "in 2045 in ", name, " County: <br>", round(jobs_2045_total, 0))
+            )
+        
+        # Filter to 2045 and summarize total employment
+        jobs_2045_total <- phaseout_projection_data %>%
+            filter(year == 2045) %>%
+            summarise(total_jobs = sum(as.numeric(unlist(total_emp)), na.rm = TRUE)) %>%
+            pull(total_jobs)
+        
+        # Format label
+        jobs_label <- paste0(
+            "<b><font size='3'>Projected Total Fossil Fuel Employment in 2045:</font></b><br>",
+            "<font size='4'><b>", formatC(jobs_2045_total, format = "d", big.mark = ","), " FTE Jobs</b></font>"
+        )
+        
+        # Filter the data to the selected county only for both polygon and label
+        label_data <- ca_counties |>
+            filter(name == input$phaseout_counties_input) |>
+            left_join(label_coords, by = "name") |>
+            st_drop_geometry()
+        
         leaflet_map <- leaflet() |>
             addProviderTiles(providers$Stadia.StamenTerrain) |>
             setView(lng = -119.698189,
@@ -1722,8 +1921,29 @@ server <- function(input, output, session) {
                 color = "forestgreen", 
                 opacity = 0.7,
             )
-    
         
+        # Add label only for the selected county if a county is selected
+        if (!is.null(input$county_wells_input)) {
+            leaflet_map <- leaflet_map |>
+                addLabelOnlyMarkers(
+                    lng = label_data$lng,
+                    lat = label_data$lat,
+                    label = lapply(label_data$label_text, HTML),
+                    labelOptions = labelOptions(
+                        noHide = TRUE,
+                        direction = 'left',
+                        textsize = "12px",
+                        opacity = 0.9
+                    )
+                )
+        }
         leaflet_map
+    })
+    
+    ##### Project Overview image carousel #####
+    output$image_carousel <- renderSlickR({
+        slickR(
+            c("teamwork-engineer-wearing-safety-uniform.jpg", "california_counties_map1.png") 
+        )
     })
 }
