@@ -1700,6 +1700,32 @@ server <- function(input, output, session) {
         
     }) # End LW capacity plot
     
+    ####### EXPORT LAND BASED WIND AS PDF #############
+    output$export_lw <- downloadHandler(
+        filename = "land-wind-jobs.pdf",
+        
+        content = function(file) {
+            src <- normalizePath(here::here('app', 'files', 'land-wind-jobs.Rmd'))
+            
+            # Switch to a temp directory
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd), add = TRUE)
+            
+            file.copy(src, 'land-wind-jobs.Rmd', overwrite = TRUE)
+            
+            # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
+            output_file <- rmarkdown::render(
+                input = 'land-wind-jobs.Rmd',
+                output_format = "pdf_document",
+                output_file = "land-wind-jobs.pdf"
+            )
+            
+            # Copy the rendered PDF to the target location
+            file.copy(output_file, file, overwrite = TRUE)
+        }
+        
+    )
+    
     
     # Define reactive data frame for filtered_data
     filtered_data <- reactive({
