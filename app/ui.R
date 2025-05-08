@@ -2,6 +2,24 @@
 header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                           titleWidth = 400,
                           
+                          # Community Labor logo
+                          tags$li(
+                              class = "dropdown",
+                              tags$a(
+                                  href = "https://laborcenter.ucsb.edu", target = "_blank",
+                              tags$img(src = "communitylabor-logo.png", height = "30px")),
+                              style = "padding: 0 px; display: flex; align-items: center;"
+                          ),
+                          
+                          # 2035 logo
+                          tags$li(
+                              class = "dropdown",
+                              tags$a(
+                                  href = "https://www.2035initiative.com", target = "_blank",
+                              tags$img(src = "the2035initiative-logo.png", height = "30px")),
+                              style = "padding: 0 px; margin: 0; display: flex; align-items: center;"
+                          ),
+                          
                           # Add tutorial button to the header
                           tags$li(
                               class = "dropdown",
@@ -78,6 +96,26 @@ body <- dashboardBody( introjsUI(),
                        #### set theme ####
                       use_theme('dashboard-fresh-theme.css'), 
                       tags$head(
+                          tags$link(
+                              href = "https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&display=swap",
+                              rel = "stylesheet"
+                          ),
+                          tags$style(HTML("
+        body, .content-wrapper, .main-sidebar, .main-header {
+          font-family: 'Commissioner', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6, .box-title, .sidebar-menu li a {
+          font-family: 'Commissioner', sans-serif;
+        }
+        
+        /* Header title specifically */
+    .main-header .logo, 
+    .main-header .navbar {
+      font-family: 'Commissioner', sans-serif !important;
+      font-weight: 400;
+      font-size: 18px;
+      ")),
                           tags$script(HTML("
       $(document).on('shiny:connected', function() {
         $('[title]').tooltip({ placement: 'right' });
@@ -164,7 +202,7 @@ body <- dashboardBody( introjsUI(),
                                              box(
                                                  width = NULL,
                                                  tags$img(
-                                                     src = "california_counties_map1.png",
+                                                     src = "california_counties_map.png",
                                                      alt = 'Map of California with SLO, Santa Barbara, and Ventura Counties highlighted',
                                                      style = 'max-width: 100%',
                                                      height = '500px',
