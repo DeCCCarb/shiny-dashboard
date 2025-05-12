@@ -593,40 +593,97 @@ server <- function(input, output, session) {
     })
     ##### Utility Jobs Output #######
     output$utility_jobs_output <- renderPlotly({
-        county_utility_pv_om <- calculate_pv_om_jobs(
-            county = input$county_input,
+        sb_utility_pv_om <- calculate_pv_om_jobs(
+            county = "Santa Barbara",
             technology = "Utility PV",
             ambition = "High",
             start_year = input$year_range_input_utility[1],
             end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 0.2,
-            indirect_jobs = 0,
-            induced_jobs = 0
+            direct_jobs = 0.18,
+            indirect_jobs = 0.02,
+            induced_jobs = 0.01
         )
         
         # Construction Utility PV
-        county_utility_pv_const <- calculate_pv_construction_jobs(
-            county = input$county_input,
+        sb_utility_pv_const <- calculate_pv_construction_jobs(
+            county = "Santa Barbara",
             start_year = input$year_range_input_utility[1],
             end_year = input$year_range_input_utility[2],
             technology = "Utility PV",
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 1.6,
-            indirect_jobs = 0.6,
-            induced_jobs = 0.4
+            direct_jobs = 2.69,
+            indirect_jobs = 0.93,
+            induced_jobs = 0.5
+        )
+        
+        slo_utility_pv_om <- calculate_pv_om_jobs(
+            county = "San Luis Obispo",
+            technology = "Utility PV",
+            ambition = "High",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 0.18,
+            indirect_jobs = 0.02,
+            induced_jobs = 0.01
+        )
+        
+        # Construction Utility PV
+        slo_utility_pv_const <- calculate_pv_construction_jobs(
+            county = "San Luis Obispo",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            technology = "Utility PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 2.76,
+            indirect_jobs = 1.09,
+            induced_jobs = 0.51
+        )
+        
+        ventura_utility_pv_om <- calculate_pv_om_jobs(
+            county = "Ventura",
+            technology = "Utility PV",
+            ambition = "High",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 0.18,
+            indirect_jobs = 0.02,
+            induced_jobs = 0.01
+        )
+        
+        # Construction Utility PV
+        ventura_utility_pv_const <- calculate_pv_construction_jobs(
+            county = "Ventura",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            technology = "Utility PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 2.73,
+            indirect_jobs = 0.91,
+            induced_jobs = 0.5
         )
         
         # Join roof jobs by selected counties and job type
-        county_utility <- rbind(county_utility_pv_const, county_utility_pv_om) |>
-            filter(type %in% input$utility_job_type_input) |>
+        utility_all <- rbind(sb_utility_pv_const, sb_utility_pv_om,
+                             slo_utility_pv_const, slo_utility_pv_om,
+                             ventura_utility_pv_const, ventura_utility_pv_om) |>
+            filter(type %in% input$utility_job_type_input) |> # Filter to inputted job type
+            filter(county %in% input$county_input) |>
             select(-ambition)
         
         #### Utility Jobs Plot ####
-        utility_plot <- ggplot(county_utility,
+        utility_plot <- ggplot(utility_all,
                             aes(
                                 x = as.factor(year),
                                 y = round(n_jobs, 0),
@@ -996,37 +1053,92 @@ server <- function(input, output, session) {
     ##### Rooftop Solar Job Projections ####### 
     output$roof_jobs_output <- renderPlotly({
         # Calculation of rooftop solar jobs (construction and operations)
-        county_roof_pv_om <- calculate_pv_om_jobs(
-            county = input$roof_counties_input,
+        sb_roof_pv_om <- calculate_pv_om_jobs(
+            county = "Santa Barbara",
             technology = "Rooftop PV",
             ambition = "High",
             start_year = input$year_range_input_roof[1],
             end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.2,
-            indirect_jobs = 0,
-            induced_jobs = 0
+            direct_jobs = 0.22,
+            indirect_jobs = 0.028,
+            induced_jobs = 0.014
         )
         
-        county_roof_pv_const <- calculate_pv_construction_jobs(
-            county = input$roof_counties_input,
+        sb_roof_pv_const <- calculate_pv_construction_jobs(
+            county = "Santa Barbara",
             start_year = input$year_range_input_roof[1],
             end_year = input$year_range_input_roof[2],
             technology = "Rooftop PV",
             ambition = "High",
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 1.6,
-            indirect_jobs = 0.6,
-            induced_jobs = 0.4
+            direct_jobs = 5.688,
+            indirect_jobs = 4.028,
+            induced_jobs = 2.05
         )
         
-        county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
-            filter(type %in% input$roof_job_type_input) |>
-            select(-ambition)
+        slo_roof_pv_om <- calculate_pv_om_jobs(
+            county = "San Luis Obispo",
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.22,
+            indirect_jobs = 0.028,
+            induced_jobs = 0.014
+        )
+        
+        slo_roof_pv_const <- calculate_pv_construction_jobs(
+            county = "San Luis Obispo",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            technology = "Rooftop PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 6.042,
+            indirect_jobs = 4.564,
+            induced_jobs = 1.91
+        )
+        
+        ventura_roof_pv_om <- calculate_pv_om_jobs(
+            county = "Ventura",
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.22,
+            indirect_jobs = 0.028,
+            induced_jobs = 0.014
+        )
+        
+        ventura_roof_pv_const <- calculate_pv_construction_jobs(
+            county = "Ventura",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            technology = "Rooftop PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 5.906,
+            indirect_jobs = 3.964,
+            induced_jobs = 2.026
+        )
+        
+        roof_all <- rbind(sb_roof_pv_om, sb_roof_pv_const,
+                          slo_roof_pv_om, slo_roof_pv_const,
+                          ventura_roof_pv_om, ventura_roof_pv_const) |>
+            filter(type %in% input$roof_job_type_input) |> # Filter to inputted job type
+            filter(county %in% input$roof_counties_input)
+        
         ##### Rooftop Job Plot #####
-        roof_plot <- ggplot(county_roof,
+        roof_plot <- ggplot(roof_all,
                            aes(
                                x = as.factor(year),
                                y = round(n_jobs, 0),
@@ -1096,7 +1208,6 @@ server <- function(input, output, session) {
             indirect_jobs = 0,
             induced_jobs = 0
         )
-        
         
         
         ##### Rooftop Capacity Plot #####
@@ -1175,36 +1286,91 @@ server <- function(input, output, session) {
     # Reactive job calculations for selected counties
     roof_all_jobs <- reactive({
         
-        # Calculation of rooftop solar jobs (construction and operations)
-        county_roof_pv_om <- calculate_pv_om_jobs(
-            county = input$roof_counties_input,
+        # Calculation of rooftop solar jobs (construction and operations) ----
+        sb_roof_pv_om <- calculate_pv_om_jobs(
+            county = "Santa Barbara",
             technology = "Rooftop PV",
             ambition = "High",
             start_year = input$year_range_input_roof[1],
             end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.2,
-            indirect_jobs = 0,
-            induced_jobs = 0
+            direct_jobs = 0.22,
+            indirect_jobs = 0.028,
+            induced_jobs = 0.014
         )
         
-        county_roof_pv_const <- calculate_pv_construction_jobs(
-            county = input$roof_counties_input,
+        sb_roof_pv_const <- calculate_pv_construction_jobs(
+            county = "Santa Barbara",
             start_year = input$year_range_input_roof[1],
             end_year = input$year_range_input_roof[2],
             technology = "Rooftop PV",
             ambition = "High",
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 1.6,
-            indirect_jobs = 0.6,
-            induced_jobs = 0.4
+            direct_jobs = 5.688,
+            indirect_jobs = 4.028,
+            induced_jobs = 2.05
         )
         
-        county_roof <- rbind(county_roof_pv_const, county_roof_pv_om) |>
-            filter(type %in% input$roof_job_type_input) |>
-            select(-ambition)
+        slo_roof_pv_om <- calculate_pv_om_jobs(
+            county = "San Luis Obispo",
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.22,
+            indirect_jobs = 0.028,
+            induced_jobs = 0.014
+        )
+        
+        slo_roof_pv_const <- calculate_pv_construction_jobs(
+            county = "San Luis Obispo",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            technology = "Rooftop PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 6.042,
+            indirect_jobs = 4.564,
+            induced_jobs = 1.91
+        )
+        
+        ventura_roof_pv_om <- calculate_pv_om_jobs(
+            county = "Ventura",
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.22,
+            indirect_jobs = 0.028,
+            induced_jobs = 0.014
+        )
+        
+        ventura_roof_pv_const <- calculate_pv_construction_jobs(
+            county = "Ventura",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            technology = "Rooftop PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 5.906,
+            indirect_jobs = 3.964,
+            induced_jobs = 2.026
+        )
+        
+        # Create joined dataframe
+        roof_all <- rbind(sb_roof_pv_om, sb_roof_pv_const,
+                        slo_roof_pv_om, slo_roof_pv_const,
+                        ventura_roof_pv_om, ventura_roof_pv_const) |>
+            filter(type %in% input$roof_job_type_input) |> # Filter to inputted job type
+            filter(county %in% input$roof_counties_input)
     }) # End reactive to get number of jobs
     
     # Reactive county labels with job summaries
@@ -1280,59 +1446,6 @@ server <- function(input, output, session) {
                 )
             )
     }) # End render leaflet map
-    
-    
-    # output$roof_county_map_output <- renderLeaflet({
-    #     counties_input <- reactive({
-    #         if (!is.null(input$roof_counties_input)) {
-    #             ca_counties |> filter(name %in% input$roof_counties_input)
-    #         } else {
-    #             ca_counties
-    #         }
-    #     })
-    #     
-    #     icons <- awesomeIcons(
-    #         icon = 'helmet-safety',
-    #         iconColor = 'black',
-    #         library = 'fa',
-    #         markerColor = "orange"
-    #     )
-    #     
-    #     leaflet_map <- leaflet() |>
-    #         addProviderTiles(providers$Stadia.StamenTerrain) |>
-    #         setView(lng = -119.698189,
-    #                 lat = 34.420830,
-    #                 zoom = 7) |>
-    #         addPolygons(data = counties_input())
-    #     
-    #     # Only add ports if selected
-    #     if (!is.null(input$port_input) &&
-    #         length(input$port_input) > 0) {
-    #         ports <- data.frame(
-    #             port_name = c("Hueneme", "San Luis Obispo"),
-    #             address = c(
-    #                 "Port of Hueneme, Port Hueneme, CA 93041",
-    #                 "699 Embarcadero, Morro Bay, CA 93442"
-    #             )
-    #         ) |>
-    #             filter(port_name %in% input$port_input) |>
-    #             tidygeocoder::geocode(address = address, method = "osm")
-    #         
-    #         leaflet_map <- leaflet_map |>
-    #             addAwesomeMarkers(
-    #                 data = ports,
-    #                 lng = ports$long,
-    #                 lat = ports$lat,
-    #                 icon = icons,
-    #                 popup = paste('Port', ports$port_name)
-    #             )
-    #     }
-    #     
-    #     
-    #     
-    #     leaflet_map
-    # })
-    # 
     
     
     # Change UI Rooftop ambition targets --
@@ -1943,7 +2056,7 @@ server <- function(input, output, session) {
     ##### Project Overview image carousel #####
     output$image_carousel <- renderSlickR({
         slickR(
-            c("project_goal.png", "why_cc.png","focus_tech_floating_osw.png","focus_tech_rooftop_solar.png","focus_tech_utility_solar.png","focus_tech_lb_wind.png","focus_tech_oil_capping.png","other_tech.png") 
+            c("project_goal.png", "why_cc.png","focus_tech_floating_osw.png","focus_tech_lb_wind.png","focus_tech_rooftop_solar.png","focus_tech_utility_solar.png","focus_tech_oil_capping.png","phaseout.png","other_tech.png") 
         )
     })
 }
