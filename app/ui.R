@@ -881,7 +881,52 @@ tabItem(
                                            
                                   ) # END 2nd fluid row)    
                                   
-                          ) # End Fossil Fuel Phaseout tabItem
+                          ), # End Fossil Fuel Phaseout tabItem
+########## Tool Documentation/User Manual Tab #######
+tabItem(tabName = 'documentation',
+        fluidRow(column(
+            width = 12,
+            box(
+                width = NULL,
+                #title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools')),
+                column(1),
+                column(10, includeMarkdown('text/tool-documentation.md')),
+                column(1)
+            )
+        )),
+        fluidRow(
+            column(width = 12, align = "center",
+                   p("For a detailed look at the technical documentation please visit here.")
+            )
+        ), # End documentation fluidRow
+        div(style = "text-align: center; margin-bottom: 30px;",
+            h3("The Team")  # Title above the images
+        ),
+        fluidRow(
+            div(style = "display: flex; gap: 40px; justify-content: center;",
+                
+                div(style = "text-align: center;",
+                    a(href = "https://www.linkedin.com/in/elizabeth-peterson-85046b204/", target = "_blank",
+                      tags$img(src = "EP-headshot.jpeg", height = "300px")
+                    ),
+                    p("Elizabeth Peterson")
+                ),
+                div(style = "text-align: center;",
+                    a(href = 'https://www.linkedin.com/in/marina-kochuten-4786b6324/', target = "_blank",
+                      tags$img(src = "MK-headshot.jpeg", height = "300px")
+                      ),
+                    p("Marina Kochuten")
+                ),
+                div(style = "text-align: center;",
+                    a(href = "https://www.linkedin.com/in/brooke-grazda-a02248217/", target = "_blank",
+                      tags$img(src = "BG-headshot.jpeg", height = "300px")
+                      ),
+                    p("Brooke Grazda")
+                )
+            )
+            
+        ) # End first fluidrow with our headshots
+        ) # End Tool documentation tabItem
                       ) # End all tab items ----
                       
 ) # End dashboard body
