@@ -592,6 +592,7 @@ server <- function(input, output, session) {
         updateNumericInput(session, inputId = 'final_mw_utility_input', value = final_val)
     })
     ##### Utility Jobs Output #######
+    
     output$utility_jobs_output <- renderPlotly({
         county_utility_pv_om <- calculate_pv_om_jobs(
             county = input$county_input,
@@ -606,6 +607,7 @@ server <- function(input, output, session) {
             induced_jobs = 0
         )
         
+        ###### NEED TO ACCOUNT FOR THE FACT THAT EACH COUNTY HAS DIFFERENT MULTIPLIERS #####
         # Construction Utility PV
         county_utility_pv_const <- calculate_pv_construction_jobs(
             county = input$county_input,
