@@ -97,24 +97,37 @@ calculate_pv_om_jobs <- function(county, start_year, end_year, technology, ambit
     # Direct jobs
     df_direct <- df %>%
         mutate(occupation = "O&M", 
-               type = "direct", 
+               type = "Direct", 
                n_jobs = round(total_capacity_mw * direct_jobs, 2))
     
     # Indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "O&M",
-               type = "indirect", 
+               type = "Indirect", 
                n_jobs = round(total_capacity_mw * indirect_jobs, 2))
     
     # Induced jobs
     df_induced <- df %>%
         mutate(occupation = "O&M",
-               type = "induced", 
+               type = "Induced", 
                n_jobs = round(total_capacity_mw * induced_jobs, 2))
     
     # Stack them together for total jobs
-    df_final <- rbind(df_direct, df_indirect, df_induced)
+    df_combined <- rbind(df_direct, df_indirect, df_induced)
+
+    # Calculate total jobs only for the final year
+    df_total <- df_combined %>%
+        group_by(county, year, technology, ambition) %>%
+        summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") %>%
+        left_join(df %>% 
+                      select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
+                  by = c("county", "year")) %>%
+        mutate(occupation = "O&M", type = "Total")
     
+    # Combine all into final dataframe
+    df_final <- rbind(df_combined, df_total)
+    
+    # Return final result
     return(df_final)
 }
 
@@ -168,24 +181,37 @@ calculate_pv_construction_jobs <- function(county, start_year, end_year, technol
     # Direct jobs
     df_direct <- df %>%
         mutate(occupation = "Construction", 
-               type = "direct", 
+               type = "Direct", 
                n_jobs = round(new_capacity_mw * direct_jobs, 2))   # Assuming that construction jobs only last the year, jobs/mw year will multiply by the new capacity
     
     # Indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "Construction",
-               type = "indirect", 
+               type = "Indirect", 
                n_jobs = round(new_capacity_mw * indirect_jobs, 2))
     
     # Induced jobs
     df_induced <- df %>%
         mutate(occupation = "Construction",
-               type = "induced", 
+               type = "Induced", 
                n_jobs = round(new_capacity_mw * induced_jobs, 2))
     
     # Stack them together for total jobs
-    df_final <- rbind(df_direct, df_indirect, df_induced)
+    df_combined <- rbind(df_direct, df_indirect, df_induced)
     
+    # Calculate total jobs only for the final year
+    df_total <- df_combined %>%
+        group_by(county, year, technology, ambition) %>%
+        summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") %>%
+        left_join(df %>% 
+                      select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
+                  by = c("county", "year")) %>%
+        mutate(occupation = "Construction", type = "Total")
+    
+    # Combine all into final dataframe
+    df_final <- rbind(df_combined, df_total)
+    
+    # Return final result
     return(df_final)
 }
 
@@ -251,7 +277,7 @@ calculate_osw_construction_jobs <- function(county, start_year, end_year, ambiti
     # Total direct jobs each year: need to sum construction jobs over 5 year periods
     df_direct <- df %>%
         mutate(occupation = "Construction", 
-               type = "direct", 
+               type = "Direct", 
                n_jobs = zoo::rollapply(new_jobs, width = 5, FUN = sum, align = "right", partial = TRUE))
     
     # Indirect jobs
@@ -263,7 +289,7 @@ calculate_osw_construction_jobs <- function(county, start_year, end_year, ambiti
     # Total indirect jobs each year: need to sum construction jobs over 5 year periods
     df_indirect <- df %>%
         mutate(occupation = "Construction", 
-               type = "indirect", 
+               type = "Indirect", 
                n_jobs = zoo::rollapply(new_jobs, width = 5, FUN = sum, align = "right", partial = TRUE))
     
     # Induced jobs
@@ -275,11 +301,25 @@ calculate_osw_construction_jobs <- function(county, start_year, end_year, ambiti
     # Total indirect jobs each year: need to sum construction jobs over 5 year periods
     df_induced <- df %>%
         mutate(occupation = "Construction", 
-               type = "induced", 
+               type = "Induced", 
                n_jobs = zoo::rollapply(new_jobs, width = 5, FUN = sum, align = "right", partial = TRUE))
     
-    # Stack them together for total jobs
-    df_final <- rbind(df_direct, df_indirect, df_induced)
+    # Combine direct, indirect, and induced job data
+    df_combined <- rbind(df_direct, df_indirect, df_induced)
+    
+    # Calculate total jobs across all types
+    df_total <- df_combined %>%
+        group_by(county, year, technology, ambition) %>%
+        summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") %>%
+        left_join(df %>% select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
+                  by = c("county", "year")) %>%
+        mutate(occupation = "Construction", type = "Total")
+    
+    # Add the total row into the full dataframe
+    df_final <- rbind(df_combined, df_total)
+    
+    # Return the final dataframe
+    return(df_final)
     
 }
 
@@ -340,24 +380,40 @@ calculate_osw_om_jobs <- function(county, start_year, end_year, ambition, initia
     # Calculate direct jobs
     df_direct <- df %>%
         mutate(occupation = "O&M", 
-               type = "direct", 
+               type = "Direct", 
                n_jobs = total_capacity_gw * direct_jobs)
 
    # Calculate indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "O&M",
-               type = "indirect",
+               type = "Indirect",
                n_jobs = total_capacity_gw * indirect_jobs)
 
     # Calculate induced jobs
     df_induced <- df %>%
         mutate(occupation = "O&M",
-               type = "induced",
+               type = "Induced",
                n_jobs = total_capacity_gw * induced_jobs)
 
-    # Stack them together for total jobs
-    df_final <- rbind(df_direct, df_indirect, df_induced)
-
+    # Combine direct, indirect, and induced job data
+    df_combined <- rbind(df_direct, df_indirect, df_induced)
+    
+    # Get the final year
+    final_year <- max(df$year)
+    
+    # Calculate total jobs only for the final year
+    df_total <- df_combined %>%
+        filter(year == end_year) %>%
+        group_by(county, year, technology, ambition) %>%
+        summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") %>%
+        left_join(df %>% filter(year == final_year) %>% 
+                      select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
+                  by = c("county", "year")) %>%
+        mutate(occupation = "O&M", type = "Total")
+    
+    # Combine with all job types
+    df_final <- rbind(df_combined, df_total)
+    
     return(df_final)
 }
 
@@ -457,24 +513,37 @@ calculate_land_wind_om_jobs <- function(county, start_year, end_year, initial_ca
     # Direct jobs
     df_direct <- df %>%
         mutate(occupation = "O&M", 
-               type = "direct", 
+               type = "Direct", 
                n_jobs = round(total_capacity_gw * direct_jobs, 2))
     
     # Indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "O&M",
-               type = "indirect", 
+               type = "Indirect", 
                n_jobs = round(total_capacity_gw * indirect_jobs, 2))
     
     # Induced jobs
     df_induced <- df %>%
         mutate(occupation = "O&M",
-               type = "induced", 
+               type = "Induced", 
                n_jobs = round(total_capacity_gw * induced_jobs, 2))
     
     # Stack them together for total jobs
-    df_final <- rbind(df_direct, df_indirect, df_induced)
+    df_combined <- rbind(df_direct, df_indirect, df_induced)
     
+    # Calculate total jobs only for the final year
+    df_total <- df_combined %>%
+        group_by(county, year, technology, ambition) %>%
+        summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") %>%
+        left_join(df %>% 
+                      select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
+                  by = c("county", "year")) %>%
+        mutate(occupation = "O&M", type = "Total")
+    
+    # Combine all into final dataframe
+    df_final <- rbind(df_combined, df_total)
+    
+    # Return final result
     return(df_final)
 }
 
@@ -526,24 +595,37 @@ calculate_land_wind_construction_jobs <- function(county, start_year, end_year, 
     # Direct jobs - it is assumed that construction of land wind project takes on average 1 year
     df_direct <- df %>%
         mutate(occupation = "Construction", 
-               type = "direct", 
+               type = "Direct", 
                n_jobs = round(new_capacity_gw * direct_jobs, 2))
     
     # Indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "Construction",
-               type = "indirect", 
+               type = "Indirect", 
                n_jobs = round(new_capacity_gw * indirect_jobs, 2))
     
     # Induced jobs
     df_induced <- df %>%
         mutate(occupation = "Construction",
-               type = "induced", 
+               type = "Induced", 
                n_jobs = round(new_capacity_gw * induced_jobs, 2))
     
     # Stack them together for total jobs
-    df_final <- rbind(df_direct, df_indirect, df_induced)
+    df_combined <- rbind(df_direct, df_indirect, df_induced)
     
+    # Calculate total jobs only for the final year
+    df_total <- df_combined %>%
+        group_by(county, year, technology, ambition) %>%
+        summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") %>%
+        left_join(df %>% 
+                      select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
+                  by = c("county", "year")) %>%
+        mutate(occupation = "Construction", type = "Total")
+    
+    # Combine all into final dataframe
+    df_final <- rbind(df_combined, df_total)
+    
+    # Return final result
     return(df_final)
 }
 
