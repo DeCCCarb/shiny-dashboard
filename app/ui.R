@@ -184,7 +184,7 @@ tabItem(
                 solidHeader = TRUE,
                 div(
                     style = "height: 600px; display: flex; justify-content: center; align-items: center;",
-                    slickROutput("image_carousel", width = "80%", height = "80%")
+                    slickROutput("image_carousel", width = "600px", height = "600px")
                 )
             )
         )
