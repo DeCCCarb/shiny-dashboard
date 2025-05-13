@@ -25,7 +25,9 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                               class = "dropdown",
                               style = "margin-top: 10px; margin-right: 10px;",
                               actionButton("show_tutorial", label = NULL, icon = icon("question-circle"),
-                                           class = "btn btn-default", style = "color: #007BFF;"),
+                                           class = "btn btn-default",
+                                           #style = "color: #007BFF;"
+                                           ),
                               id = "tutorial_button"
                           ),
                           
@@ -316,8 +318,8 @@ tabItem(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
                                                       title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
-                                          choices = c('direct', # Change to capital
-                                                      'indirect', 'induced'),
+                                          choices = c('Direct', # Change to capital
+                                                      'Indirect', 'Induced', 'Total'),
                                           multiple = FALSE,
                                           options = pickerOptions(actionsBox = TRUE)
                                       ), 
@@ -457,7 +459,7 @@ tabItem(
                                                                class = "glyphicon glyphicon-info-sign", 
                                                                style = "color:#0072B2;",
                                                                title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
-                                                   choices = c('direct', 'induced', 'indirect'),
+                                                   choices = c('Direct', 'Indirect', 'Induced', 'Total'),
                                                    multiple = FALSE,
                                                    options = pickerOptions(actionsBox = TRUE)
                                       ), 
@@ -570,13 +572,13 @@ tabItem(
                                       
                                       pickerInput( ###### job type input ######
                                                    inputId = 'roof_job_type_input',
-                                                   label = tags$span('Direct, Indirect, of Induced Jobs',
+                                                   label = tags$span('Direct, Indirect, or Induced Jobs',
                                                                      tags$i(
                                                                          class = "glyphicon glyphicon-info-sign", 
                                                                          style = "color:#0072B2;",
                                                                          title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
                                                                      )),
-                                                   choices = c('direct', 'induced', 'indirect'),
+                                                   choices = c('Direct', 'Indirect', 'Induced', 'Total'),
                                                    multiple = FALSE,
                                                    options = pickerOptions(actionsBox = TRUE)
                                       ),
@@ -697,7 +699,7 @@ tabItem(
                                                                          style = "color:#0072B2;",
                                                                          title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare)."
                                                                      )),
-                                                   choices = c('direct', 'indirect', 'induced'),
+                                                   choices = c('Direct', 'Indirect', 'Induced', 'Total'),
                                                    multiple = FALSE,
                                                    options = pickerOptions(actionsBox = TRUE)
                                       ),
