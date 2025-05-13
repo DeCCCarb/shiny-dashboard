@@ -38,7 +38,7 @@ server <- function(input, output, session) {
                 list(intro = "<div style='text-align:center'><b>
                 👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
                 
-                A new froniter for clean energy in California's Central Coast, 
+                A new frontier for clean energy in California's Central Coast, 
                 floating offshore wind is predicted to power up to 3.5 million homes, 
                 marking a significant step towards California’s carbon neutrality goals.
                 
@@ -277,10 +277,9 @@ server <- function(input, output, session) {
             "699 Embarcadero, Morro Bay, CA 93442"
         ),
         popup = c(
+            "Construction of specialized wind ports is <i>central</i> to job creation in the Central Coast. <br>",
             "Construction of specialized wind ports is <i>central</i> to job creation in the Central Coast. <br>
-            What other info can we give about ports?",
-            "Construction of specialized wind ports is <i>central</i> to job creation in the Central Coast. <br>
-            What other info can we give about ports?"
+            "
         )) |>
         tidygeocoder::geocode(address = address, method = "osm")
     
@@ -700,7 +699,7 @@ server <- function(input, output, session) {
             scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
             labs(
                 title = glue::glue(
-                    "Projected {input$utility_job_type_input} jobs in CA Central Coast from Utility Solar development"
+                    "Projected {input$utility_job_type_input} jobs in {input$county_input} County from Utility Solar development"
                 ),
                 y = "FTE Jobs"
             ) +
