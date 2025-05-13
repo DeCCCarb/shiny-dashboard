@@ -40,34 +40,32 @@ server <- function(input, output, session) {
                 
                 A new froniter for clean energy in California's Central Coast, 
                 floating offshore wind is predicted to power up to 3.5 million homes, 
-                marking a significant step towards California’s carbon neutrality goals.
+                marking a significant step towards California’s carbon neutrality goals and catalyzing a new economy
+                around clean energy in the region. <br><br>
                 
-                It is also bound to catalyze a new economy around clean energy in the region. <br><br>
-                
-                Use this tool to explore potential job creation under different capacity scenarios of floating offshore wind development.",
+                Use this tool to explore potential job creation under different deployment scenarios of floating offshore wind development.",
                      
                      tooltipClass = "introjs-large"  # Custom class
                 ),
-                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of job you would like to see. <br><br>
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
                      Default capacity values are scaled from the statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
                      position = "right"),
                 list(element = "#osw_map_box", 
-                     intro = "This map shows the total <i>FTE job-years</i> created from your scenario for offshore wind development. <br><br> 
-                     You can think of each FTE job-year as one full-time job that lasts for one year.",
+                     intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created from your scenario for offshore wind development. <br><br> 
+                     You can think of each FTE job as one full-time job that lasts for one year.",
                      position = "left"),
                 list(element = "#osw_jobs_plot_box", 
-                     intro = "<b>Here are the projected jobs over time!</b> <br><br>
-                     In this plot, you will see the total annual jobs created in your scenario. Hover over this plot with your mouse to see the numbers divided into construction and operations & maintenance jobs. <br><br>
+                     intro = "This plot is the total projected jobs over time for your scenario. <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & maintenance jobs. <br><br>
                      Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
                      
                      tooltipClass = "introjs-wider"
                      ),
                 list(element = "#osw_capacity_plot_box", 
-                     intro = "And this chart shows annual up-and-running capacity over time. <br><br>
-                     Try hovering over points with your mouse, and try looking for that download button at the top-right."),
-                list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space."),
+                     intro = "This plot shows annual operating capacity over time. <br><br>
+                     Hover over points with your mouse to view capacity estimates. Hover over the upper right corner of the plot for the download button."),
+                list(element = ".sidebar-toggle", intro = "Collapse the sidebar using this button to get more space."),
                 list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
-                     you can use this button to download all outputs as a single PDF."),
+                     you can download all outputs for your scenario as a single PDF."),
                 list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
             shown_tutorials$f_osw <- TRUE # only run the first time a user visits the tab
@@ -461,35 +459,94 @@ server <- function(input, output, session) {
     # Reactive job calculations for selected counties
     utility_all_jobs <- reactive({
         
-        # Calculation of rooftop solar jobs (construction and operations)
-        county_utility_pv_om <- calculate_pv_om_jobs(
-            county = input$county_input,
+        sb_utility_pv_om <- calculate_pv_om_jobs(
+            county = "Santa Barbara",
             technology = "Utility PV",
             ambition = "High",
             start_year = input$year_range_input_utility[1],
             end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 0.2,
-            indirect_jobs = 0,
-            induced_jobs = 0
+            direct_jobs = 0.18,
+            indirect_jobs = 0.02,
+            induced_jobs = 0.01
         )
         
-        county_utility_pv_const <- calculate_pv_construction_jobs(
-            county = input$county_input,
+        # SB Utility PV
+        sb_utility_pv_const <- calculate_pv_construction_jobs(
+            county = "Santa Barbara",
             start_year = input$year_range_input_utility[1],
             end_year = input$year_range_input_utility[2],
             technology = "Utility PV",
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 1.6,
-            indirect_jobs = 0.6,
-            induced_jobs = 0.4
+            direct_jobs = 2.69,
+            indirect_jobs = 0.93,
+            induced_jobs = 0.5
         )
         
-        county_utility <- rbind(county_utility_pv_const, county_utility_pv_om) |>
+        # SLO Utility PV
+        slo_utility_pv_om <- calculate_pv_om_jobs(
+            county = "San Luis Obispo",
+            technology = "Utility PV",
+            ambition = "High",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 0.18,
+            indirect_jobs = 0.02,
+            induced_jobs = 0.01
+        )
+        
+        slo_utility_pv_const <- calculate_pv_construction_jobs(
+            county = "San Luis Obispo",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            technology = "Utility PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 2.76,
+            indirect_jobs = 1.09,
+            induced_jobs = 0.51
+        )
+        
+        # Ventura Utility PV
+        ventura_utility_pv_om <- calculate_pv_om_jobs(
+            county = "Ventura",
+            technology = "Utility PV",
+            ambition = "High",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 0.18,
+            indirect_jobs = 0.02,
+            induced_jobs = 0.01
+        )
+        
+        # Construction Utility PV
+        ventura_utility_pv_const <- calculate_pv_construction_jobs(
+            county = "Ventura",
+            start_year = input$year_range_input_utility[1],
+            end_year = input$year_range_input_utility[2],
+            technology = "Utility PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_utility_input,
+            final_capacity = input$final_mw_utility_input,
+            direct_jobs = 2.73,
+            indirect_jobs = 0.91,
+            induced_jobs = 0.5
+        )
+        
+        # Join roof jobs by selected counties and job type
+        county_utility <- rbind(sb_utility_pv_const, sb_utility_pv_om,
+                                slo_utility_pv_const, slo_utility_pv_om,
+                                ventura_utility_pv_const, ventura_utility_pv_om) |>
             filter(type %in% input$utility_job_type_input) |>
+            filter(county %in% input$county_input) |>
             select(-ambition)
     }) # End reactive to get number of jobs
     
@@ -607,8 +664,7 @@ server <- function(input, output, session) {
             induced_jobs = 0.01
         )
         
-        ###### NEED TO ACCOUNT FOR THE FACT THAT EACH COUNTY HAS DIFFERENT MULTIPLIERS #####
-        # Construction Utility PV
+        # SB Utility PV
         sb_utility_pv_const <- calculate_pv_construction_jobs(
             county = "Santa Barbara",
             start_year = input$year_range_input_utility[1],
@@ -622,6 +678,7 @@ server <- function(input, output, session) {
             induced_jobs = 0.5
         )
         
+        # SLO Utility PV
         slo_utility_pv_om <- calculate_pv_om_jobs(
             county = "San Luis Obispo",
             technology = "Utility PV",
@@ -635,7 +692,6 @@ server <- function(input, output, session) {
             induced_jobs = 0.01
         )
         
-        # Construction Utility PV
         slo_utility_pv_const <- calculate_pv_construction_jobs(
             county = "San Luis Obispo",
             start_year = input$year_range_input_utility[1],
@@ -649,6 +705,7 @@ server <- function(input, output, session) {
             induced_jobs = 0.51
         )
         
+        # Ventura Utility PV
         ventura_utility_pv_om <- calculate_pv_om_jobs(
             county = "Ventura",
             technology = "Utility PV",
@@ -938,7 +995,7 @@ server <- function(input, output, session) {
                 scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
                 labs(
                     title = glue::glue(
-                        "Projected {input$job_type_input} jobs in CA Central Coast from Floating OSW development"
+                        "Projected {input$job_type_input} Jobs in CA Central Coast from Floating OSW development"
                     ),
                     y = "FTE Jobs"
                 ) +
