@@ -913,33 +913,53 @@ tabItem(tabName = 'documentation',
                    p("For a detailed look at the technical documentation please visit here.")
             )
         ), # End documentation fluidRow
+        
         div(style = "text-align: center; margin-bottom: 30px;",
-            h3("The Team")  # Title above the images
+            h3("The Team")
         ),
+        
         fluidRow(
-            div(style = "display: flex; gap: 40px; justify-content: center;",
-                
-                div(style = "text-align: center;",
-                    a(href = "https://www.linkedin.com/in/elizabeth-peterson-85046b204/", target = "_blank",
-                      tags$img(src = "EP-headshot.jpeg", height = "300px")
-                    ),
-                    p("Elizabeth Peterson")
-                ),
-                div(style = "text-align: center;",
-                    a(href = 'https://www.linkedin.com/in/marina-kochuten-4786b6324/', target = "_blank",
-                      tags$img(src = "MK-headshot.jpeg", height = "300px")
-                      ),
-                    p("Marina Kochuten")
-                ),
-                div(style = "text-align: center;",
-                    a(href = "https://www.linkedin.com/in/brooke-grazda-a02248217/", target = "_blank",
-                      tags$img(src = "BG-headshot.jpeg", height = "300px")
-                      ),
-                    p("Brooke Grazda")
-                )
+            column(width = 4, align = "center",
+                   p("Elizabeth Peterson"),
+                   div(
+                       a(href = "mailto:elizabethpeterson@bren.ucsb.edu", 
+                         icon("envelope", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                       HTML("&nbsp;&nbsp;"),
+                       a(href = "https://github.com/egp4aq", 
+                         icon("github", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                       HTML("&nbsp;&nbsp;"),
+                       a(href = "https://egp4aq.github.io", 
+                         icon("globe", style = "font-size: 1.5em; color: black;"), target = "_blank")
+                   )
+            ),
+            column(width = 4, align = "center",
+                   p("Marina Kochuten"),
+                   div(
+                       a(href = "mailto:marinakochuten@bren.ucsb.edu", 
+                         icon("envelope", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                       HTML("&nbsp;&nbsp;"),
+                       a(href = "https://github.com/marinakochuten", 
+                         icon("github", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                       HTML("&nbsp;&nbsp;"),
+                       a(href = "https://marinakochuten.github.io", 
+                         icon("globe", style = "font-size: 1.5em; color: black;"), target = "_blank")
+                   )
+            ),
+            column(width = 4, align = "center",
+                   p("Brooke Grazda"),
+                   div(
+                       a(href = "mailto:bgrazda@bren.ucsb.edu", 
+                         icon("envelope", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                       HTML("&nbsp;&nbsp;"),
+                       a(href = "https://github.com/bgrazda", 
+                         icon("github", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                       HTML("&nbsp;&nbsp;"),
+                       a(href = "https://bgrazda.github.io", 
+                         icon("globe", style = "font-size: 1.5em; color: black;"), target = "_blank")
+                   )
             )
-            
-        ) # End first fluidrow with our headshots
+        )
+        
         ) # End Tool documentation tabItem
                       ) # End all tab items ----
                       
