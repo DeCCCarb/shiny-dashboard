@@ -198,17 +198,23 @@ server <- function(input, output, session) {
                 it remains an essential component of the region’s transition.",
                      tooltipClass = "introjs-large"),
                 list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize."),
-                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
                      created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
                      position = "left"),
+                list(element = "#cap_jobs_plot_box", intro = "This plot is the cumulative projected direct jobs over time in your county. That is, the the total number of direct jobs that have been created each year since 2025.
+                <br><br> Hover your mouse over the points to see the number of direct jobs each year <br><br> 
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#cap_plot_box", intro = "This plot shows the total number of wells capped over time. <br><br>
+                     Hover over points with your mouse to view number of wells. Hover over the upper right corner of the plot for the download button."),
                 list(
                     element = ".sidebar-toggle",
                     intro = "Collapse the sidebar using this button to get more space."
                 ),
                 list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
                      you can download all outputs for your scenario as a single PDF."),
-                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
-                     <br><br> <b> Happy exploring! </b>")
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
             shown_tutorials$well_cap <- TRUE # only run the first time a user visits the tab
             
