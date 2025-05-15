@@ -102,22 +102,31 @@ body <- dashboardBody( introjsUI(),
                               href = "https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&display=swap",
                               rel = "stylesheet"
                           ),
-                          tags$style(HTML("
-        body, .content-wrapper, .main-sidebar, .main-header {
-          font-family: 'Commissioner', sans-serif;
-        }
+                                                tags$style(HTML("
+  /* Global font settings */
+  body, .content-wrapper, .main-sidebar, .main-header {
+    font-family: 'Commissioner', sans-serif;
+  }
 
-        h1, h2, h3, h4, h5, h6, .box-title, .sidebar-menu li a {
-          font-family: 'Commissioner', sans-serif;
-        }
-        
-        /* Header title specifically */
-    .main-header .logo, 
-    .main-header .navbar {
-      font-family: 'Commissioner', sans-serif !important;
-      font-weight: 400;
-      font-size: 18px;
-      ")),
+  h1, h2, h3, h4, h5, h6, .box-title, .sidebar-menu li a {
+    font-family: 'Commissioner', sans-serif;
+  }
+
+  /* Header title & navbar styling */
+  .main-header .logo, 
+  .main-header .navbar {
+    font-family: 'Commissioner', sans-serif !important;
+    font-weight: 400;
+    font-size: 18px;
+    background-color: #DDE1E5 !important;
+  }
+
+  /* Ensure text and buttons in header are white */
+  .main-header .navbar .navbar-brand,
+  .main-header .navbar .dropdown a,
+  .main-header .logo {
+  }
+")),
                           tags$script(HTML("
       $(document).on('shiny:connected', function() {
         $('[title]').tooltip({ placement: 'right' });
@@ -317,7 +326,7 @@ tabItem(
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
+                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs.")), 
                                           choices = c('Direct', # Change to capital
                                                       'Indirect', 'Induced', 'Total'),
                                           multiple = FALSE,
@@ -399,7 +408,7 @@ tabItem(
                                                        tags$i(
                                                            class = "glyphicon glyphicon-info-sign", 
                                                            style = "color:#0072B2;",
-                                                           title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                           title = "Choose a county to analyze."
                                                        )),
                                                    choices = unique(counties$County),
                                                    selected = c('Ventura'),
@@ -414,7 +423,7 @@ tabItem(
                                               tags$i(
                                                   class = "glyphicon glyphicon-info-sign", 
                                                   style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                  title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
                                               )),
                                           min = 2025,
                                           max = 2045,
@@ -431,7 +440,7 @@ tabItem(
                                               tags$i(
                                                   class = "glyphicon glyphicon-info-sign", 
                                                   style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                  title = "Currently installed capacity in your county in megawatts."
                                               )),
                                           value = 0,
                                           min = 0
@@ -444,7 +453,7 @@ tabItem(
                                               tags$i(
                                                   class = "glyphicon glyphicon-info-sign", 
                                                   style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                  title = "Target capacity to reach by final input year in megawatts."
                                               )),
                                           value = 0,
                                           min = 0
@@ -458,7 +467,7 @@ tabItem(
                                                            tags$i(
                                                                class = "glyphicon glyphicon-info-sign", 
                                                                style = "color:#0072B2;",
-                                                               title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
+                                                               title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs.")), 
                                                    choices = c('Direct', 'Indirect', 'Induced', 'Total'),
                                                    multiple = FALSE,
                                                    options = pickerOptions(actionsBox = TRUE)
@@ -519,7 +528,7 @@ tabItem(
                                                        tags$i(
                                                            class = "glyphicon glyphicon-info-sign", 
                                                            style = "color:#0072B2;",
-                                                           title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                           title = "Choose a county to analyze."
                                                        )),
                                                    choices = unique(counties$County),
                                                    selected = c('Ventura'),
@@ -534,7 +543,7 @@ tabItem(
                                               tags$i(
                                                   class = "glyphicon glyphicon-info-sign", 
                                                   style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                  title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
                                               )),
                                               
                                           min = 2025,
@@ -551,7 +560,7 @@ tabItem(
                                                             tags$i(
                                               class = "glyphicon glyphicon-info-sign", 
                                               style = "color:#0072B2;",
-                                              title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                              title = "Currently installed capacity in your county in megawatts."
                                           )),
                                           value = 0,
                                           # placeholder — will be updated
@@ -564,7 +573,7 @@ tabItem(
                                                             tags$i(
                                               class = "glyphicon glyphicon-info-sign", 
                                               style = "color:#0072B2;",
-                                              title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                              title = "Target capacity to reach by final input year in megawatts."
                                           )),
                                           value = 0,
                                           min = 0
@@ -576,7 +585,7 @@ tabItem(
                                                                      tags$i(
                                                                          class = "glyphicon glyphicon-info-sign", 
                                                                          style = "color:#0072B2;",
-                                                                         title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                                         title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs."
                                                                      )),
                                                    choices = c('Direct', 'Indirect', 'Induced', 'Total'),
                                                    multiple = FALSE,
@@ -697,7 +706,7 @@ tabItem(
                                                                      tags$i(
                                                                          class = "glyphicon glyphicon-info-sign",
                                                                          style = "color:#0072B2;",
-                                                                         title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare)."
+                                                                         title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs."
                                                                      )),
                                                    choices = c('Direct', 'Indirect', 'Induced', 'Total'),
                                                    multiple = FALSE,
