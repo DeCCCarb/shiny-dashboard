@@ -198,17 +198,23 @@ server <- function(input, output, session) {
                 it remains an essential component of the region’s transition.",
                      tooltipClass = "introjs-large"),
                 list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize."),
-                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
                      created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
                      position = "left"),
+                list(element = "#cap_jobs_plot_box", intro = "This plot is the cumulative projected direct jobs over time in your county. That is, the the total number of direct jobs that have been created each year since 2025.
+                <br><br> Hover your mouse over the points to see the number of direct jobs each year <br><br> 
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#cap_plot_box", intro = "This plot shows the total number of wells capped over time. <br><br>
+                     Hover over points with your mouse to view number of wells. Hover over the upper right corner of the plot for the download button."),
                 list(
                     element = ".sidebar-toggle",
                     intro = "Collapse the sidebar using this button to get more space."
                 ),
                 list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
                      you can download all outputs for your scenario as a single PDF."),
-                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
-                     <br><br> <b> Happy exploring! </b>")
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
             shown_tutorials$well_cap <- TRUE # only run the first time a user visits the tab
             
@@ -2373,96 +2379,105 @@ server <- function(input, output, session) {
     
     #phaseout leaflet map output ----
     output$phaseout_county_map_output <- renderLeaflet({
-        counties_input <- reactive({
-            if (!is.null(input$phaseout_counties_input)) {
-                ca_counties |> filter(name %in% input$phaseout_counties_input)
-            } else {
-                ca_counties
-            }
-        })
-        
-        icons <- awesomeIcons(
-            icon = 'helmet-safety',
-            iconColor = 'black',
-            library = 'fa',
-            markerColor = "orange"
-        )
-        
-        label_coords <- data.frame(
-            name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
-            lng = c(-120.7201, -121.0508, -119.4855),
-            lat = c(34.58742, 35.40949, 34.35622)
-        )
-        
-        # Get filtered projection data based on inputs
-        phaseout_projection_data <- phaseout_employment_projection(
-            county_input = input$phaseout_counties_input,
-            setback = input$phaseout_setback_input,
-            setback_existing_filter = input$phaseout_setback_existing_input,
-        )
-        
-        # Filter to 2045 and summarize total employment
-        jobs_2045_total <- phaseout_projection_data %>%
-            filter(year == 2045) %>%
-            summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
-            pull(total_jobs)
-        
-        # Prepare the county data with label text
-        ca_counties <- ca_counties |>
-            mutate(
-                label_text = paste0("<b> Total Projected Fossil Fuel Jobs </b>",
-                                    "<br>", "in 2045 in ", name, " County: <br>", round(jobs_2045_total, 0))
-            )
-        
-        # Filter to 2045 and summarize total employment
-        jobs_2045_total <- phaseout_projection_data %>%
-            filter(year == 2045) %>%
-            summarise(total_jobs = sum(as.numeric(unlist(total_emp)), na.rm = TRUE)) %>%
-            pull(total_jobs)
-        
-        # Format label
-        jobs_label <- paste0(
-            "<b><font size='3'>Projected Total Fossil Fuel Employment in 2045:</font></b><br>",
-            "<font size='4'><b>", formatC(jobs_2045_total, format = "d", big.mark = ","), " FTE Jobs</b></font>"
-        )
-        
-        # Filter the data to the selected county only for both polygon and label
-        label_data <- ca_counties |>
-            filter(name == input$phaseout_counties_input) |>
-            left_join(label_coords, by = "name") |>
-            st_drop_geometry()
-        
-        leaflet_map <- leaflet() |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -119.698189,
-                    lat = 34.420830,
-                    zoom = 7)
-        
-        # Add the polygon for the selected county only (hide others)
-        leaflet_map <- leaflet_map |>
-            addPolygons(
-                data = ca_counties |> filter(name == input$phaseout_counties_input),  # Only add selected county's polygon
-                color = "forestgreen", 
-                opacity = 0.7,
-            )
-        
-        # Add label only for the selected county if a county is selected
-        if (!is.null(input$county_wells_input)) {
-            leaflet_map <- leaflet_map |>
-                addLabelOnlyMarkers(
-                    lng = label_data$lng,
-                    lat = label_data$lat,
-                    label = lapply(label_data$label_text, HTML),
-                    labelOptions = labelOptions(
-                        noHide = TRUE,
-                        direction = 'left',
-                        textsize = "12px",
-                        opacity = 0.9
-                    )
-                )
+    counties_input <- reactive({
+        if (!is.null(input$phaseout_counties_input)) {
+            ca_counties |> filter(name %in% input$phaseout_counties_input)
+        } else {
+            ca_counties
         }
-        leaflet_map
     })
+
+    icons <- awesomeIcons(
+        icon = 'helmet-safety',
+        iconColor = 'black',
+        library = 'fa',
+        markerColor = "orange"
+    )
+
+    label_coords <- data.frame(
+        name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
+        lng = c(-120.7201, -121.0508, -119.4855),
+        lat = c(34.58742, 35.40949, 34.35622)
+    )
+
+    # Get projection data based on input
+    phaseout_projection_data <- phaseout_employment_projection(
+        county_input = input$phaseout_counties_input,
+        setback = input$phaseout_setback_input,
+        setback_existing_filter = input$phaseout_setback_existing_input
+    )
+
+    # Get total employment in 2021 and 2045
+    jobs_2025_total <- phaseout_projection_data %>%
+        filter(year == 2025) %>%
+        summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+        pull(total_jobs)
+
+    jobs_2045_total <- phaseout_projection_data %>%
+        filter(year == 2045) %>%
+        summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+        pull(total_jobs)
+
+    # Calculate percent decrease
+    percent_decrease <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
+        round((1 - (jobs_2045_total / jobs_2025_total)) * 100, 1)
+    } else {
+        NA
+    }
+
+    # Build label
+    percent_label <- paste0(
+        "<b>Projected % Decrease in Fossil Fuel Jobs <br>
+        (",input$phaseout_counties_input," County, 2025–2045): </b>", percent_decrease, "%<br><br>",
+        "<b>Projected Jobs in 2045:</b> ",
+        round(jobs_2045_total, 0)
+    )
+
+    # Add label to selected counties
+    ca_counties <- ca_counties |>
+        mutate(
+            label_text = percent_label
+        )
+
+    # Prepare label data
+    label_data <- ca_counties |>
+        filter(name == input$phaseout_counties_input) |>
+        left_join(label_coords, by = "name") |>
+        st_drop_geometry()
+
+    leaflet_map <- leaflet() |>
+        addProviderTiles(providers$Stadia.StamenTerrain) |>
+        setView(lng = -121.698189,
+                lat = 34.420830,
+                zoom = 7)
+
+    # Add selected county polygon
+    leaflet_map <- leaflet_map |>
+        addPolygons(
+            data = ca_counties |> filter(name == input$phaseout_counties_input),
+            color = "forestgreen",
+            opacity = 0.7
+        )
+
+    # Add label if county is selected
+    if (!is.null(input$phaseout_counties_input)) {
+        leaflet_map <- leaflet_map |>
+            addLabelOnlyMarkers(
+                lng = label_data$lng,
+                lat = label_data$lat,
+                label = lapply(label_data$label_text, HTML),
+                labelOptions = labelOptions(
+                    noHide = TRUE,
+                    direction = 'left',
+                    textsize = "12px",
+                    opacity = 0.9
+                )
+            )
+    }
+
+    leaflet_map
+})
+
     
     ##### Project Overview image carousel #####
     output$image_carousel <- renderSlickR({

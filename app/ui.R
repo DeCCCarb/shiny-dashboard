@@ -195,8 +195,9 @@ tabItem(
                 solidHeader = TRUE,
                 div(
                     style = "height: 600px; display: flex; justify-content: center; align-items: center;",
-                    slickROutput("image_carousel", width = "600px", height = "600px")
-                )
+                    withSpinner(slickROutput("image_carousel", width = "600px", height = "600px"),
+                                type = 1, color = '#09847A'
+                ))
             )
         )
     ),
