@@ -215,14 +215,32 @@ server <- function(input, output, session) {
             # FF phaseout ---- 
         } else if (input$tabs == "phaseout" && !shown_tutorials$phaseout) {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Fossil Fuel Phaseout tab! What does this even mean?"),
-                list(element = "#phaseout_inputs_box", intro = "Start by adjusting assumptions for county and setback policy."),
-                list(element = "#phaseout_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#phaseout_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
+                     In this tab, we report reusults from an emperical model built by Deshmukh et al. 
+                     to allow you to compare direct job loss by county under varying setback policies. <br><br>
+                     What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
+                     sensitive areas, such as homes, schools, hospitals, and other public spaces.
+                     ", tooltipClass = "introjs-large"),
+                list(element = "#phaseout_inputs_box", intro = "Start by selecting a county and setback policy. Default values are
+                a 3,200 foot setback distance applied to only new wells, which matches the state’s 
+                current setback policy distance.",
+                     position = "right"),
+                list(element = "#phaseout_map_box", intro = "This map shows the percent reduction in direct job loss from 
+                     2025-2045 based on your input scenario.", 
+                     position = "left"),
+                list(element = "#phaseout_jobs_plot_box", intro = "This plot is the total projected direct jobs over time for your 
+                scenario. 
+                <br><br> Hover over this plot with your mouse to see the total number of direct jobs that year. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     tooltipClass = "introjs-wider"),
                 list(
                     element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
             )))
             shown_tutorials$phaseout <- TRUE # only run the first time a user visits the tab
         }
@@ -302,15 +320,35 @@ server <- function(input, output, session) {
             # Rooftop ----
         } else if (input$tabs == "rooftop") {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Rooftop Solar Development tab!"),
-                list(element = "#roof_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
-                list(element = "#roof_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#roof_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#roof_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(intro = "<b>👋 Welcome to the Rooftop Solar Development tab!</b><br><br>Use this tool to explore 
+                     potential job creation under different deployment scenarios of rooftop solar development.",
+                     tooltipClass = "introjs-large"),  # Custom class
+                list(element = "#roof_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
+                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+                     Default capacity values are scaled to each county from the statewide goals outlined in 
+                     California Air Resources Board's 2022 Scoping Plan.",
+                     position = "right"),
+                list(element = "#roof_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                from your scenario for rooftop solar development. <br><br> 
+                         You can think of each FTE job as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#roof_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
+                <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
+                maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#roof_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
+                     Hover over points with your mouse to view capacity estimates. 
+                     Hover over the upper right corner of the plot for the download button."),
                 list(
                     element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
             )))
             
             # Land wind ----
@@ -371,14 +409,32 @@ server <- function(input, output, session) {
             # FF phaseout ----
         } else if (input$tabs == "phaseout") {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Fossil Fuel Phaseout tab! What does this even mean?"),
-                list(element = "#phaseout_inputs_box", intro = "Start by adjusting assumptions for county and setback policy."),
-                list(element = "#phaseout_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#phaseout_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
+                     In this tab, we report reusults from an emperical model built by Deshmukh et al. 
+                     to allow you to compare direct job loss by county under varying setback policies. <br><br>
+                     What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
+                     sensitive areas, such as homes, schools, hospitals, and other public spaces.
+                     ", tooltipClass = "introjs-large"),
+                list(element = "#phaseout_inputs_box", intro = "Start by selecting a county and setback policy. Default values are
+                a 3,200 foot setback distance applied to only new wells, which matches the state’s 
+                current setback policy distance.",
+                     position = "right"),
+                list(element = "#phaseout_map_box", intro = "This map shows the percent reduction in direct job loss from 
+                     2025-2045 based on your input scenario.", 
+                     position = "left"),
+                list(element = "#phaseout_jobs_plot_box", intro = "This plot is the total projected direct jobs over time for your 
+                scenario. 
+                <br><br> Hover over this plot with your mouse to see the total number of direct jobs that year. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     tooltipClass = "introjs-wider"),
                 list(
                     element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
             )))
         }
         })
