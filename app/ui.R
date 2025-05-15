@@ -207,7 +207,7 @@ tabItem(
             width = 6,
             box(
                 width = NULL,
-                title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools')),
+                title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools Used')),
                 column(1),
                 column(10, includeMarkdown('text/citation.md')),
                 column(1)
