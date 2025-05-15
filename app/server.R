@@ -393,17 +393,23 @@ server <- function(input, output, session) {
                 it remains an essential component of the region’s transition.",
                      tooltipClass = "introjs-large"),
                 list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize."),
-                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
                      created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
                      position = "left"),
+                list(element = "#cap_jobs_plot_box", intro = "This plot is the cumulative projected direct jobs over time in your county. That is, the the total number of direct jobs that have been created each year since 2025.
+                <br><br> Hover your mouse over the points to see the number of direct jobs each year <br><br> 
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#cap_plot_box", intro = "This plot shows the total number of wells capped over time. <br><br>
+                     Hover over points with your mouse to view number of wells. Hover over the upper right corner of the plot for the download button."),
                 list(
                     element = ".sidebar-toggle",
                     intro = "Collapse the sidebar using this button to get more space."
                 ),
                 list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
                      you can download all outputs for your scenario as a single PDF."),
-                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
-                     <br><br> <b> Happy exploring! </b>")
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
             
             # FF phaseout ----
@@ -2179,8 +2185,9 @@ server <- function(input, output, session) {
             geom_col(position = "dodge", fill = "#A3BDBE") +
             labs(
                 title = glue::glue(
-                    "Projected fossil fuel jobs in {input$phaseout_counties_input} County"),
+                    "Projected Fossil Fuel Fobs in {input$phaseout_counties_input} County"),
                 y = 'Total direct employment') +
+            scale_y_continuous(labels = scales::label_comma()) +
             theme_minimal() +
             theme(axis.title.x = element_blank())
         
@@ -2202,6 +2209,105 @@ server <- function(input, output, session) {
     
     
 ##### OIL CAPPING #####
+    
+    # Oil capping jobs plot ----
+    output$oil_capping_jobs_plot <- renderPlotly({
+        
+        
+        # Filter data for selected county
+        county_data <- oil_capping_jobs_all |> 
+            filter(county == input$county_wells_input)
+        
+        # Create ggplot
+        p <- ggplot(county_data) +
+            geom_point(
+                aes(
+                    x = as.factor(year),
+                    y = total_jobs_created,
+                    text = paste0("Year: ", year, "<br>Cumulative Jobs Created: ", scales::comma(total_jobs_created))
+                ),
+                color = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+            scale_y_continuous(
+                labels = scales::label_comma()
+            ) +
+            labs(
+                title = paste("Cumulative Jobs Created in", {input$county_wells_input}, "County"),
+                y = "Total Jobs Created"
+            ) +
+            theme_minimal() +
+            theme(
+                axis.title.x = element_blank()
+            )
+        
+        plotly::ggplotly(p, tooltip = "text") |>
+            config(
+                modeBarButtonsToRemove = c('zoom2d', 'pan2d', 'autoScale',
+                                           'zoomIn', 'zoomOut', 'select',
+                                           'resetScale', 'lasso'),
+                displaylogo = FALSE,
+                toImageButtonOptions = list(
+                    format = "jpeg",
+                    width = 1000,
+                    height = 700,
+                    scale = 15
+                )
+            ) |>
+            layout(hovermode = "x unified")
+    })
+    
+    # Oil capping wells plot ----
+    output$oil_capping_plot <- renderPlotly({
+        
+        
+        # Filter data for selected county
+        county_data <- oil_capping_jobs_all |> 
+            filter(county == input$county_wells_input)
+        
+        # Define max_y for annotation line
+        max_y <- max(county_data$total_wells_capped, na.rm = TRUE)
+        
+        # Create ggplot
+        p <- ggplot(county_data) +
+            geom_point(
+                aes(
+                    x = as.factor(year),
+                    y = total_wells_capped,
+                    text = paste0("Year: ", year, "<br>Wells Capped: ", scales::comma(total_wells_capped))
+                ),
+                color = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+            scale_y_continuous(
+                labels = scales::label_comma()
+            ) +
+            labs(
+                title = paste("Well Capping Projection for", {input$county_wells_input}, "County"),
+                y = "Number of Wells Capped"
+            ) +
+            theme_minimal() +
+            theme(
+                axis.title.x = element_blank()
+            )
+        
+        plotly::ggplotly(p, tooltip = "text") |>
+            config(
+                modeBarButtonsToRemove = c('zoom2d', 'pan2d', 'autoScale',
+                                           'zoomIn', 'zoomOut', 'select',
+                                           'resetScale', 'lasso'),
+                displaylogo = FALSE,
+                toImageButtonOptions = list(
+                    format = "jpeg",
+                    width = 1000,
+                    height = 700,
+                    scale = 15
+                )
+            ) |>
+            layout(hovermode = "x unified")
+    })
+    
+    
     # Oil capping leaflet map output ----
     output$capping_map_output <- renderLeaflet({
         
@@ -2218,8 +2324,8 @@ server <- function(input, output, session) {
         # Prepare the county data with label text
         ca_counties <- ca_counties |>
             mutate(
-                label_text = paste0("<b><u><font size = '2.5'>", name, " County </b></u></font><br>Total Oil & Gas Wells: ", well_count,
-                                    "<br> Total FTE Jobs: ", n_jobs,
+                label_text = paste0("<b><u><font size = '2.5'>", name, " County </b></u></font><br>Total Oil & Gas Wells: ", scales::comma(well_count),
+                                    "<br> Total FTE Jobs: ", scales::comma(n_jobs),
                                     "<br>",
                                     "<br> Capping all idle & active wells from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
                                     )
@@ -2235,7 +2341,7 @@ server <- function(input, output, session) {
         # Set up the map
         leaflet_map <- leaflet() |>
             addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -120.298189, lat = 34.820830, zoom = 8)
+            setView(lng = -120.40189, lat = 34.920030, zoom = 8)
         
         # Add the polygon for the selected county only (hide others)
         leaflet_map <- leaflet_map |>

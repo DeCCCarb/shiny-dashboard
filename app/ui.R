@@ -754,47 +754,51 @@ tabItem(
                           ), # End Land Based Wind tabItem
                           
 # OIL WELL CAPPING TAB ----
-                          tabItem(tabName = 'well_cap', 
-                                  
-                                  ##### left hand column #####
-                                  column(width = 4,
-                                         box(width = 12,
-                                             
+tabItem(tabName = 'well_cap', 
+        
+        fluidRow(
+                   box(width = 4,
+                       # County picker input
+                       pickerInput(
+                           inputId = 'county_wells_input',
+                           label = tags$span("County",
+                                             tags$i(
+                                                 class = "glyphicon glyphicon-info-sign", 
+                                                 style = "color:#0072B2;",
+                                                 title = "Choose a county"
+                                             )),
+                           choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
+                           multiple = FALSE
+                       ), # End pickerInput
+                       id = "cap_inputs_box" # For tutorial
+                   ), # End input box
 
-                                             pickerInput( ###### county input ######
-                                                          
-                                                          inputId = 'county_wells_input',
-                                                          label = tags$span("County",
-                                                                            tags$i(
-                                                                                class = "glyphicon glyphicon-info-sign", 
-                                                                                style = "color:#0072B2;",
-                                                                                title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                                                            )),
-                                                          choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
-                                                          multiple = FALSE
-                                             ), # End county picker
-                                             
-                                             id = "cap_inputs_box" # for tutorial
-                                             
-                                         ) # End box for inputs 
-
-                                         ), # END left hand column
-                                  
-                                  ##### right hand column #####
-                                  column(width = 8,
-
-                                         box( ###### map output ######
-                                              width = 12,
-                                              leafletOutput(outputId = 'capping_map_output',
-                                                            height = "800px") |>
-                                                  withSpinner(type = 1, color = '#09847A'),
-                                              
-                                              id = "cap_map_box" # for tutorial
-                                            )  # END leaflet box
-                                         ) # END right hand column
-                                  
-                                  
-                          ), # end well capping tab item
+                   box(
+                       width = 8,
+                       leafletOutput(outputId = 'capping_map_output', height = "500px") |>
+                           withSpinner(type = 1, color = '#09847A'),
+                       id = "cap_map_box" # For tutorial
+                   )
+            ), # end first fluid row
+        
+        # second fluid row
+        fluidRow(
+            box(
+                width = 6,
+                plotlyOutput(outputId = "oil_capping_jobs_plot", height = "400px") |>
+                    withSpinner(type = 1, color = '#09847A'),
+                id = "cap_jobs_plot_box" # For tutorial
+            ), # END jobs plot box
+            
+            box(
+                width = 6,
+                plotlyOutput(outputId = "oil_capping_plot", height = "400px") |>
+                    withSpinner(type = 1, color = '#09847A'),
+                id = "cap_plot_box" # For tutorial
+            ) # END total wells capped box
+        ) # END second fluid row
+        
+),
                           
 # FOSSIL FUEL PHASEOUT TAB ----
                           tabItem(tabName = 'phaseout', 
@@ -810,7 +814,7 @@ tabItem(
                                                                 tags$i(
                                                                     class = "glyphicon glyphicon-info-sign", 
                                                                     style = "color:#0072B2;",
-                                                                    title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                                    title = "Choose a county"
                                                                 )),
                                               choices = c('Santa Barbara', 'San Luis Obispo', 'Ventura'),
                                               selected = c('Ventura'),
@@ -827,7 +831,7 @@ tabItem(
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "The current California state setback policy is 3200 feet.")
+                                                      title = "The current California state setback policy is 3,200 feet.")
                                               ),
                                               choices = c(
                                                   '1000 ft' = 'setback_1000ft',
@@ -850,7 +854,7 @@ tabItem(
                                                   tags$i(
                                                       class = "glyphicon glyphicon-info-sign", 
                                                       style = "color:#0072B2;",
-                                                      title = "If the setback policy only applies to new wells, it is unlikely that progress will be made at the rate that we need.")
+                                                      title = "Currently in California, setback is only applied to new wells.")
                                               ),
                                               choices = c(
                                                   'Setback policy applies to new and existing wells' = 0,
