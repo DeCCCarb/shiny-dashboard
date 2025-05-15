@@ -301,7 +301,7 @@ tabItem(
                                                       style = "color:#0072B2;",
                                                       title = "Capacity (GW) for initial construction project, to go online 5 years following start year. Value must not be 0.")
                                               ),
-                                          value = 0.1,
+                                          value = 0.5,
                                           min = 0
                                       ), 
                                       ###### final capacity input  ######
@@ -437,11 +437,11 @@ tabItem(
                                       numericInput( ###### initial capacity input  ######
                                           inputId = 'initial_mw_utility_input',
                                           label = tags$span(
-                                              'Initial Capacity (MW)',
+                                              'Current Capacity (MW)',
                                               tags$i(
                                                   class = "glyphicon glyphicon-info-sign", 
                                                   style = "color:#0072B2;",
-                                                  title = "Currently installed capacity in your county in megawatts."
+                                                  title = "Currently installed capacity in your county in megawatts. Value must not be 0."
                                               )),
                                           value = 0,
                                           min = 0
@@ -557,11 +557,11 @@ tabItem(
                                       
                                       numericInput( ###### initial capacity input ######
                                           inputId = 'initial_mw_roof_input',
-                                          label = tags$span('Initial Capacity (MW)',
+                                          label = tags$span('Current Capacity (MW)',
                                                             tags$i(
                                               class = "glyphicon glyphicon-info-sign", 
                                               style = "color:#0072B2;",
-                                              title = "Currently installed capacity in your county in megawatts."
+                                              title = "Currently installed capacity in your county in megawatts. Value must not be 0."
                                           )),
                                           value = 0,
                                           # placeholder — will be updated
@@ -861,7 +861,7 @@ tabItem(tabName = 'well_cap',
                                                   'Setback policy applies to new and existing wells' = 0,
                                                   'Setback policy applies only to new wells' = 1
                                               ),
-                                              selected = 0,
+                                              selected = 1,
                                               multiple = FALSE,
                                               options = pickerOptions(actionsBox = TRUE)
                                           ),
