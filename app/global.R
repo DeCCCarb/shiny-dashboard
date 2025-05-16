@@ -24,6 +24,7 @@ library(tmap)
 library(usdata)
 library(sf)
 library(readxl)
+library(markdown)
 
 ########### Read in data ####################
 
