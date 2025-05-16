@@ -607,7 +607,7 @@ server <- function(input, output, session) {
                         popup = ~popup,
                         label = lapply(ports_df$port_name, HTML)
                     ) |>
-                    addProviderTiles(providers$Stadia.StamenTerrain) |>
+                    addProviderTiles("CartoDB.Voyager") |>
                     setView(lng = -120.698189,
                             lat = 34.420830,
                             zoom = 7) |>
