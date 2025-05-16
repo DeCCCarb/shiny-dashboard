@@ -2482,7 +2482,7 @@ server <- function(input, output, session) {
     ##### Project Overview image carousel #####
     output$image_carousel <- renderSlickR({
         slickR(
-            c("project_goal2.svg", "why_cc.svg","focus_tech_floating_osw.svg","focus_tech_lb_wind.svg","focus_tech_rooftop_solar.svg","focus_tech_utility_solar.svg","focus_tech_oil_capping.svg","phaseout.png","other_tech.svg") 
+            c("why_cc.svg","project_goal.svg","correct_tech.svg","all_tech.svg","next_step.svg") 
         )
     })
 }
