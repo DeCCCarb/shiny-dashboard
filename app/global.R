@@ -27,10 +27,10 @@ library(readxl)
 
 ########### Read in data ####################
 
-counties <- read_csv(here::here('app','data', 'ccc-coords.csv'))
+counties <- read_csv(('data/ccc-coords.csv'))
 
 
-job_projections <- read_csv(here::here('app','data','subset_county_results.csv')) %>% 
+job_projections <- read_csv('data/subset_county_results.csv') %>% 
     filter(county %in% c('Santa Barbara','San Luis Obispo','Ventura'))
 
 
@@ -38,7 +38,7 @@ job_projections <- read_csv(here::here('app','data','subset_county_results.csv')
 ########### Shapefile for leaflet map in server ####################
 
 
-ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties.shp')) %>%
+ca_counties <- sf::read_sf(('data/ca_counties/CA_Counties.shp')) %>%
     sf::st_transform('+proj=longlat +datum=WGS84') |> 
     janitor::clean_names() |> 
     filter(namelsad %in% c('Santa Barbara County', 'Ventura County', 'San Luis Obispo County'))
@@ -662,7 +662,7 @@ phaseout_employment_projection <- function(county_input, excise_tax = 'no tax', 
 #################### Oil Capping Workflow ####################
 
 # Read in well data from Deshmukh et al. paper
-wells <- read_csv(here("app", "data", "AllWells_20210427.csv"))
+wells <- read_csv("data/AllWells_20210427.csv")
 
 ############################# Santa Barbara #############################
 

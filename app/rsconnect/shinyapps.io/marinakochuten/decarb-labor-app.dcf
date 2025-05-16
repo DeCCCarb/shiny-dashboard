@@ -5,6 +5,6 @@ account: marinakochuten
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14769839
-bundleId: 10295536
+bundleId: 10295636
 url: https://marinakochuten.shinyapps.io/decarb-labor-app/
 version: 1
