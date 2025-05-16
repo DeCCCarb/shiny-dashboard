@@ -819,7 +819,7 @@ server <- function(input, output, session) {
         
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            addProviderTiles("CartoDB.Voyager") |>
             setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
             addPolygons(
                 color = "darkgreen",
@@ -1731,7 +1731,7 @@ server <- function(input, output, session) {
         
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            addProviderTiles("CartoDB.Voyager") |>
             setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
             addPolygons(
                 color = "darkgreen",
@@ -1925,7 +1925,7 @@ server <- function(input, output, session) {
         
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            addProviderTiles("CartoDB.Voyager") |>
             setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
             addPolygons(
                 color = "darkgreen",
@@ -2346,7 +2346,7 @@ server <- function(input, output, session) {
         
         # Set up the map
         leaflet_map <- leaflet() |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            addProviderTiles("CartoDB.Voyager") |>
             setView(lng = -120.40189, lat = 34.920030, zoom = 8)
         
         # Add the polygon for the selected county only (hide others)
@@ -2446,7 +2446,7 @@ server <- function(input, output, session) {
         st_drop_geometry()
 
     leaflet_map <- leaflet() |>
-        addProviderTiles(providers$Stadia.StamenTerrain) |>
+        addProviderTiles("CartoDB.Voyager") |>
         setView(lng = -121.698189,
                 lat = 34.420830,
                 zoom = 7)
