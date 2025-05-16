@@ -27,7 +27,7 @@ library(readxl)
 
 ########### Read in data ####################
 
-counties <- read_excel(here::here('app','data', 'ccc-coords.xlsx'))
+counties <- read_csv(here::here('app','data', 'ccc-coords.csv'))
 
 
 job_projections <- read_csv(here::here('app','data','subset_county_results.csv')) %>% 
