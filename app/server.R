@@ -224,7 +224,7 @@ server <- function(input, output, session) {
                 list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
                      In this tab, we report reusults from an emperical model built by Deshmukh et al. 
                      to allow you to compare direct job loss by county under varying setback policies. <br><br>
-                     What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
+                     A setback policy is the required minimum distance between oil and gas drilling activities and certain
                      sensitive areas, such as homes, schools, hospitals, and other public spaces.
                      ", tooltipClass = "introjs-large"),
                 list(element = "#phaseout_inputs_box", intro = "Start by selecting a county and setback policy. Default values are
@@ -2407,7 +2407,7 @@ server <- function(input, output, session) {
         setback_existing_filter = input$phaseout_setback_existing_input
     )
 
-    # Get total employment in 2021 and 2045
+    # Get total employment in 2025 and 2045
     jobs_2025_total <- phaseout_projection_data %>%
         filter(year == 2025) %>%
         summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
