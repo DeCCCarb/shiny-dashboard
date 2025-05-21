@@ -47,6 +47,228 @@ server <- function(input, output, session) {
                      
                      tooltipClass = "introjs-large"  # Custom class
                 ),
+                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years 
+                and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+                     Default capacity values are scaled from the statewide goal of 25 GW by 2045 
+                     (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
+                     position = "right"),
+                list(element = "#osw_map_box", 
+                     intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created from your 
+                     scenario for offshore wind development. <br><br> 
+                     You can think of each FTE job as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#osw_jobs_plot_box", 
+                     intro = "This plot is the total projected jobs over time for your scenario. <br><br> 
+                     Hover over this plot with your mouse to see the numbers divided into construction and 
+                     operations & maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"
+                     ),
+                list(element = "#osw_capacity_plot_box", 
+                     intro = "This plot shows annual operating capacity over time. <br><br>
+                     Hover over points with your mouse to view capacity estimates. Hover over the upper right corner 
+                     of the plot for the download button."),
+                list(element = ".sidebar-toggle", intro = "Collapse the sidebar using this button to get more space."),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
+            )))
+            shown_tutorials$f_osw <- TRUE # only run the first time a user visits the tab
+            
+            # Utility ----
+        } else if (input$tabs == "utility" && !shown_tutorials$utility) {
+            introjs(session, options = list(steps = list(
+                list(intro = "<b>👋 Welcome to the Utility Solar Development tab!</b><br><br>Use this tool to explore 
+                     potential job creation under different deployment scenarios of utility-scale solar development.",
+                     tooltipClass = "introjs-large"),  # Custom class
+                list(element = "#util_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
+                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+                     Default capacity values are scaled to each county from the statewide goals outlined in 
+                     California Air Resources Board's 2022 Scoping Plan.",
+                     position = "right"),
+                list(element = "#util_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                from your scenario for utility solar development. <br><br> 
+                         You can think of each FTE job as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#util_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
+                <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
+                maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#util_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
+                     Hover over points with your mouse to view capacity estimates. Hover over the upper 
+                     right corner of the plot for the download button."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
+            )))
+            shown_tutorials$utility <- TRUE # only run the first time a user visits the tab
+            
+            # Rooftop ----
+        } else if (input$tabs == "rooftop" && !shown_tutorials$rooftop) {
+            introjs(session, options = list(steps = list(
+                list(intro = "<b>👋 Welcome to the Rooftop Solar Development tab!</b><br><br>Use this tool to explore 
+                     potential job creation under different deployment scenarios of rooftop solar development.",
+                     tooltipClass = "introjs-large"),  # Custom class
+                list(element = "#roof_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
+                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+                     Default capacity values are scaled to each county from the statewide goals outlined in 
+                     California Air Resources Board's 2022 Scoping Plan.",
+                     position = "right"),
+                list(element = "#roof_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                from your scenario for rooftop solar development. <br><br> 
+                         You can think of each FTE job as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#roof_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
+                <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
+                maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#roof_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
+                     Hover over points with your mouse to view capacity estimates. 
+                     Hover over the upper right corner of the plot for the download button."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
+            )))
+            shown_tutorials$rooftop <- TRUE # only run the first time a user visits the tab
+            
+            # Land wind ----
+        } else if (input$tabs == "lb_wind" && !shown_tutorials$lb_wind) {
+            introjs(session, options = list(steps = list(
+                list(intro = "<b>👋 Welcome to the Land Based Wind Development tab!</b><br><br>
+                Currently, the Strauss Wind Farm in Santa Barbara County is the only land based wind project in the Central Coast. 
+                     <br><br>Use this tool to explore potential job creation under different 
+                     deployment scenarios of land based wind development.",
+                     tooltipClass = "introjs-large"),
+                list(element = "#lw_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
+                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+                     There are no publically available capacity goals for land based wind in the Central Coast. 
+                     Default values are based on the current capacity of the Strauss Wind Farm.",
+                     position = "right"),
+                list(element = "#lw_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                from your scenario for land based wind development. <br><br> 
+                         You can think of each FTE job as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#lw_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
+                <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
+                maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#lw_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
+                     Hover over points with your mouse to view capacity estimates. 
+                     Hover over the upper right corner of the plot for the download button."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
+            )))
+            shown_tutorials$lb_wind <- TRUE # only run the first time a user visits the tab
+            
+            # Well capping ----
+        } else if (input$tabs == "well_cap" && !shown_tutorials$well_cap) {
+            introjs(session, options = list(steps = list(
+                list(intro = "<b>👋 Welcome to the Onshore Oil Well Capping tab! </b><br><br>
+                Capping oil wells is a crucial step in effective decarbonization. 
+                Idle wells pose health risks and environmental hazards, emitting pollutants long after production ends. <br><br>
+                In this tab, we show the number of jobs that could be created from capping all idle and active oil and gas wells 
+                in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
+                it remains an essential component of the region’s transition.",
+                     tooltipClass = "introjs-large"),
+                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize."),
+                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
+                     created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
+                     position = "left"),
+                list(element = "#cap_jobs_plot_box", intro = "This plot is the cumulative projected direct jobs over time in your county. That is, the the total number of direct jobs that have been created each year since 2025.
+                <br><br> Hover your mouse over the points to see the number of direct jobs each year <br><br> 
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#cap_plot_box", intro = "This plot shows the total number of wells capped over time. <br><br>
+                     Hover over points with your mouse to view number of wells. Hover over the upper right corner of the plot for the download button."),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
+            )))
+            shown_tutorials$well_cap <- TRUE # only run the first time a user visits the tab
+            
+            # FF phaseout ---- 
+        } else if (input$tabs == "phaseout" && !shown_tutorials$phaseout) {
+            introjs(session, options = list(steps = list(
+                list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
+                     In this tab, we report reusults from an emperical model built by Deshmukh et al. 
+                     to allow you to compare direct job loss by county under varying setback policies. <br><br>
+                     What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
+                     sensitive areas, such as homes, schools, hospitals, and other public spaces.
+                     ", tooltipClass = "introjs-large"),
+                list(element = "#phaseout_inputs_box", intro = "Start by selecting a county and setback policy. Default values are
+                a 3,200 foot setback distance applied to only new wells, which matches the state’s 
+                current setback policy distance.",
+                     position = "right"),
+                list(element = "#phaseout_map_box", intro = "This map shows the percent reduction in direct job loss from 
+                     2025-2045 based on your input scenario.", 
+                     position = "left"),
+                list(element = "#phaseout_jobs_plot_box", intro = "This plot is the total projected direct jobs over time for your 
+                scenario. 
+                <br><br> Hover over this plot with your mouse to see the total number of direct jobs that year. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     tooltipClass = "introjs-wider"),
+                list(
+                    element = ".sidebar-toggle",
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
+            )))
+            shown_tutorials$phaseout <- TRUE # only run the first time a user visits the tab
+        }
+    })
+    
+    # Play tutorial when "Show Tutorial" button is pressed ----
+    observeEvent(input$show_tutorial, {
+        
+        # OSW ----
+        if (input$tabs == "f_osw") {
+            introjs(session, options = list(steps = list(
+                list(intro = "<div style='text-align:center'><b>
+                👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
+                
+                A new froniter for clean energy in California's Central Coast, 
+                floating offshore wind is predicted to power up to 3.5 million homes, 
+                marking a significant step towards California’s carbon neutrality goals and catalyzing a new economy
+                around clean energy in the region. <br><br>
+                
+                Use this tool to explore potential job creation under different deployment scenarios 
+                     of floating offshore wind development.",
+>>>>>>> parent of fc97268 (Update tutorial)
+                     
+                     tooltipClass = "introjs-large"  # Custom class
+                ),
                 list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
                      Default capacity values are scaled from the statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
                      position = "right"),
@@ -2044,6 +2266,7 @@ server <- function(input, output, session) {
     
     #phaseout leaflet map output ----
     output$phaseout_county_map_output <- renderLeaflet({
+
         counties_input <- reactive({
             if (!is.null(input$phaseout_counties_input)) {
                 ca_counties |> filter(name %in% input$phaseout_counties_input)
@@ -2056,7 +2279,67 @@ server <- function(input, output, session) {
             icon = 'helmet-safety',
             iconColor = 'black',
             library = 'fa',
-            markerColor = "orange"
+            markerColor = "orange")
+
+    counties_input <- reactive({
+        if (!is.null(input$phaseout_counties_input)) {
+            ca_counties |> filter(name %in% input$phaseout_counties_input)
+        } else {
+            ca_counties
+        }
+    })
+
+    icons <- awesomeIcons(
+        icon = 'helmet-safety',
+        iconColor = 'black',
+        library = 'fa',
+        markerColor = "orange"
+    )
+
+    label_coords <- data.frame(
+        name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
+        lng = c(-120.7201, -121.0508, -119.4855),
+        lat = c(34.58742, 35.40949, 34.35622)
+    )
+
+    # Get projection data based on input
+    phaseout_projection_data <- phaseout_employment_projection(
+        county_input = input$phaseout_counties_input,
+        setback = input$phaseout_setback_input,
+        setback_existing_filter = input$phaseout_setback_existing_input
+    )
+
+    # Get total employment in 2021 and 2045
+    jobs_2025_total <- phaseout_projection_data %>%
+        filter(year == 2025) %>%
+        summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+        pull(total_jobs)
+
+    jobs_2045_total <- phaseout_projection_data %>%
+        filter(year == 2045) %>%
+        summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+        pull(total_jobs)
+
+    # Calculate percent decrease
+    percent_decrease <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
+        round((1 - (jobs_2045_total / jobs_2025_total)) * 100, 1)
+    } else {
+        NA
+    }
+
+    # Build label
+    percent_label <- paste0(
+        "<b>Projected % Decrease in Fossil Fuel Jobs <br>
+        (",input$phaseout_counties_input," County, 2025–2045): </b>", percent_decrease, "%<br><br>",
+        "<b>Projected Jobs in 2045:</b> ",
+        round(jobs_2045_total, 0)
+    )
+
+    # Add label to selected counties
+    ca_counties <- ca_counties |>
+        mutate(
+            label_text = percent_label
+
         )
         
         label_coords <- data.frame(
