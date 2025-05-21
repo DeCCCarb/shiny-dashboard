@@ -10,9 +10,8 @@ geometry: margin=.5in
 ---
 
 
-```{r logo, out.width="3.7in", echo=FALSE}
-knitr::include_graphics(here("app", "www", "the2035initiative-logo.png"))
-knitr::include_graphics(here("app", "www", "communitylabor-logo.png"))
+```{r logo, out.width="3.7in", fig.align='center', echo=FALSE}
+knitr::include_graphics(here("app", "www", "logos.jpeg"))
 ```
 
 ```{r setup, include=FALSE}
@@ -99,7 +98,7 @@ osw_map_label <- paste(
 
 ```
 
-## For the total duration of all projects needed to meet your capacity goal of `r final_cap` (GW) for Floating Offshore Wind by `r final_year`, there would be `r scales::comma(const_njobs_label)` construction and `r scales::comma(om_njobs_label)` operations & maintenance jobs. 
+## For the total duration of all projects needed to meet your capacity goal of `r final_cap` (GW) for Floating Offshore Wind by `r final_year`, there would be `r scales::comma(const_njobs_label)` construction and `r scales::comma(om_njobs_label)` operations & maintenance full time equivalent (FTE) jobs. 
 
 
 
@@ -212,7 +211,7 @@ osw_map_label <- paste(
 ```
 
 
-```{r, fig.align="center", fig.show='hold', fig.width = 3.75, fig.height = 2.5, warning=FALSE, message=FALSE, quiet=TRUE}
+```{r, fig.align="center", fig.show='hold', fig.width = 5.25, fig.height =3.5, warning=FALSE, message=FALSE, quiet=TRUE}
 # O&M OSW ---
         osw <- calculate_osw_om_jobs(
             county = "Tri-county",
@@ -243,6 +242,29 @@ osw_map_label <- paste(
 osw_cap_plot
 
 ```
+
+
+
+**Background**
+
+Economic changes driven by decarbonization will impact the labor markets across the Central Coast. These projections are not only intended to inform discussions about offshore wind and other renewable energy jobs to advocate for a just transition but also to serve as a model for how research can support just transitions in energy communities across the United States. Given the uncertainty around county-specific solar and land wind capacity targets and floating offshore wind development, this tool provides flexibility for modeling different scenarios and can be customized based on varying assumptions related to regional energy capacity developments. 
+
+
+The Jobs and Economic Development Impact (JEDI) models, developed by the National Renewable Energy Laboratory, estimate direct, indirect, and induced employment impacts from renewable energy deployment. JEDI incorporates economic multipliers from IMPLAN, which quantify the broader economic effects of industry activity in specific regions. Using county-level IMPLAN multipliers in JEDI’s User Add-in Location feature allowed for analysis at the county level rather than the default state level. 
+
+
+**Model Assumptions**
+
+
+It is assumed that, on average, floating offshore wind construction projects last 5 years. Since JEDI estimates for construction jobs are given in terms of the lifetime of construction, these estimates were divided by 5 to convert them to annual estimates and distribute across the construction period. Total annual construction jobs were then calculated in two steps. First, new jobs created each year were calculated by multiplying JEDI estimates by the newly added capacity that year. Second, total annual jobs were calculated by using a rolling sum of new jobs over 5 years. This accounts for construction jobs lasting the average 5 year construction period. 
+
+
+JEDI is a static model. As such, it relies on inter-industry relationships and personal consumption patterns existing in the year of the multipliers. For this analysis, multipliers were for the year 2025. The model does not account for shifts in industry inputs or changes in consumption patterns that could result from changes in prices. Similarly, the model does not automatically take into account industry productivity improvements that may occur over time or changes that may occur in the construction or operations processes.
+
+
+
+
+
 
 
 
