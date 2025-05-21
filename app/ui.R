@@ -7,7 +7,7 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                               class = "dropdown",
                               tags$a(
                                   href = "https://laborcenter.ucsb.edu", target = "_blank",
-                              tags$img(src = "communitylabor-logo.png", height = "30px")),
+                                  tags$img(src = "communitylabor-logo.png", height = "30px")),
                               style = "padding: 0 px; display: flex; align-items: center;"
                           ),
                           
@@ -16,7 +16,7 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                               class = "dropdown",
                               tags$a(
                                   href = "https://www.2035initiative.com", target = "_blank",
-                              tags$img(src = "the2035initiative-logo.png", height = "30px")),
+                                  tags$img(src = "the2035initiative-logo.png", height = "30px")),
                               style = "padding: 0 px; margin: 0; display: flex; align-items: center;"
                           ),
                           
@@ -27,7 +27,7 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
                               actionButton("show_tutorial", label = NULL, icon = icon("question-circle"),
                                            class = "btn btn-default",
                                            #style = "color: #007BFF;"
-                                           ),
+                              ),
                               id = "tutorial_button"
                           ),
                           
@@ -43,7 +43,7 @@ header <- dashboardHeader(title = htmlOutput("dynamic_header_title"),
 # Dashboard sidebar ----
 sidebar <- dashboardSidebar(
     collapsed = FALSE,
-###### initialize tab names ######
+    ###### initialize tab names ######
     sidebarMenu(
         id = "tabs",
         menuItem(
@@ -96,29 +96,38 @@ sidebar <- dashboardSidebar(
 # Dashboard body ----
 body <- dashboardBody( introjsUI(),
                        #### set theme ####
-                      use_theme('dashboard-fresh-theme.css'), 
-                      tags$head(
-                          tags$link(
-                              href = "https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&display=swap",
-                              rel = "stylesheet"
-                          ),
-                          tags$style(HTML("
-        body, .content-wrapper, .main-sidebar, .main-header {
-          font-family: 'Commissioner', sans-serif;
-        }
+                       use_theme('dashboard-fresh-theme.css'), 
+                       tags$head(
+                           tags$link(
+                               href = "https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&display=swap",
+                               rel = "stylesheet"
+                           ),
+                           tags$style(HTML("
+  /* Global font settings */
+  body, .content-wrapper, .main-sidebar, .main-header {
+    font-family: 'Commissioner', sans-serif;
+  }
 
-        h1, h2, h3, h4, h5, h6, .box-title, .sidebar-menu li a {
-          font-family: 'Commissioner', sans-serif;
-        }
-        
-        /* Header title specifically */
-    .main-header .logo, 
-    .main-header .navbar {
-      font-family: 'Commissioner', sans-serif !important;
-      font-weight: 400;
-      font-size: 18px;
-      ")),
-                          tags$script(HTML("
+  h1, h2, h3, h4, h5, h6, .box-title, .sidebar-menu li a {
+    font-family: 'Commissioner', sans-serif;
+  }
+
+  /* Header title & navbar styling */
+  .main-header .logo, 
+  .main-header .navbar {
+    font-family: 'Commissioner', sans-serif !important;
+    font-weight: 400;
+    font-size: 18px;
+    background-color: #DDE1E5 !important;
+  }
+
+  /* Ensure text and buttons in header are white */
+  .main-header .navbar .navbar-brand,
+  .main-header .navbar .dropdown a,
+  .main-header .logo {
+  }
+")),
+                           tags$script(HTML("
       $(document).on('shiny:connected', function() {
         $('[title]').tooltip({ placement: 'right' });
       });
@@ -131,10 +140,10 @@ body <- dashboardBody( introjsUI(),
 //        $('.main-footer').css('margin-left', newWidth);
 //      });
     "))
-                      ), # HTML Hover tip
-                      
-                      # Make a larger popup box style
-                      tags$style(HTML("
+                       ), # HTML Hover tip
+                       
+                       # Make a larger popup box style
+                       tags$style(HTML("
       .introjs-large {
         max-width: none !important;
       width: 500px !important;
@@ -149,13 +158,13 @@ body <- dashboardBody( introjsUI(),
       }
       
     ")), # END larger popup box styling
-                      tabItems(
-# PROJECT OVERVIEW TAB ITEM ----
-tabItem(
-    tabName = 'overview',
-    
-    tags$head(
-        tags$style(HTML("
+                       tabItems(
+                           # PROJECT OVERVIEW TAB ITEM ----
+                           tabItem(
+                               tabName = 'overview',
+                               
+                               tags$head(
+                                   tags$style(HTML("
       .slick-slide img {
         max-width: 100%;
         max-height: 100%;
@@ -166,94 +175,95 @@ tabItem(
         object-fit: contain;
       }
     "))
-    ),
-    
-    # PAGE TITLE
-    fluidRow(
-        column(
-            width = 12,
-            tags$h1("Welcome to the Labor Impact Explorer for the California Central Coast", style = "text-align: center; padding-top: 10px;")
-        )
-    ),
-    
-    # IMAGE CAROUSEL (full width)
-    fluidRow(
-        column(
-            width = 12,
-            box(
-                width = NULL,
-                title = NULL,
-                solidHeader = TRUE,
-                div(
-                    style = "height: 600px; display: flex; justify-content: center; align-items: center;",
-                    slickROutput("image_carousel", width = "600px", height = "600px")
-                )
-            )
-        )
-    ),
-    
-    # ECONOMIC MODELING TOOLS BOX
-    fluidRow(
-        column(
-            width = 6,
-            box(
-                width = NULL,
-                title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools')),
-                column(1),
-                column(10, includeMarkdown('text/citation.md')),
-                column(1)
-            )
-        ),
-        column(
-            width = 6,
-            box(
-                width = NULL,
-                title = tagList(icon('user'), tags$strong('Our Partners')),
-                column(1),
-                column(10, includeMarkdown('text/disclaimer.md')),
-                column(1)
-            )
-        )
-    )
-),
-                          
-                          
-                          
-# FLOATING OFFSHORE WIND TAB ----
-                          
-                          tabItem(
-                              
-                              tabName = 'f_osw',
-
-                              fluidRow( ##### First fluidRow (picker inputs) #####
-                                  
-                                   box(
-                                      width = 4,
-
-                                      shinyjs::useShinyjs(),
-                                      
-                                      ###### year range slider input ######
-                                      sliderInput(
-                                          inputId = 'year_range_input',
-                                          label = tags$span(
-                                              "Year Construction Starts - Year to Meet Target", 
-                                              tags$i(
-                                                  class = "glyphicon glyphicon-info-sign", 
-                                                  style = "color:#0072B2;",
-                                                  title = "Construction requires, on average, 5 years. Time to reach capacity goals must be greater than 5 years."
-                                              )
-                                          ), 
-                                          min = 2025, 
-                                          max = 2045, 
-                                          value = c(2025, 2045),
-                                          step = 1, 
-                                          ticks = F,
-                                          sep = ""
-                                          
-                                      ),
-                                      # Make a year slider have a minimum range of 6 years
-                                      tags$script(
-                                          HTML("
+                               ),
+                               
+                               # PAGE TITLE
+                               fluidRow(
+                                   column(
+                                       width = 12,
+                                       tags$h1("Welcome to the Labor Impact Explorer for the California Central Coast", style = "text-align: center; padding-top: 10px;")
+                                   )
+                               ),
+                               
+                               # IMAGE CAROUSEL (full width)
+                               fluidRow(
+                                   column(
+                                       width = 12,
+                                       box(
+                                           width = NULL,
+                                           title = NULL,
+                                           solidHeader = TRUE,
+                                           div(
+                                               style = "height: 600px; display: flex; justify-content: center; align-items: center;",
+                                               withSpinner(slickROutput("image_carousel", width = "600px", height = "600px"),
+                                                           type = 1, color = '#09847A'
+                                               ))
+                                       )
+                                   )
+                               ),
+                               
+                               # ECONOMIC MODELING TOOLS BOX
+                               fluidRow(
+                                   column(
+                                       width = 6,
+                                       box(
+                                           width = NULL,
+                                           title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools Used')),
+                                           column(1),
+                                           column(10, includeMarkdown('text/citation.md')),
+                                           column(1)
+                                       )
+                                   ),
+                                   column(
+                                       width = 6,
+                                       box(
+                                           width = NULL,
+                                           title = tagList(icon('user'), tags$strong('Our Partners')),
+                                           column(1),
+                                           column(10, includeMarkdown('text/disclaimer.md')),
+                                           column(1)
+                                       )
+                                   )
+                               )
+                           ),
+                           
+                           
+                           
+                           # FLOATING OFFSHORE WIND TAB ----
+                           
+                           tabItem(
+                               
+                               tabName = 'f_osw',
+                               
+                               fluidRow( ##### First fluidRow (picker inputs) #####
+                                         
+                                         box(
+                                             width = 4,
+                                             
+                                             shinyjs::useShinyjs(),
+                                             
+                                             ###### year range slider input ######
+                                             sliderInput(
+                                                 inputId = 'year_range_input',
+                                                 label = tags$span(
+                                                     "Year Construction Starts - Year to Meet Target", 
+                                                     tags$i(
+                                                         class = "glyphicon glyphicon-info-sign", 
+                                                         style = "color:#0072B2;",
+                                                         title = "Construction requires, on average, 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                     )
+                                                 ), 
+                                                 min = 2025, 
+                                                 max = 2045, 
+                                                 value = c(2025, 2045),
+                                                 step = 1, 
+                                                 ticks = F,
+                                                 sep = ""
+                                                 
+                                             ),
+                                             # Make a year slider have a minimum range of 6 years
+                                             tags$script(
+                                                 HTML("
                             // Wait until the document is ready
                             $(document).on('shiny:connected', function() {
                             // Custom minimum range
@@ -278,657 +288,681 @@ tabItem(
                                                                        }
                                                                      });
                                                                    "
-                                          )
-                                      ), 
-                                      ###### initial capacity input  ######
-                                      numericInput(
-                                          inputId = 'initial_capacity_input',
-                                          label =
-                                              tags$span(
-                                                  'Capacity (GW) of Initial Construction Project', 
-                                                  tags$i(
-                                                      class = "glyphicon glyphicon-info-sign", 
-                                                      style = "color:#0072B2;",
-                                                      title = "Capacity (GW) for initial construction project, to go online 5 years following start year. Value must not be 0.")
-                                              ),
-                                          value = 0.1,
-                                          min = 0
-                                      ), 
-                                      ###### final capacity input  ######
-                                      numericInput(
-                                          inputId = 'final_capacity_input',
-                                          label =
-                                              tags$span(
-                                                  'Target Capacity (GW)', 
-                                                  tags$i(
-                                                      class = "glyphicon glyphicon-info-sign", 
-                                                      style = "color:#0072B2;",
-                                                      title = "Enter total capacity to be up-and-running in the final year.")
-                                              ),
-                                          value = 15,
-                                          min = 0
-                                      ), 
-                                      ###### job type input  ######
-                                      pickerInput(
-                                          inputId = 'job_type_input',
-                                          label =
-                                              tags$span(
-                                                  'Direct, Indirect, or Induced Jobs', 
-                                                  tags$i(
-                                                      class = "glyphicon glyphicon-info-sign", 
-                                                      style = "color:#0072B2;",
-                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
-                                          choices = c('Direct', # Change to capital
-                                                      'Indirect', 'Induced', 'Total'),
-                                          multiple = FALSE,
-                                          options = pickerOptions(actionsBox = TRUE)
-                                      ), 
-                                      # ###### port input  ######
-                                      # pickerInput(
-                                      #     inputId = 'osw_port_input',
-                                      #     label =
-                                      #         tags$span(
-                                      #             'Offshore Wind Port Location', 
-                                      #             tags$i(
-                                      #                 class = "glyphicon glyphicon-info-sign", 
-                                      #                 style = "color:#0072B2;",
-                                      #                 title = "Specialized wind ports will be the ")
-                                      #         ),
-                                      #     choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
-                                      #     selected = NULL,
-                                      #     multiple = FALSE,
-                                      #     options = pickerOptions(actionsBox = TRUE)
-                                      # ), 
-                                      
-                                      id = "osw_inputs_box"  # for tutorial
-                                  ), # END input box
-                                  
-                                  ###### map output  ######
-                                  box(
-                                      width = 8,
-                                      
-                                      leafletOutput(outputId = 'osw_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A'),
-                                      
-                                      id = "osw_map_box"  # for tutorial
-                                      
-                                  ) # END leaflet box
-                                  
-                              ), # END  1st fluidRow
-                              
-                              
-                              fluidRow( ##### Second fluidRow (plotly outputs) #####
-                                  
-                                  box( ###### jobs projections plot ######
-                                      width = 7,
-                                      
-                                      plotly::plotlyOutput(outputId = 'model_jobs_output') |>
-                                          withSpinner(type = 1, color = '#09847A'),
-                                      
-                                      id = "osw_jobs_plot_box" # for tutorial
-                                  ), 
-                                  
-                                  box( ###### capacity projections plot ######
-                                      width = 5,
-                                      
-                                      plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
-                                          withSpinner(type = 1, color = '#09847A'),
-                                      
-                                      id = "osw_capacity_plot_box" # for tutorial
-                                  )
-                                  
-                                  
-                              ) # END 2nd fluidRow),
-                              
-                          ), # END floating offshore wind tabITEM
-                          
-# UTILITY SOLAR TAB ----
-                          tabItem(
-                              
-                              tabName = 'utility',
-                              
-                              fluidRow( ##### First fluidRow (picker inputs) #####
-                                  
-                                  box(
-                                      width = 4,
-                                      
-                                      pickerInput( ###### county input ######
-                                                   inputId = 'county_input',
-                                                   label = tags$span(
-                                                       'County',
-                                                       tags$i(
-                                                           class = "glyphicon glyphicon-info-sign", 
-                                                           style = "color:#0072B2;",
-                                                           title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                                       )),
-                                                   choices = unique(counties$County),
-                                                   selected = c('Ventura'),
-                                                   multiple = FALSE,
-                                                   options = pickerOptions(actionsBox = TRUE)
-                                      ), 
-                                      
-                                      sliderInput( ###### year range slider input ######
-                                          inputId = 'year_range_input_utility',
-                                          label = tags$span(
-                                              'Year Construction Starts - Year To Meet Target',
-                                              tags$i(
-                                                  class = "glyphicon glyphicon-info-sign", 
-                                                  style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                              )),
-                                          min = 2025,
-                                          max = 2045,
-                                          value = c(2025, 2045),
-                                          step = 1,
-                                          ticks = F,
-                                          sep = ""
-                                      ), 
-
-                                      numericInput( ###### initial capacity input  ######
-                                          inputId = 'initial_mw_utility_input',
-                                          label = tags$span(
-                                              'Initial Capacity (MW)',
-                                              tags$i(
-                                                  class = "glyphicon glyphicon-info-sign", 
-                                                  style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                              )),
-                                          value = 0,
-                                          min = 0
-                                      ), 
-                                      
-                                      numericInput( ###### final capacity input  ######
-                                          inputId = 'final_mw_utility_input',
-                                          label = tags$span(
-                                              'Target Capacity (MW)',
-                                              tags$i(
-                                                  class = "glyphicon glyphicon-info-sign", 
-                                                  style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                              )),
-                                          value = 0,
-                                          min = 0
-                                      ),
-                                      
-                                      pickerInput( ###### job type input ######
-                                                   inputId = 'utility_job_type_input',
-                                                   label =
-                                                       tags$span(
-                                                           'Direct, Indirect, or Induced Jobs', 
-                                                           tags$i(
-                                                               class = "glyphicon glyphicon-info-sign", 
-                                                               style = "color:#0072B2;",
-                                                               title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare).")), 
-                                                   choices = c('Direct', 'Indirect', 'Induced', 'Total'),
-                                                   multiple = FALSE,
-                                                   options = pickerOptions(actionsBox = TRUE)
-                                      ), 
-                                      
-                                      id = "util_inputs_box" # for tutorial
-                                      
-                                  ), # END input box
-                                  
-                                  box( ###### map output  ######
-                                      width = 8,
-                                      
-                                      leafletOutput(outputId = 'utility_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A'),
-                                      
-                                      id = "util_map_box"  # for tutorial
-                                      
-                                  )
-                                  
-                                  # END leaflet box
-                                  
-                              ),
-                              
-                              fluidRow( ##### Second fluidRow (plotly outputs) #####
-                                  
-                                  box( ###### Utility Job Plot ######
-                                      width = 7,
-                                      plotly::plotlyOutput(outputId = 'utility_jobs_output') |> 
-                                          withSpinner(type = 1, color = '#09847A'),
-                                      id = "util_jobs_plot_box"  # for tutorial
-                                  ), # End util job Box
-                                  
-                                  box(###### utility capacity plot ######
-                                       width = 5,
-                                       plotly::plotlyOutput(outputId = 'utility_cap_projections_output') |>
-                                           withSpinner(type = 1, color = '#09847A'),
-                                      id = "util_capacity_plot_box"  # for tutorial
-                                  )
-                                  
-                                  
-                              ) # END  2nd fluidRow
-                              
-                          ),    # End Utility Solar tabItem
-                          
-# ROOFTOP SOLAR TAB ----                          
-                          tabItem(
-                              tabName = 'rooftop',
-                              
-                              fluidRow( ##### First fluidRow (picker inputs) #####
-
-                                  box(
-                                      width = 4,
-                                      
-                                      pickerInput( ###### county input ######
-                                                   inputId = 'roof_counties_input',
-                                                   label = tags$span(
-                                                       'County',
-                                                       tags$i(
-                                                           class = "glyphicon glyphicon-info-sign", 
-                                                           style = "color:#0072B2;",
-                                                           title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                                       )),
-                                                   choices = unique(counties$County),
-                                                   selected = c('Ventura'),
-                                                   multiple = FALSE,
-                                                   options = pickerOptions(actionsBox = TRUE)
-                                      ),
-
-                                      sliderInput( ###### year range slider input ######
-                                          inputId = 'year_range_input_roof',
-                                          label = tags$span(
-                                              'Year Construction Starts - Year to Meet Target',
-                                              tags$i(
-                                                  class = "glyphicon glyphicon-info-sign", 
-                                                  style = "color:#0072B2;",
-                                                  title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                              )),
-                                              
-                                          min = 2025,
-                                          max = 2045,
-                                          value = c(2025, 2045),
-                                          step = 1,
-                                          ticks = F,
-                                          sep = ""
-                                      ),
-                                      
-                                      numericInput( ###### initial capacity input ######
-                                          inputId = 'initial_mw_roof_input',
-                                          label = tags$span('Initial Capacity (MW)',
-                                                            tags$i(
-                                              class = "glyphicon glyphicon-info-sign", 
-                                              style = "color:#0072B2;",
-                                              title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                          )),
-                                          value = 0,
-                                          # placeholder — will be updated
-                                          min = 0
-                                      ),
-
-                                      numericInput( ###### final capacity input ######
-                                          inputId = 'final_mw_roof_input',
-                                          label = tags$span('Target Capacity (MW)',
-                                                            tags$i(
-                                              class = "glyphicon glyphicon-info-sign", 
-                                              style = "color:#0072B2;",
-                                              title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                          )),
-                                          value = 0,
-                                          min = 0
-                                      ),
-                                      
-                                      pickerInput( ###### job type input ######
-                                                   inputId = 'roof_job_type_input',
-                                                   label = tags$span('Direct, Indirect, or Induced Jobs',
-                                                                     tags$i(
-                                                                         class = "glyphicon glyphicon-info-sign", 
-                                                                         style = "color:#0072B2;",
-                                                                         title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                                                     )),
-                                                   choices = c('Direct', 'Indirect', 'Induced', 'Total'),
-                                                   multiple = FALSE,
-                                                   options = pickerOptions(actionsBox = TRUE)
-                                      ),
-
-                                      id = "roof_inputs_box"  # for tutorial
-                                  ), 
-                                  
-                                  # END input box
-                                  
-                                  
-                                 box( ###### map output ######
-                                      
-                                      width = 8,
-                                      
-                                      leafletOutput(outputId = 'roof_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A'),
-                                      
-                                      id = "roof_map_box"  # for tutorial
-                                      
-                                  ) # END leaflet box
-                                  
-                              ), # End first fluidRow  
-                              
-                              fluidRow( ##### Second fluidRow (outputs) #####
-                                   
-                                  box( ###### Rooftop plotly output #####
-                                      width = 7,
-                                      plotlyOutput(outputId = 'roof_jobs_output') |> 
-                                          withSpinner(type = 1, color = '#09847A'),
-                                      id = "roof_jobs_plot_box"  # for tutorial
-                                  ), 
-                                      box( ###### capacity projections plot ######
-                                           width = 5,
-                                           plotly::plotlyOutput(outputId = 'roof_cap_projections_output') |>
-                                               withSpinner(type = 1, color = '#09847A'),
-                                           id = "roof_capacity_plot_box"  # for tutorial
-                                      )
-
-                              ) # END  2nd fluidRow)
-                              
-                          ),  # End Rooftop Solar tabItem
-                          
-# LAND WIND TAB ----
-                          tabItem(
-                              
-                              tabName = 'lb_wind',
-                              
-                              
-                              fluidRow( ##### First fluidRow (picker inputs) #####
-                                  
-                                  box(
-                                      
-                                      width = 4,
-                                      
-                                      pickerInput( ###### county input ######
-                                                   inputId = 'lw_counties_input',
-                                                   label = tags$span('County',
-                                                                     tags$i(
-                                                                         class = "glyphicon glyphicon-info-sign", 
-                                                                         style = "color:#0072B2;",
-                                                                         title = "County that land wind project will be based. Currently, Santa Barbara County is the only Tri-county with land wind (Strauss Wind Project)."
-                                                                     )),
-                                                   choices = unique(counties$County),
-                                                   selected = c('Santa Barbara'),
-                                                   multiple = FALSE,
-                                                   options = pickerOptions(actionsBox = TRUE)
-                                      ), 
-
-                                      sliderInput( ###### year range slider input ######
-                                          inputId = 'input_lw_years',
-                                          label = tags$span('Year Construction Starts - Year to Meet Target',
-                                                            tags$i(
-                                                                class = "glyphicon glyphicon-info-sign", 
-                                                                style = "color:#0072B2;",
-                                                                title = "Input the range of years for analysis, starting with the year associated with inital capacity and ending with the year to meet capacity targets."
-                                                            )),
-                                          min = 2025,
-                                          max = 2045,
-                                          value = c(2025, 2045),
-                                          step = 1,
-                                          ticks = FALSE,
-                                          dragRange = TRUE,
-                                          sep = ''
-                                      ), 
-
-                                      verbatimTextOutput("input_lw_years"), 
-                                      
-                                      
-                                      numericInput( ###### initial capacity input ######
-                                          inputId = 'initial_gw_lw_input',
-                                          label = tags$span('Initial Capacity (GW)',
-                                                            tags$i(
-                                                                class = "glyphicon glyphicon-info-sign",
-                                                                style = "color:#0072B2;",
-                                                                title = "Existing land wind capacity (GW) in selected county. If no existing wind farms, enter size (capacity) of initial construction project. Default 0.95 GW is 2025 nameplate capacity of Strauss Wind Farm in Santa Barbara County."
-                                                            )),
-                                          value = 0.95,  # Nameplate capacity (GW) of Strauss Wind Farm
-                                          min = 0
-                                      ), 
-                                      
-                                      numericInput( ###### final capacity input ######
-                                          inputId = 'final_gw_land_input',
-                                          label = tags$span('Target Capacity (GW)',
-                                                            tags$i(
-                                                                class = "glyphicon glyphicon-info-sign",
-                                                                style = "color:#0072B2;",
-                                                                title = "Capacity (GW) to come online in year specified to meet targets above. Default matches current capacity in Santa Barbara County, as no county goals for land wind expansion are currently defined."
-                                                            )),
-                                          value = 0.95,
-                                          min = 0
-                                      ),
-                                      
-                                      pickerInput( ###### job type input ######
-                                                   inputId = 'lw_job_type_input',
-                                                   label = tags$span('Direct, Indirect, or Induced Jobs',
-                                                                     tags$i(
-                                                                         class = "glyphicon glyphicon-info-sign",
-                                                                         style = "color:#0072B2;",
-                                                                         title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare)."
-                                                                     )),
-                                                   choices = c('Direct', 'Indirect', 'Induced', 'Total'),
-                                                   multiple = FALSE,
-                                                   options = pickerOptions(actionsBox = TRUE)
-                                      ),
-                                      
-                                      id = "lw_inputs_box"  # for tutorial
-                                  ), # End input box
-                                  
-                                  box( ###### map output ######
-                                      width = 8,
-                                      
-                                      leafletOutput(outputId = 'land_wind_map_output') |>
-                                          withSpinner(type = 1, color = '#09847A'),
-                                     
-                                       id = "lw_map_box"  # for tutorial
-                                      
-                                      
-                                  )  # END leaflet box
-                                  
-                              ), # End fluid Row
-                              
-                              fluidRow( ##### Second fluid row (plotly outputs) #####
-
-                                  box( ###### job projections plot ######
-                                      width = 7,
-                                      # Create a plot based on input
-                                      #  title = tags$strong('Labor Impact'),
-                                      plotly::plotlyOutput(outputId = 'land_wind_jobs_plot_output') |> # Changed to table output to show data
-                                          withSpinner(type = 1, color = '#09847A'),
-                                      
-                                      id = "lw_jobs_plot_box"  # for tutorial
-                                  ), 
-                                  
-                                  box( ###### capacity projections plot ######
-                                      width = 5,
-                                      plotly::plotlyOutput(outputId = 'lw_cap_projections_output') |>
-                                          withSpinner(type = 1, color = '#09847A'),
-                                      id = "lw_capacity_plot_box"  # for tutorial
-                                  )
-                                  
-                                  
-                                  
-                              ) # End 2nd fluidRow
-                          ), # End Land Based Wind tabItem
-                          
-# OIL WELL CAPPING TAB ----
-                          tabItem(tabName = 'well_cap', 
-                                  
-                                  ##### left hand column #####
-                                  column(width = 4,
-                                         box(width = 12,
+                                                 )
+                                             ), 
+                                             ###### initial capacity input  ######
+                                             numericInput(
+                                                 inputId = 'initial_capacity_input',
+                                                 label =
+                                                     tags$span(
+                                                         'Capacity (GW) of Initial Construction Project', 
+                                                         tags$i(
+                                                             class = "glyphicon glyphicon-info-sign", 
+                                                             style = "color:#0072B2;",
+                                                             title = "Capacity (GW) for initial construction project, to go online 5 years following start year. Value must not be 0.")
+                                                     ),
+                                                 value = 0.5,
+                                                 min = 0
+                                             ), 
+                                             ###### final capacity input  ######
+                                             numericInput(
+                                                 inputId = 'final_capacity_input',
+                                                 label =
+                                                     tags$span(
+                                                         'Target Capacity (GW)', 
+                                                         tags$i(
+                                                             class = "glyphicon glyphicon-info-sign", 
+                                                             style = "color:#0072B2;",
+                                                             title = "Enter total capacity to be up-and-running in the final year.")
+                                                     ),
+                                                 value = 15,
+                                                 min = 0
+                                             ), 
+                                             ###### job type input  ######
+                                             pickerInput(
+                                                 inputId = 'job_type_input',
+                                                 label =
+                                                     tags$span(
+                                                         'Direct, Indirect, or Induced Jobs', 
+                                                         tags$i(
+                                                             class = "glyphicon glyphicon-info-sign", 
+                                                             style = "color:#0072B2;",
+                                                             title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs.")), 
+                                                 choices = c('Direct', # Change to capital
+                                                             'Indirect', 'Induced', 'Total'),
+                                                 multiple = FALSE,
+                                                 options = pickerOptions(actionsBox = TRUE)
+                                             ), 
+                                             # ###### port input  ######
+                                             # pickerInput(
+                                             #     inputId = 'osw_port_input',
+                                             #     label =
+                                             #         tags$span(
+                                             #             'Offshore Wind Port Location', 
+                                             #             tags$i(
+                                             #                 class = "glyphicon glyphicon-info-sign", 
+                                             #                 style = "color:#0072B2;",
+                                             #                 title = "Specialized wind ports will be the ")
+                                             #         ),
+                                             #     choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
+                                             #     selected = NULL,
+                                             #     multiple = FALSE,
+                                             #     options = pickerOptions(actionsBox = TRUE)
+                                             # ), 
                                              
-
+                                             id = "osw_inputs_box"  # for tutorial
+                                         ), # END input box
+                                         
+                                         ###### map output  ######
+                                         box(
+                                             width = 8,
+                                             
+                                             leafletOutput(outputId = 'osw_map_output') |>
+                                                 withSpinner(type = 1, color = '#09847A'),
+                                             
+                                             id = "osw_map_box"  # for tutorial
+                                             
+                                         ) # END leaflet box
+                                         
+                               ), # END  1st fluidRow
+                               
+                               
+                               fluidRow( ##### Second fluidRow (plotly outputs) #####
+                                         
+                                         box( ###### jobs projections plot ######
+                                              width = 7,
+                                              
+                                              plotly::plotlyOutput(outputId = 'model_jobs_output') |>
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              
+                                              id = "osw_jobs_plot_box" # for tutorial
+                                         ), 
+                                         
+                                         box( ###### capacity projections plot ######
+                                              width = 5,
+                                              
+                                              plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              
+                                              id = "osw_capacity_plot_box" # for tutorial
+                                         )
+                                         
+                                         
+                               ) # END 2nd fluidRow),
+                               
+                           ), # END floating offshore wind tabITEM
+                           
+                           # UTILITY SOLAR TAB ----
+                           tabItem(
+                               
+                               tabName = 'utility',
+                               
+                               fluidRow( ##### First fluidRow (picker inputs) #####
+                                         
+                                         box(
+                                             width = 4,
+                                             
                                              pickerInput( ###### county input ######
+                                                          inputId = 'county_input',
+                                                          label = tags$span(
+                                                              'County',
+                                                              tags$i(
+                                                                  class = "glyphicon glyphicon-info-sign", 
+                                                                  style = "color:#0072B2;",
+                                                                  title = "Choose a county to analyze."
+                                                              )),
+                                                          choices = unique(counties$County),
+                                                          selected = c('Ventura'),
+                                                          multiple = FALSE,
+                                                          options = pickerOptions(actionsBox = TRUE)
+                                             ), 
+                                             
+                                             sliderInput( ###### year range slider input ######
+                                                          inputId = 'year_range_input_utility',
+                                                          label = tags$span(
+                                                              'Year Construction Starts - Year To Meet Target',
+                                                              tags$i(
+                                                                  class = "glyphicon glyphicon-info-sign", 
+                                                                  style = "color:#0072B2;",
+                                                                  title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
+                                                              )),
+                                                          min = 2025,
+                                                          max = 2045,
+                                                          value = c(2025, 2045),
+                                                          step = 1,
+                                                          ticks = F,
+                                                          sep = ""
+                                             ), 
+                                             
+                                             numericInput( ###### initial capacity input  ######
+                                                           inputId = 'initial_mw_utility_input',
+                                                           label = tags$span(
+                                                               'Current Capacity (MW)',
+                                                               tags$i(
+                                                                   class = "glyphicon glyphicon-info-sign", 
+                                                                   style = "color:#0072B2;",
+                                                                   title = "Currently installed capacity in your county in megawatts. Value must not be 0."
+                                                               )),
+                                                           value = 0,
+                                                           min = 0
+                                             ), 
+                                             
+                                             numericInput( ###### final capacity input  ######
+                                                           inputId = 'final_mw_utility_input',
+                                                           label = tags$span(
+                                                               'Target Capacity (MW)',
+                                                               tags$i(
+                                                                   class = "glyphicon glyphicon-info-sign", 
+                                                                   style = "color:#0072B2;",
+                                                                   title = "Target capacity to reach by final input year in megawatts."
+                                                               )),
+                                                           value = 0,
+                                                           min = 0
+                                             ),
+                                             
+                                             pickerInput( ###### job type input ######
+                                                          inputId = 'utility_job_type_input',
+                                                          label =
+                                                              tags$span(
+                                                                  'Direct, Indirect, or Induced Jobs', 
+                                                                  tags$i(
+                                                                      class = "glyphicon glyphicon-info-sign", 
+                                                                      style = "color:#0072B2;",
+                                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs.")), 
+                                                          choices = c('Direct', 'Indirect', 'Induced', 'Total'),
+                                                          multiple = FALSE,
+                                                          options = pickerOptions(actionsBox = TRUE)
+                                             ), 
+                                             
+                                             id = "util_inputs_box" # for tutorial
+                                             
+                                         ), # END input box
+                                         
+                                         box( ###### map output  ######
+                                              width = 8,
+                                              
+                                              leafletOutput(outputId = 'utility_map_output') |>
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              
+                                              id = "util_map_box"  # for tutorial
+                                              
+                                         )
+                                         
+                                         # END leaflet box
+                                         
+                               ),
+                               
+                               fluidRow( ##### Second fluidRow (plotly outputs) #####
+                                         
+                                         box( ###### Utility Job Plot ######
+                                              width = 7,
+                                              plotly::plotlyOutput(outputId = 'utility_jobs_output') |> 
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              id = "util_jobs_plot_box"  # for tutorial
+                                         ), # End util job Box
+                                         
+                                         box(###### utility capacity plot ######
+                                             width = 5,
+                                             plotly::plotlyOutput(outputId = 'utility_cap_projections_output') |>
+                                                 withSpinner(type = 1, color = '#09847A'),
+                                             id = "util_capacity_plot_box"  # for tutorial
+                                         )
+                                         
+                                         
+                               ) # END  2nd fluidRow
+                               
+                           ),    # End Utility Solar tabItem
+                           
+                           # ROOFTOP SOLAR TAB ----                          
+                           tabItem(
+                               tabName = 'rooftop',
+                               
+                               fluidRow( ##### First fluidRow (picker inputs) #####
+                                         
+                                         box(
+                                             width = 4,
+                                             
+                                             pickerInput( ###### county input ######
+                                                          inputId = 'roof_counties_input',
+                                                          label = tags$span(
+                                                              'County',
+                                                              tags$i(
+                                                                  class = "glyphicon glyphicon-info-sign", 
+                                                                  style = "color:#0072B2;",
+                                                                  title = "Choose a county to analyze."
+                                                              )),
+                                                          choices = unique(counties$County),
+                                                          selected = c('Ventura'),
+                                                          multiple = FALSE,
+                                                          options = pickerOptions(actionsBox = TRUE)
+                                             ),
+                                             
+                                             sliderInput( ###### year range slider input ######
+                                                          inputId = 'year_range_input_roof',
+                                                          label = tags$span(
+                                                              'Year Construction Starts - Year to Meet Target',
+                                                              tags$i(
+                                                                  class = "glyphicon glyphicon-info-sign", 
+                                                                  style = "color:#0072B2;",
+                                                                  title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
+                                                              )),
                                                           
-                                                          inputId = 'county_wells_input',
-                                                          label = tags$span("County",
+                                                          min = 2025,
+                                                          max = 2045,
+                                                          value = c(2025, 2045),
+                                                          step = 1,
+                                                          ticks = F,
+                                                          sep = ""
+                                             ),
+                                             
+                                             numericInput( ###### initial capacity input ######
+                                                           inputId = 'initial_mw_roof_input',
+                                                           label = tags$span('Current Capacity (MW)',
+                                                                             tags$i(
+                                                                                 class = "glyphicon glyphicon-info-sign", 
+                                                                                 style = "color:#0072B2;",
+                                                                                 title = "Currently installed capacity in your county in megawatts. Value must not be 0."
+                                                                             )),
+                                                           value = 0,
+                                                           # placeholder — will be updated
+                                                           min = 0
+                                             ),
+                                             
+                                             numericInput( ###### final capacity input ######
+                                                           inputId = 'final_mw_roof_input',
+                                                           label = tags$span('Target Capacity (MW)',
+                                                                             tags$i(
+                                                                                 class = "glyphicon glyphicon-info-sign", 
+                                                                                 style = "color:#0072B2;",
+                                                                                 title = "Target capacity to reach by final input year in megawatts."
+                                                                             )),
+                                                           value = 0,
+                                                           min = 0
+                                             ),
+                                             
+                                             pickerInput( ###### job type input ######
+                                                          inputId = 'roof_job_type_input',
+                                                          label = tags$span('Direct, Indirect, or Induced Jobs',
                                                                             tags$i(
                                                                                 class = "glyphicon glyphicon-info-sign", 
                                                                                 style = "color:#0072B2;",
-                                                                                title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                                                title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs."
                                                                             )),
-                                                          choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
-                                                          multiple = FALSE
-                                             ), # End county picker
+                                                          choices = c('Direct', 'Indirect', 'Induced', 'Total'),
+                                                          multiple = FALSE,
+                                                          options = pickerOptions(actionsBox = TRUE)
+                                             ),
                                              
-                                             id = "cap_inputs_box" # for tutorial
-                                             
-                                         ) # End box for inputs 
-
-                                         ), # END left hand column
-                                  
-                                  ##### right hand column #####
-                                  column(width = 8,
-
+                                             id = "roof_inputs_box"  # for tutorial
+                                         ), 
+                                         
+                                         # END input box
+                                         
+                                         
                                          box( ###### map output ######
-                                              width = 12,
-                                              leafletOutput(outputId = 'capping_map_output',
-                                                            height = "800px") |>
+                                              
+                                              width = 8,
+                                              
+                                              leafletOutput(outputId = 'roof_map_output') |>
                                                   withSpinner(type = 1, color = '#09847A'),
                                               
-                                              id = "cap_map_box" # for tutorial
-                                            )  # END leaflet box
-                                         ) # END right hand column
-                                  
-                                  
-                          ), # end well capping tab item
-                          
-# FOSSIL FUEL PHASEOUT TAB ----
-                          tabItem(tabName = 'phaseout', 
-                                  
-                                  fluidRow(  ##### First fluid row (picker inputs) #####
-                                      
-                                      box( 
-                                          width = 4,
-                                          
-                                           pickerInput( ###### county input ######
-                                              inputId = 'phaseout_counties_input',
-                                              label = tags$span('County',
-                                                                tags$i(
-                                                                    class = "glyphicon glyphicon-info-sign", 
-                                                                    style = "color:#0072B2;",
-                                                                    title = "Note: OSW construction requires on average 5 years. Time to reach capacity goals must be greater than 5 years."
-                                                                )),
-                                              choices = c('Santa Barbara', 'San Luis Obispo', 'Ventura'),
-                                              selected = c('Ventura'),
-                                              multiple = FALSE,
-                                              options = pickerOptions(actionsBox = TRUE
-                                              )
+                                              id = "roof_map_box"  # for tutorial
                                               
-                                          ),
-                                          
-                                          pickerInput( ###### setback distance input ######
-                                              inputId = 'phaseout_setback_input',
-                                              label = tags$span(
-                                                  'Setback Policy Distance', 
-                                                  tags$i(
-                                                      class = "glyphicon glyphicon-info-sign", 
-                                                      style = "color:#0072B2;",
-                                                      title = "The current California state setback policy is 3200 feet.")
-                                              ),
-                                              choices = c(
-                                                  '1000 ft' = 'setback_1000ft',
-                                                  '2500 ft' = 'setback_2500ft',
-                                                  '3200 ft' = 'setback_3200ft',
-                                                  '5280 ft' = 'setback_5280ft',
-                                                  'No setback' = 'no_setback'
-                                              ),
-                                              selected = c('setback_3200ft'),
-                                              multiple = FALSE,
-                                              options = pickerOptions(actionsBox = TRUE
-                                              )
+                                         ) # END leaflet box
+                                         
+                               ), # End first fluidRow  
+                               
+                               fluidRow( ##### Second fluidRow (outputs) #####
+                                         
+                                         box( ###### Rooftop plotly output #####
+                                              width = 7,
+                                              plotlyOutput(outputId = 'roof_jobs_output') |> 
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              id = "roof_jobs_plot_box"  # for tutorial
+                                         ), 
+                                         box( ###### capacity projections plot ######
+                                              width = 5,
+                                              plotly::plotlyOutput(outputId = 'roof_cap_projections_output') |>
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              id = "roof_capacity_plot_box"  # for tutorial
+                                         )
+                                         
+                               ) # END  2nd fluidRow)
+                               
+                           ),  # End Rooftop Solar tabItem
+                           
+                           # LAND WIND TAB ----
+                           tabItem(
+                               
+                               tabName = 'lb_wind',
+                               
+                               
+                               fluidRow( ##### First fluidRow (picker inputs) #####
+                                         
+                                         box(
+                                             
+                                             width = 4,
+                                             
+                                             pickerInput( ###### county input ######
+                                                          inputId = 'lw_counties_input',
+                                                          label = tags$span('County',
+                                                                            tags$i(
+                                                                                class = "glyphicon glyphicon-info-sign", 
+                                                                                style = "color:#0072B2;",
+                                                                                title = "County that land wind project will be based. Currently, Santa Barbara County is the only Tri-county with land wind (Strauss Wind Project)."
+                                                                            )),
+                                                          choices = unique(counties$County),
+                                                          selected = c('Santa Barbara'),
+                                                          multiple = FALSE,
+                                                          options = pickerOptions(actionsBox = TRUE)
+                                             ), 
+                                             
+                                             sliderInput( ###### year range slider input ######
+                                                          inputId = 'input_lw_years',
+                                                          label = tags$span('Year Construction Starts - Year to Meet Target',
+                                                                            tags$i(
+                                                                                class = "glyphicon glyphicon-info-sign", 
+                                                                                style = "color:#0072B2;",
+                                                                                title = "Input the range of years for analysis, starting with the year associated with inital capacity and ending with the year to meet capacity targets."
+                                                                            )),
+                                                          min = 2025,
+                                                          max = 2045,
+                                                          value = c(2025, 2045),
+                                                          step = 1,
+                                                          ticks = FALSE,
+                                                          dragRange = TRUE,
+                                                          sep = ''
+                                             ), 
+                                             
+                                             verbatimTextOutput("input_lw_years"), 
+                                             
+                                             
+                                             numericInput( ###### initial capacity input ######
+                                                           inputId = 'initial_gw_lw_input',
+                                                           label = tags$span('Initial Capacity (GW)',
+                                                                             tags$i(
+                                                                                 class = "glyphicon glyphicon-info-sign",
+                                                                                 style = "color:#0072B2;",
+                                                                                 title = "Existing land wind capacity (GW) in selected county. If no existing wind farms, enter size (capacity) of initial construction project. Default 0.95 GW is 2025 nameplate capacity of Strauss Wind Farm in Santa Barbara County."
+                                                                             )),
+                                                           value = 0.95,  # Nameplate capacity (GW) of Strauss Wind Farm
+                                                           min = 0
+                                             ), 
+                                             
+                                             numericInput( ###### final capacity input ######
+                                                           inputId = 'final_gw_land_input',
+                                                           label = tags$span('Target Capacity (GW)',
+                                                                             tags$i(
+                                                                                 class = "glyphicon glyphicon-info-sign",
+                                                                                 style = "color:#0072B2;",
+                                                                                 title = "Capacity (GW) to come online in year specified to meet targets above. Default matches current capacity in Santa Barbara County, as no county goals for land wind expansion are currently defined."
+                                                                             )),
+                                                           value = 0.95,
+                                                           min = 0
+                                             ),
+                                             
+                                             pickerInput( ###### job type input ######
+                                                          inputId = 'lw_job_type_input',
+                                                          label = tags$span('Direct, Indirect, or Induced Jobs',
+                                                                            tags$i(
+                                                                                class = "glyphicon glyphicon-info-sign",
+                                                                                style = "color:#0072B2;",
+                                                                                title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs."
+                                                                            )),
+                                                          choices = c('Direct', 'Indirect', 'Induced', 'Total'),
+                                                          multiple = FALSE,
+                                                          options = pickerOptions(actionsBox = TRUE)
+                                             ),
+                                             
+                                             id = "lw_inputs_box"  # for tutorial
+                                         ), # End input box
+                                         
+                                         box( ###### map output ######
+                                              width = 8,
                                               
-                                          ),
-                                          
-                                          pickerInput( ###### setback existing input ######
-                                              inputId = 'phaseout_setback_existing_input',
-                                              label = tags$span(
-                                                  'Should the setback policy apply to existing wells?', 
-                                                  tags$i(
-                                                      class = "glyphicon glyphicon-info-sign", 
-                                                      style = "color:#0072B2;",
-                                                      title = "If the setback policy only applies to new wells, it is unlikely that progress will be made at the rate that we need.")
-                                              ),
-                                              choices = c(
-                                                  'Setback policy applies to new and existing wells' = 0,
-                                                  'Setback policy applies only to new wells' = 1
-                                              ),
-                                              selected = 0,
-                                              multiple = FALSE,
-                                              options = pickerOptions(actionsBox = TRUE)
-                                          ),
-                                          
-                                          id = "phaseout_inputs_box" # for tutorial
-                                          
-                                      ), # END input box
-                                      
-                                       box( ###### map output ######
-                                          
-                                          width = 8, 
-                                          leafletOutput(outputId = 'phaseout_county_map_output') |>
-                                              withSpinner(type = 1, color = '#09847A'),
-                                          
-                                          id = "phaseout_map_box" # for tutorial
-                                          
-                                      ) # END leaflet box
-                                      
-                                  ), # END  1st fluidRow
-                                  
-                                  
-                                  fluidRow( ##### Second fluid row (plotly outputs) #####
-                                           box( ###### Phaseout plot ######
-                                               width = 12,
-                                               # Create a table based on input
-                                               plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
-                                                   withSpinner(type = 1, color = '#09847A'),
-                                               
-                                               id = "phaseout_jobs_plot_box" # for tutorial
-                                           ) # END plot box
-                                           
-                                  ) # END 2nd fluid row)    
-                                  
-                          ), # End Fossil Fuel Phaseout tabItem
-########## Tool Documentation/User Manual Tab #######
-tabItem(tabName = 'documentation',
-        fluidRow(column(
-            width = 12,
-            box(
-                width = NULL,
-                #title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools')),
-                column(1),
-                column(10, includeMarkdown('text/tool-documentation.md')),
-                column(1)
-            )
-        )),
-        fluidRow(
-            column(width = 12, align = "center",
-                   p("For a detailed look at the technical documentation please visit here.")
-            )
-        ), # End documentation fluidRow
-        div(style = "text-align: center; margin-bottom: 30px;",
-            h3("The Team")  # Title above the images
-        ),
-        fluidRow(
-            div(style = "display: flex; gap: 40px; justify-content: center;",
-                
-                div(style = "text-align: center;",
-                    a(href = "https://www.linkedin.com/in/elizabeth-peterson-85046b204/", target = "_blank",
-                      tags$img(src = "EP-headshot.jpeg", height = "300px")
-                    ),
-                    p("Elizabeth Peterson")
-                ),
-                div(style = "text-align: center;",
-                    a(href = 'https://www.linkedin.com/in/marina-kochuten-4786b6324/', target = "_blank",
-                      tags$img(src = "MK-headshot.jpeg", height = "300px")
-                      ),
-                    p("Marina Kochuten")
-                ),
-                div(style = "text-align: center;",
-                    a(href = "https://www.linkedin.com/in/brooke-grazda-a02248217/", target = "_blank",
-                      tags$img(src = "BG-headshot.jpeg", height = "300px")
-                      ),
-                    p("Brooke Grazda")
-                )
-            )
-            
-        ) # End first fluidrow with our headshots
-        ) # End Tool documentation tabItem
-                      ) # End all tab items ----
-                      
+                                              leafletOutput(outputId = 'land_wind_map_output') |>
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              
+                                              id = "lw_map_box"  # for tutorial
+                                              
+                                              
+                                         )  # END leaflet box
+                                         
+                               ), # End fluid Row
+                               
+                               fluidRow( ##### Second fluid row (plotly outputs) #####
+                                         
+                                         box( ###### job projections plot ######
+                                              width = 7,
+                                              # Create a plot based on input
+                                              #  title = tags$strong('Labor Impact'),
+                                              plotly::plotlyOutput(outputId = 'land_wind_jobs_plot_output') |> # Changed to table output to show data
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              
+                                              id = "lw_jobs_plot_box"  # for tutorial
+                                         ), 
+                                         
+                                         box( ###### capacity projections plot ######
+                                              width = 5,
+                                              plotly::plotlyOutput(outputId = 'lw_cap_projections_output') |>
+                                                  withSpinner(type = 1, color = '#09847A'),
+                                              id = "lw_capacity_plot_box"  # for tutorial
+                                         )
+                                         
+                                         
+                                         
+                               ) # End 2nd fluidRow
+                           ), # End Land Based Wind tabItem
+                           
+                           # OIL WELL CAPPING TAB ----
+                           tabItem(tabName = 'well_cap', 
+                                   
+                                   fluidRow(
+                                       box(width = 4,
+                                           # County picker input
+                                           pickerInput(
+                                               inputId = 'county_wells_input',
+                                               label = tags$span("County",
+                                                                 tags$i(
+                                                                     class = "glyphicon glyphicon-info-sign", 
+                                                                     style = "color:#0072B2;",
+                                                                     title = "Choose a county"
+                                                                 )),
+                                               choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
+                                               multiple = FALSE
+                                           ), # End pickerInput
+                                           id = "cap_inputs_box" # For tutorial
+                                       ), # End input box
+                                       
+                                       box(
+                                           width = 8,
+                                           leafletOutput(outputId = 'capping_map_output', height = "500px") |>
+                                               withSpinner(type = 1, color = '#09847A'),
+                                           id = "cap_map_box" # For tutorial
+                                       )
+                                   ), # end first fluid row
+                                   
+                                   # second fluid row
+                                   fluidRow(
+                                       box(
+                                           width = 6,
+                                           plotlyOutput(outputId = "oil_capping_jobs_plot", height = "400px") |>
+                                               withSpinner(type = 1, color = '#09847A'),
+                                           id = "cap_jobs_plot_box" # For tutorial
+                                       ), # END jobs plot box
+                                       
+                                       box(
+                                           width = 6,
+                                           plotlyOutput(outputId = "oil_capping_plot", height = "400px") |>
+                                               withSpinner(type = 1, color = '#09847A'),
+                                           id = "cap_plot_box" # For tutorial
+                                       ) # END total wells capped box
+                                   ) # END second fluid row
+                                   
+                           ),
+                           
+                           # FOSSIL FUEL PHASEOUT TAB ----
+                           tabItem(tabName = 'phaseout', 
+                                   
+                                   fluidRow(  ##### First fluid row (picker inputs) #####
+                                              
+                                              box( 
+                                                  width = 4,
+                                                  
+                                                  pickerInput( ###### county input ######
+                                                               inputId = 'phaseout_counties_input',
+                                                               label = tags$span('County',
+                                                                                 tags$i(
+                                                                                     class = "glyphicon glyphicon-info-sign", 
+                                                                                     style = "color:#0072B2;",
+                                                                                     title = "Choose a county"
+                                                                                 )),
+                                                               choices = c('Santa Barbara', 'San Luis Obispo', 'Ventura'),
+                                                               selected = c('Ventura'),
+                                                               multiple = FALSE,
+                                                               options = pickerOptions(actionsBox = TRUE
+                                                               )
+                                                               
+                                                  ),
+                                                  
+                                                  pickerInput( ###### setback distance input ######
+                                                               inputId = 'phaseout_setback_input',
+                                                               label = tags$span(
+                                                                   'Setback Policy Distance', 
+                                                                   tags$i(
+                                                                       class = "glyphicon glyphicon-info-sign", 
+                                                                       style = "color:#0072B2;",
+                                                                       title = "The current California state setback policy is 3,200 feet.")
+                                                               ),
+                                                               choices = c(
+                                                                   '1000 ft' = 'setback_1000ft',
+                                                                   '2500 ft' = 'setback_2500ft',
+                                                                   '3200 ft' = 'setback_3200ft',
+                                                                   '5280 ft' = 'setback_5280ft',
+                                                                   'No setback' = 'no_setback'
+                                                               ),
+                                                               selected = c('setback_3200ft'),
+                                                               multiple = FALSE,
+                                                               options = pickerOptions(actionsBox = TRUE
+                                                               )
+                                                               
+                                                  ),
+                                                  
+                                                  pickerInput( ###### setback existing input ######
+                                                               inputId = 'phaseout_setback_existing_input',
+                                                               label = tags$span(
+                                                                   'Should the setback policy apply to existing wells?', 
+                                                                   tags$i(
+                                                                       class = "glyphicon glyphicon-info-sign", 
+                                                                       style = "color:#0072B2;",
+                                                                       title = "Currently in California, setback is only applied to new wells.")
+                                                               ),
+                                                               choices = c(
+                                                                   'Setback policy applies to new and existing wells' = 0,
+                                                                   'Setback policy applies only to new wells' = 1
+                                                               ),
+                                                               selected = 1,
+                                                               multiple = FALSE,
+                                                               options = pickerOptions(actionsBox = TRUE)
+                                                  ),
+                                                  
+                                                  id = "phaseout_inputs_box" # for tutorial
+                                                  
+                                              ), # END input box
+                                              
+                                              box( ###### map output ######
+                                                   
+                                                   width = 8, 
+                                                   leafletOutput(outputId = 'phaseout_county_map_output') |>
+                                                       withSpinner(type = 1, color = '#09847A'),
+                                                   
+                                                   id = "phaseout_map_box" # for tutorial
+                                                   
+                                              ) # END leaflet box
+                                              
+                                   ), # END  1st fluidRow
+                                   
+                                   
+                                   fluidRow( ##### Second fluid row (plotly outputs) #####
+                                             box( ###### Phaseout plot ######
+                                                  width = 12,
+                                                  # Create a table based on input
+                                                  plotly::plotlyOutput(outputId = 'phaseout_plot') |> # Changed to table output to show data
+                                                      withSpinner(type = 1, color = '#09847A'),
+                                                  
+                                                  id = "phaseout_jobs_plot_box" # for tutorial
+                                             ) # END plot box
+                                             
+                                   ) # END 2nd fluid row)    
+                                   
+                           ), # End Fossil Fuel Phaseout tabItem
+                           ########## Tool Documentation/User Manual Tab #######
+                           tabItem(tabName = 'documentation',
+                                   fluidRow(column(
+                                       width = 12,
+                                       box(
+                                           width = NULL,
+                                           #title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools')),
+                                           column(1),
+                                           column(10, includeMarkdown('text/tool-documentation.md')),
+                                           column(1)
+                                       )
+                                   )),
+                                   fluidRow(
+                                       column(width = 12, align = "center",
+                                              p("For a detailed look at the technical documentation please visit here.")
+                                       )
+                                   ), # End documentation fluidRow
+                                   
+                                   div(style = "text-align: center; margin-bottom: 30px;",
+                                       h3("The Team")
+                                   ),
+                                   
+                                   fluidRow(
+                                       column(width = 4, align = "center",
+                                              p("Elizabeth Peterson"),
+                                              div(
+                                                  a(href = "mailto:elizabethpeterson@bren.ucsb.edu", 
+                                                    icon("envelope", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                                                  HTML("&nbsp;&nbsp;"),
+                                                  a(href = "https://github.com/egp4aq", 
+                                                    icon("github", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                                                  HTML("&nbsp;&nbsp;"),
+                                                  a(href = "https://egp4aq.github.io", 
+                                                    icon("globe", style = "font-size: 1.5em; color: black;"), target = "_blank")
+                                              )
+                                       ),
+                                       column(width = 4, align = "center",
+                                              p("Marina Kochuten"),
+                                              div(
+                                                  a(href = "mailto:marinakochuten@bren.ucsb.edu", 
+                                                    icon("envelope", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                                                  HTML("&nbsp;&nbsp;"),
+                                                  a(href = "https://github.com/marinakochuten", 
+                                                    icon("github", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                                                  HTML("&nbsp;&nbsp;"),
+                                                  a(href = "https://marinakochuten.github.io", 
+                                                    icon("globe", style = "font-size: 1.5em; color: black;"), target = "_blank")
+                                              )
+                                       ),
+                                       column(width = 4, align = "center",
+                                              p("Brooke Grazda"),
+                                              div(
+                                                  a(href = "mailto:bgrazda@bren.ucsb.edu", 
+                                                    icon("envelope", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                                                  HTML("&nbsp;&nbsp;"),
+                                                  a(href = "https://github.com/bgrazda", 
+                                                    icon("github", style = "font-size: 1.5em; color: black;"), target = "_blank"),
+                                                  HTML("&nbsp;&nbsp;"),
+                                                  a(href = "https://bgrazda.github.io", 
+                                                    icon("globe", style = "font-size: 1.5em; color: black;"), target = "_blank")
+                                              )
+                                       )
+                                   )
+                                   
+                           ) # End Tool documentation tabItem
+                       ) # End all tab items ----
+                       
 ) # End dashboard body
 
 
