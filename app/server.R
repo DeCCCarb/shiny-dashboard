@@ -1882,7 +1882,7 @@ server <- function(input, output, session) {
     }) # End LW capacity plot
     
     ####### EXPORT LAND BASED WIND AS PDF #############
-    output$export_lw <- downloadHandler(
+    output$export_lb_wind <- downloadHandler(
         filename = "land-wind-jobs.pdf",
         
         content = function(file) {

@@ -11,8 +11,7 @@ geometry: margin=.5in
 
 
 ```{r logo, out.width="3.7in", echo=FALSE}
-knitr::include_graphics(here("app", "www", "the2035initiative-logo.png"))
-knitr::include_graphics(here("app", "www", "communitylabor-logo.png"))
+knitr::include_graphics(here("app", "www", "logos.jpeg"))
 ```
 
 ```{r setup, include=FALSE}
@@ -99,7 +98,7 @@ osw_map_label <- paste(
 
 ```
 
-## For the total duration of all projects needed to meet your capacity goal of `r final_cap` (GW) for Floating Offshore Wind by `r final_year`, there would be `r scales::comma(const_njobs_label)` construction and `r scales::comma(om_njobs_label)` operations & maintenance jobs. 
+## For the total duration of all projects needed to meet your capacity goal of `r final_cap` (GW) for Floating Offshore Wind by `r final_year`, there would be `r scales::comma(const_njobs_label)` construction and `r scales::comma(om_njobs_label)` operations & maintenance full time equivalent (FTE) jobs. 
 
 
 
@@ -212,7 +211,7 @@ osw_map_label <- paste(
 ```
 
 
-```{r, fig.align="center", fig.show='hold', fig.width = 3.75, fig.height = 2.5, warning=FALSE, message=FALSE, quiet=TRUE}
+```{r, fig.align="center", fig.show='hold', fig.width = 5.25, fig.height =3.5, warning=FALSE, message=FALSE, quiet=TRUE}
 # O&M OSW ---
         osw <- calculate_osw_om_jobs(
             county = "Tri-county",
@@ -243,6 +242,195 @@ osw_map_label <- paste(
 osw_cap_plot
 
 ```
+
+
+```{r}
+observeEvent(
+        c(
+            input$year_range_input,
+            input$job_type_input,
+            input$initial_capacity_input,
+            input$final_capacity_input
+ #           input$osw_port_input
+        ),
+        {
+            # OSW total jobs map label ----
+            # Calculate annual jobs when port is in CC
+ #           if (!("No Central Coast Port" %in% input$osw_port_input)) {
+                # OSW O&M jobs
+                osw_om <- calculate_osw_om_jobs(
+                    county = "Tri-county",
+                    start_year = input$year_range_input[1],
+                    end_year = input$year_range_input[2],
+                    ambition = "High",
+                    initial_capacity = input$initial_capacity_input,
+                    target_capacity = input$final_capacity_input,
+                    direct_jobs = 127,
+                    indirect_jobs = 126,
+                    induced_jobs = 131
+                )
+                
+                # OSW Construction
+                osw_construction <- calculate_osw_construction_jobs(
+                    county = "Tri-County",
+                    start_year = input$year_range_input[1],
+                    end_year = input$year_range_input[2],
+                    ambition = "High",
+                    initial_capacity = input$initial_capacity_input,
+                    target_capacity = input$final_capacity_input,
+                    direct_jobs = 82,
+                    indirect_jobs = 2571,
+                    induced_jobs = 781
+                )
+                
+                # Bind together
+                osw_all <- rbind(osw_om, osw_construction) |>
+                    filter(type == input$job_type_input)
+                
+                # Calculate annual jobs when port is NOT in CC
+                
+            # } else {
+            #     # Return 0 jobs
+            #     osw_all <- data.frame(
+            #         year = integer(),
+            #         n_jobs = numeric(),
+            #         occupation = character(),
+            #         type = character(),
+            #         stringsAsFactors = FALSE
+            #     )
+            # }
+            
+            # Calculate total construction jobs
+            const_njobs_label <- osw_all |>
+                filter(occupation == "Construction")
+            
+            const_njobs_label <- round(sum(const_njobs_label$n_jobs, na.rm = TRUE), 0)
+            
+            # Calculate total O&M jobs
+            om_njobs_label <- osw_all |>
+                filter(occupation == "O&M")
+            
+            om_njobs_label <- round(sum(om_njobs_label$n_jobs, na.rm = TRUE), 0)
+            
+            # Generate and format label
+            osw_map_label <- HTML(
+                paste(
+                    "<b>Total FTE Jobs in Central Coast</b>",
+                    "<br>",
+                    "Construction:",
+                    scales::comma(const_njobs_label),
+                    "<br>",
+                    "O&M:",
+                    scales::comma(om_njobs_label)
+                )
+            )
+            
+            
+            # OSW map ----
+                port_icon <- awesomeIcons(
+                    icon = 'helmet-safety',
+                    iconColor = 'black',
+                    library = 'fa',
+                    markerColor = "orange"
+                )
+                
+                # Total jobs label location
+                label_coords <- sf::st_coordinates(st_centroid(osw_all_counties)) + c(-0.75, -0.2)
+                
+                label_points <- st_as_sf(
+                    data.frame(lng = label_coords[, 1], lat = label_coords[, 2]),
+                    coords = c("lng", "lat"),
+                    crs = st_crs(osw_all_counties)
+                )
+                
+                # Base map
+                leaflet_map <- leaflet() |>
+                    addAwesomeMarkers(
+                        data = ports_df,
+                        lng = ~long,
+                        lat = ~lat,
+                        icon = port_icon,
+                        popup = ~popup,
+                        label = lapply(ports_df$port_name, HTML)
+                    ) |>
+                    addProviderTiles(providers$Stadia.StamenTerrain) |>
+                    setView(lng = -120.698189,
+                            lat = 34.420830,
+                            zoom = 7) |>
+                    addPolygons(
+                        data = osw_all_counties,
+                        color = 'forestgreen',
+                        opacity = 0.7
+                    ) |>
+                    # Label each county with total jobs
+                    addLabelOnlyMarkers(
+                        data = label_points,
+                        label = osw_map_label,
+                        labelOptions = labelOptions(
+                            noHide = TRUE,
+                            direction = 'left',
+                            textsize = "12px",
+                            opacity = 1
+                        )
+                    )
+                
+                
+                # Only add markers if ports are selected
+                # if (!("No Central Coast Port" %in% input$osw_port_input)) {
+                #     ports_df <- data.frame(
+                #         port_name = c("Hueneme", "San Luis Obispo"),
+                #         address = c(
+                #             "Port of Hueneme, Port Hueneme, CA 93041",
+                #             "699 Embarcadero, Morro Bay, CA 93442"
+                #         )
+                #     ) |>
+                #         filter(port_name %in% input$osw_port_input) |>
+                #         tidygeocoder::geocode(address = 'address', method = "osm")
+                #     
+                #     leaflet_map <- leaflet_map |>
+                #         addAwesomeMarkers(
+                #             data = ports_df,
+                #             lng = ports_df$long,
+                #             lat = ports_df$lat,
+                #             icon = port_icon,
+                #             popup = paste('Port:', ports_df$port_name)
+                #         )
+                # }
+                
+                leaflet_map
+                
+                
+            })
+            
+```
+
+
+
+
+
+
+\n
+\n
+**Background**
+
+Economic changes driven by decarbonization will impact the labor markets across the Central Coast. These projections are not only intended to inform discussions about offshore wind and other renewable energy jobs to advocate for a just transition but also to serve as a model for how research can support just transitions in energy communities across the United States. Given the uncertainty around county-specific solar and land wind capacity targets and floating offshore wind development, this tool provides flexibility for modeling different scenarios and can be customized based on varying assumptions related to regional energy capacity developments. 
+
+
+The Jobs and Economic Development Impact (JEDI) models, developed by the National Renewable Energy Laboratory, estimate direct, indirect, and induced employment impacts from renewable energy deployment. JEDI incorporates economic multipliers from IMPLAN, which quantify the broader economic effects of industry activity in specific regions. Using county-level IMPLAN multipliers in JEDI’s User Add-in Location feature allowed for analysis at the county level rather than the default state level. 
+
+
+**Model Assumptions**
+
+
+It is assumed that, on average, floating offshore wind construction projects last 5 years. Since JEDI estimates for construction jobs are given in terms of the lifetime of construction, these estimates were divided by 5 to convert them to annual estimates and distribute across the construction period. Total annual construction jobs were then calculated in two steps. First, new jobs created each year were calculated by multiplying JEDI estimates by the newly added capacity that year. Second, total annual jobs were calculated by using a rolling sum of new jobs over 5 years. This accounts for construction jobs lasting the average 5 year construction period. 
+
+
+JEDI is a static model. As such, it relies on inter-industry relationships and personal consumption patterns existing in the year of the multipliers. For this analysis, multipliers were for the year 2025. The model does not account for shifts in industry inputs or changes in consumption patterns that could result from changes in prices. Similarly, the model does not automatically take into account industry productivity improvements that may occur over time or changes that may occur in the construction or operations processes.
+
+
+
+
+
 
 
 
