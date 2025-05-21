@@ -24,14 +24,13 @@ library(tmap)
 library(usdata)
 library(sf)
 library(readxl)
-library(markdown)
 
 ########### Read in data ####################
 
-counties <- read_csv(('data/ccc-coords.csv'))
+counties <- read_excel(here::here('app','data', 'ccc-coords.xlsx'))
 
 
-job_projections <- read_csv('data/subset_county_results.csv') %>% 
+job_projections <- read_csv(here::here('app','data','subset_county_results.csv')) %>% 
     filter(county %in% c('Santa Barbara','San Luis Obispo','Ventura'))
 
 
@@ -39,7 +38,7 @@ job_projections <- read_csv('data/subset_county_results.csv') %>%
 ########### Shapefile for leaflet map in server ####################
 
 
-ca_counties <- sf::read_sf(('data/ca_counties/CA_Counties.shp')) %>%
+ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties.shp')) %>%
     sf::st_transform('+proj=longlat +datum=WGS84') |> 
     janitor::clean_names() |> 
     filter(namelsad %in% c('Santa Barbara County', 'Ventura County', 'San Luis Obispo County'))
@@ -399,18 +398,22 @@ calculate_osw_om_jobs <- function(county, start_year, end_year, ambition, initia
     # Combine direct, indirect, and induced job data
     df_combined <- rbind(df_direct, df_indirect, df_induced)
     
-    # Calculate total jobs across all types
+    # Get the final year
+    final_year <- max(df$year)
+    
+    # Calculate total jobs only for the final year
     df_total <- df_combined %>%
+        filter(year == end_year) %>%
         group_by(county, year, technology, ambition) %>%
         summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") %>%
-        left_join(df %>% select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
+        left_join(df %>% filter(year == final_year) %>% 
+                      select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
                   by = c("county", "year")) %>%
         mutate(occupation = "O&M", type = "Total")
     
-    # Add the total row into the full dataframe
+    # Combine with all job types
     df_final <- rbind(df_combined, df_total)
     
-    # Return the final dataframe
     return(df_final)
 }
 
@@ -511,19 +514,19 @@ calculate_land_wind_om_jobs <- function(county, start_year, end_year, initial_ca
     df_direct <- df %>%
         mutate(occupation = "O&M", 
                type = "Direct", 
-               n_jobs = total_capacity_gw * direct_jobs)
+               n_jobs = round(total_capacity_gw * direct_jobs, 2))
     
     # Indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "O&M",
                type = "Indirect", 
-               n_jobs = total_capacity_gw * indirect_jobs)
+               n_jobs = round(total_capacity_gw * indirect_jobs, 2))
     
     # Induced jobs
     df_induced <- df %>%
         mutate(occupation = "O&M",
                type = "Induced", 
-               n_jobs = total_capacity_gw * induced_jobs)
+               n_jobs = round(total_capacity_gw * induced_jobs, 2))
     
     # Stack them together for total jobs
     df_combined <- rbind(df_direct, df_indirect, df_induced)
@@ -593,19 +596,19 @@ calculate_land_wind_construction_jobs <- function(county, start_year, end_year, 
     df_direct <- df %>%
         mutate(occupation = "Construction", 
                type = "Direct", 
-               n_jobs = new_capacity_gw * direct_jobs)
+               n_jobs = round(new_capacity_gw * direct_jobs, 2))
     
     # Indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "Construction",
                type = "Indirect", 
-               n_jobs = new_capacity_gw * indirect_jobs)
+               n_jobs = round(new_capacity_gw * indirect_jobs, 2))
     
     # Induced jobs
     df_induced <- df %>%
         mutate(occupation = "Construction",
                type = "Induced", 
-               n_jobs = new_capacity_gw * induced_jobs)
+               n_jobs = round(new_capacity_gw * induced_jobs, 2))
     
     # Stack them together for total jobs
     df_combined <- rbind(df_direct, df_indirect, df_induced)
@@ -658,96 +661,3 @@ phaseout_employment_projection <- function(county_input, excise_tax = 'no tax', 
         return(filtered_data)
     
 }
-
-
-#################### Oil Capping Workflow ####################
-
-# Read in well data from Deshmukh et al. paper
-wells <- read_csv("data/AllWells_20210427.csv")
-
-############################# Santa Barbara #############################
-
-# Calculate total wells in Santa Barbara to be capped and save - include Idle, Active, and New
-idle_plus_active_wells_sb <- nrow(wells |>
-                                      filter(WellStatus %in% c("Idle", "Active", "New") &
-                                                 WellTypeLa == "Oil & Gas" &
-                                                 CountyName == "Santa Barbara"))
-
-# Calculate the capping rate (number of wells to cap each year)
-capping_rate <- idle_plus_active_wells_sb / (2045-2025)
-
-# Make df with year
-oil_capping_jobs <- data.frame(
-    year = 2025:2045
-)
-
-# Calculate total wells capped at each year
-oil_capping_jobs <- oil_capping_jobs |>
-    mutate(total_wells_capped = round((year - 2025) * capping_rate, 0))
-
-# Calculate total jobs
-oil_capping_jobs_sb <- oil_capping_jobs |>
-    mutate(total_jobs_created = round(total_wells_capped * 0.25, 0),
-           county = "Santa Barbara")
-
-############################# San Luis Obispo #############################
-
-# Calculate total wells in Santa Barbara to be capped and save - include Idle, Active, and New
-idle_plus_active_wells_slo <- nrow(wells |>
-                                       filter(WellStatus %in% c("Idle", "Active", "New") &
-                                                  WellTypeLa == "Oil & Gas" &
-                                                  CountyName == "San Luis Obispo"))
-
-# Calculate the capping rate (number of wells to cap each year)
-capping_rate <- idle_plus_active_wells_slo / (2045-2025)
-
-# Make df with year
-oil_capping_jobs <- data.frame(
-    year = 2025:2045
-)
-
-# Calculate total wells capped at each year
-oil_capping_jobs <- oil_capping_jobs |>
-    mutate(total_wells_capped = round((year - 2025) * capping_rate, 0))
-
-# Calculate total jobs
-oil_capping_jobs_slo <- oil_capping_jobs |>
-    mutate(total_jobs_created = round(total_wells_capped * 0.25, 0),
-           county = "San Luis Obispo")
-
-############################# Ventura #############################
-
-# Calculate total wells in Santa Barbara to be capped and save - include Idle, Active, and New
-idle_plus_active_wells_v <- nrow(wells |>
-                                     filter(WellStatus %in% c("Idle", "Active", "New") &
-                                                WellTypeLa == "Oil & Gas" &
-                                                CountyName == "Ventura"))
-
-# Calculate the capping rate (number of wells to cap each year)
-capping_rate <- idle_plus_active_wells_v / (2045-2025)
-
-# Make df with year
-oil_capping_jobs <- data.frame(
-    year = 2025:2045
-)
-
-# Calculate total wells capped at each year
-oil_capping_jobs <- oil_capping_jobs |>
-    mutate(total_wells_capped = round((year - 2025) * capping_rate, 0))
-
-# Calculate total jobs
-oil_capping_jobs_v <- oil_capping_jobs |>
-    mutate(total_jobs_created = round(total_wells_capped * 0.25, 0),
-           county = "Ventura")
-
-# Combine county data
-oil_capping_jobs_all <- bind_rows(
-    oil_capping_jobs_sb,
-    oil_capping_jobs_slo,
-    oil_capping_jobs_v
-)
-
-
-
-
-

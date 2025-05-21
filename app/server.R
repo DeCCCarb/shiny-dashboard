@@ -292,7 +292,7 @@ server <- function(input, output, session) {
                      you can download all outputs for your scenario as a single PDF."),
                 list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
-            
+             
             # Utility ----
         } else if (input$tabs == "utility") {
             introjs(session, options = list(steps = list(
@@ -321,7 +321,7 @@ server <- function(input, output, session) {
                 list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
                      you can download all outputs for your scenario as a single PDF."),
                 list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
-            )))
+            )) )
             
             # Rooftop ----
         } else if (input$tabs == "rooftop") {
