@@ -1,7 +1,7 @@
 
 server <- function(input, output, session) {
-
-##### Reactive Title #####
+    
+    ##### Reactive Title #####
     observe({
         title_text <- switch(input$tabs,
                              "f_osw"     = "Floating Offshore Wind",
@@ -18,9 +18,9 @@ server <- function(input, output, session) {
             tags$span(title_text, style = "color: #3D4952; font-weight: bold;")
         })
     })
-##### END Reactive Title #####
+    ##### END Reactive Title #####
     
-##### Tutorials #####
+    ##### Tutorials #####
     
     # Automatically start tutorial on first session load ----
     shown_tutorials <- reactiveValues(
@@ -33,17 +33,20 @@ server <- function(input, output, session) {
         phaseout = FALSE
     )
     observeEvent(input$tabs, {
+        
+        # OSW ----
         if (input$tabs == "f_osw" && !shown_tutorials$f_osw) {
             introjs(session, options = list(steps = list(
                 list(intro = "<div style='text-align:center'><b>
                 👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
                 
-                A new frontier for clean energy in California's Central Coast, 
+                A new froniter for clean energy in California's Central Coast, 
                 floating offshore wind is predicted to power up to 3.5 million homes, 
                 marking a significant step towards California’s carbon neutrality goals and catalyzing a new economy
                 around clean energy in the region. <br><br>
                 
-                Use this tool to explore potential job creation under different deployment scenarios of floating offshore wind development.",
+                Use this tool to explore potential job creation under different deployment scenarios of floating 
+                     offshore wind development.",
                      
                      tooltipClass = "introjs-large"  # Custom class
                 ),
@@ -64,7 +67,7 @@ server <- function(input, output, session) {
                      Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
                      
                      tooltipClass = "introjs-wider"
-                     ),
+                ),
                 list(element = "#osw_capacity_plot_box", 
                      intro = "This plot shows annual operating capacity over time. <br><br>
                      Hover over points with your mouse to view capacity estimates. Hover over the upper right corner 
@@ -221,7 +224,7 @@ server <- function(input, output, session) {
                 list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
                      In this tab, we report reusults from an emperical model built by Deshmukh et al. 
                      to allow you to compare direct job loss by county under varying setback policies. <br><br>
-                     What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
+                     A setback policy is the required minimum distance between oil and gas drilling activities and certain
                      sensitive areas, such as homes, schools, hospitals, and other public spaces.
                      ", tooltipClass = "introjs-large"),
                 list(element = "#phaseout_inputs_box", intro = "Start by selecting a county and setback policy. Default values are
@@ -265,7 +268,6 @@ server <- function(input, output, session) {
                 
                 Use this tool to explore potential job creation under different deployment scenarios 
                      of floating offshore wind development.",
->>>>>>> parent of fc97268 (Update tutorial)
                      
                      tooltipClass = "introjs-large"  # Custom class
                 ),
@@ -281,7 +283,7 @@ server <- function(input, output, session) {
                      Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
                      
                      tooltipClass = "introjs-wider"
-                     ),
+                ),
                 list(element = "#osw_capacity_plot_box", 
                      intro = "This plot shows annual operating capacity over time. <br><br>
                      Hover over points with your mouse to view capacity estimates. Hover over the upper right corner of the plot for the download button."),
@@ -290,180 +292,168 @@ server <- function(input, output, session) {
                      you can download all outputs for your scenario as a single PDF."),
                 list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
-            shown_tutorials$f_osw <- TRUE # only run the first time a user visits the tab
-        } else if (input$tabs == "utility" && !shown_tutorials$utility) {
+            
+            # Utility ----
+        } else if (input$tabs == "utility") {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Utility Solar Development tab!"),
-                list(element = "#util_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
-                list(element = "#util_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#util_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#util_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(intro = "<b>👋 Welcome to the Utility Solar Development tab!</b><br><br>Use this tool to explore potential job creation under different deployment scenarios of utility-scale solar development.",
+                     tooltipClass = "introjs-large"),  # Custom class
+                list(element = "#util_inputs_box", intro = "Start by choosing your county, and then adjust assumptions for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+                     Default capacity values are scaled to each county from the statewide goals outlined in 
+                     California Air Resources Board's 2022 Scoping Plan.",
+                     position = "right"),
+                list(element = "#util_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                from your scenario for utility solar development. <br><br> 
+                         You can think of each FTE job as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#util_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
+                <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
+                maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#util_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
+                     Hover over points with your mouse to view capacity estimates. Hover over the upper right corner of the plot for the download button."),
                 list(
                     element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
-            )))
-            shown_tutorials$utility <- TRUE # only run the first time a user visits the tab
-        } else if (input$tabs == "rooftop" && !shown_tutorials$rooftop) {
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
+            )) )
+            
+            # Rooftop ----
+        } else if (input$tabs == "rooftop") {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Rooftop Solar Development tab!"),
-                list(element = "#roof_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
-                list(element = "#roof_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#roof_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#roof_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(intro = "<b>👋 Welcome to the Rooftop Solar Development tab!</b><br><br>Use this tool to explore 
+                     potential job creation under different deployment scenarios of rooftop solar development.",
+                     tooltipClass = "introjs-large"),  # Custom class
+                list(element = "#roof_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
+                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+                     Default capacity values are scaled to each county from the statewide goals outlined in 
+                     California Air Resources Board's 2022 Scoping Plan.",
+                     position = "right"),
+                list(element = "#roof_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                from your scenario for rooftop solar development. <br><br> 
+                         You can think of each FTE job as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#roof_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
+                <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
+                maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#roof_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
+                     Hover over points with your mouse to view capacity estimates. 
+                     Hover over the upper right corner of the plot for the download button."),
                 list(
                     element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
             )))
-            shown_tutorials$rooftop <- TRUE # only run the first time a user visits the tab
-        } else if (input$tabs == "lb_wind" && !shown_tutorials$lb_wind) {
+            
+            # Land wind ----
+        } else if (input$tabs == "lb_wind") {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Land-Based Wind Development tab!"),
-                list(element = "#lw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
-                list(element = "#lw_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#lw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#lw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
+                list(intro = "<b>👋 Welcome to the Land Based Wind Development tab!</b><br><br>
+                Currently, the Strauss Wind Farm in Santa Barbara County is the only land based wind project in the Central Coast. 
+                     <br><br>Use this tool to explore potential job creation under different deployment scenarios of land based wind development.",
+                     tooltipClass = "introjs-large"),
+                list(element = "#lw_inputs_box", intro = "Start by choosing your county, and then adjust assumptions for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+                     There are no publically available capacity goals for land based wind in the Central Coast. Default values are based on the current capacity of the Strauss Wind Farm.",
+                     position = "right"),
+                list(element = "#lw_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                from your scenario for land based wind development. <br><br> 
+                         You can think of each FTE job as one full-time job that lasts for one year.",
+                     position = "left"),
+                list(element = "#lw_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
+                <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
+                maintenance jobs. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#lw_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
+                     Hover over points with your mouse to view capacity estimates. Hover over the upper right corner of the plot for the download button."),
                 list(
                     element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
-            shown_tutorials$lb_wind <- TRUE # only run the first time a user visits the tab
-        } else if (input$tabs == "well_cap" && !shown_tutorials$well_cap) {
+            
+            # Well capping ----
+        } else if (input$tabs == "well_cap") {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Onshore Oil Well Capping tab! \n
-                     Why cap oil wells? ... \n
-                     What is this reporting on? ... \n
-                     Why does it look different from the other tabs?"),
-                list(element = "#cap_inputs_box", intro = "Start by choosing a county to report."),
-                list(element = "#cap_map_box", intro = "This map shows the total jobs created by county."),
+                list(intro = "<b>👋 Welcome to the Onshore Oil Well Capping tab! </b><br><br>
+                Capping oil wells is a crucial step in effective decarbonization. 
+                Idle wells pose health risks and environmental hazards, emitting pollutants long after production ends. <br><br>
+                In this tab, we show the number of jobs that could be created from capping all idle and active oil and gas wells 
+                in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
+                it remains an essential component of the region’s transition.",
+                     tooltipClass = "introjs-large"),
+                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize."),
+                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
+                     created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
+                     position = "left"),
+                list(element = "#cap_jobs_plot_box", intro = "This plot is the cumulative projected direct jobs over time in your county. That is, the the total number of direct jobs that have been created each year since 2025.
+                <br><br> Hover your mouse over the points to see the number of direct jobs each year <br><br> 
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     
+                     tooltipClass = "introjs-wider"),
+                list(element = "#cap_plot_box", intro = "This plot shows the total number of wells capped over time. <br><br>
+                     Hover over points with your mouse to view number of wells. Hover over the upper right corner of the plot for the download button."),
                 list(
                     element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
             )))
-            shown_tutorials$well_cap <- TRUE # only run the first time a user visits the tab
-        } else if (input$tabs == "phaseout" && !shown_tutorials$phaseout) {
+            
+            # FF phaseout ----
+        } else if (input$tabs == "phaseout") {
             introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Fossil Fuel Phaseout tab! What does this even mean?"),
-                list(element = "#phaseout_inputs_box", intro = "Start by adjusting assumptions for county and setback policy."),
-                list(element = "#phaseout_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#phaseout_jobs_plot_box", intro = "Here are the projected job impacts over time."),
+                list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
+                     In this tab, we report reusults from an emperical model built by Deshmukh et al. 
+                     to allow you to compare direct job loss by county under varying setback policies. <br><br>
+                     What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
+                     sensitive areas, such as homes, schools, hospitals, and other public spaces.
+                     ", tooltipClass = "introjs-large"),
+                list(element = "#phaseout_inputs_box", intro = "Start by selecting a county and setback policy. Default values are
+                a 3,200 foot setback distance applied to only new wells, which matches the state’s 
+                current setback policy distance.",
+                     position = "right"),
+                list(element = "#phaseout_map_box", intro = "This map shows the percent reduction in direct job loss from 
+                     2025-2045 based on your input scenario.", 
+                     position = "left"),
+                list(element = "#phaseout_jobs_plot_box", intro = "This plot is the total projected direct jobs over time for your 
+                scenario. 
+                <br><br> Hover over this plot with your mouse to see the total number of direct jobs that year. <br><br>
+                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+                     tooltipClass = "introjs-wider"),
                 list(
                     element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
+                    intro = "Collapse the sidebar using this button to get more space."
+                ),
+                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+                     you can download all outputs for your scenario as a single PDF."),
+                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+                     <br><br> <b> Happy exploring! </b>")
             )))
-            shown_tutorials$phaseout <- TRUE # only run the first time a user visits the tab
         }
     })
     
-    # Play tutorial when "Show Tutorial" button is pressed ----
-    observeEvent(input$show_tutorial, {
-        if (input$tabs == "f_osw") {
-            introjs(session, options = list(steps = list(
-                list(intro = "<div style='text-align:center'><b>
-                👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
-                
-                A new froniter for clean energy in California's Central Coast, 
-                floating offshore wind is predicted to power up to 3.5 million homes, 
-                marking a significant step towards California’s carbon neutrality goals.
-                
-                It is also bound to catalyze a new economy around clean energy in the region. <br><br>
-                
-                Use this tool to explore potential job creation under different capacity scenarios of floating offshore wind development.",
-                     
-                     tooltipClass = "introjs-large"  # Custom class
-                ),
-                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of job you would like to see. <br><br>
-                     Default capacity values are scaled from the statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
-                     position = "right"),
-                list(element = "#osw_map_box", 
-                     intro = "This map shows the total <i>FTE job-years</i> created from your scenario for offshore wind development. <br><br> 
-                     You can think of each FTE job-year as one full-time job that lasts for one year.",
-                     position = "left"),
-                list(element = "#osw_jobs_plot_box", 
-                     intro = "<b>Here are the projected jobs over time!</b> <br><br>
-                     In this plot, you will see the total annual jobs created in your scenario. Hover over this plot with your mouse to see the numbers divided into construction and operations & maintenance jobs. <br><br>
-                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
-                     
-                     tooltipClass = "introjs-wider"
-                ),
-                list(element = "#osw_capacity_plot_box", 
-                     intro = "And this chart shows annual up-and-running capacity over time. <br><br>
-                     Try hovering over points with your mouse, and try looking for that download button at the top-right."),
-                list(element = ".sidebar-toggle", intro = "We recommend collapsing the sidebar using this button to get more space."),
-                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
-                     you can use this button to download all outputs as a single PDF."),
-                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
-            )))
-        } else if (input$tabs == "utility") {
-            introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Utility Solar Development tab!"),
-                list(element = "#util_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
-                list(element = "#util_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#util_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#util_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
-            )))
-        } else if (input$tabs == "rooftop") {
-            introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Rooftop Solar Development tab!"),
-                list(element = "#roof_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
-                list(element = "#roof_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#roof_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#roof_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
-            )))
-        } else if (input$tabs == "lb_wind") {
-            introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Land-Based Wind Development tab!"),
-                list(element = "#lw_inputs_box", intro = "Start by adjusting assumptions for construction year, job type, and capacity."),
-                list(element = "#lw_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#lw_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(element = "#lw_capacity_plot_box", intro = "And this chart shows how capacity is expected to grow."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
-            )))
-        } else if (input$tabs == "well_cap") {
-            introjs(session, options = list(steps = list(
-                list(intro = HTML("👋 Welcome to the Onshore Oil Well Capping tab! \n
-                     Why cap oil wells? ... \n
-                     What is this reporting on? ... \n
-                     Why does it look different from the other tabs?")),  # HOW TO FIX TEXT FORMATTING?
-                list(element = "#cap_inputs_box", intro = "Start by choosing a county to report."),
-                list(element = "#cap_map_box", intro = "This map shows the total jobs created by county."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
-            )))
-        } else if (input$tabs == "phaseout") {
-            introjs(session, options = list(steps = list(
-                list(intro = "👋 Welcome to the Fossil Fuel Phaseout tab! What does this even mean?"),
-                list(element = "#phaseout_inputs_box", intro = "Start by adjusting assumptions for county and setback policy."),
-                list(element = "#phaseout_map_box", intro = "This map shows the total jobs created by county."),
-                list(element = "#phaseout_jobs_plot_box", intro = "Here are the projected job impacts over time."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "We recommend collapsing the sidebar using this button to get more space."
-                )
-            )))
-        }
-        })
+    ##### END Tutorials #####
     
-##### END Tutorials #####
-    
-##### Download Button In Header Reactive to Current Tab #####
+    ##### Download Button In Header Reactive to Current Tab #####
     output$export_pdf_button <- renderUI({
         current_tab <- input$tabs
         if (current_tab %in% c("f_osw", "utility", "rooftop", "lb_wind", "well_cap", "phaseout")) {
@@ -497,9 +487,11 @@ server <- function(input, output, session) {
             "699 Embarcadero, Morro Bay, CA 93442"
         ),
         popup = c(
-            "Construction of specialized wind ports is <i>central</i> to job creation in the Central Coast. <br>",
-            "Construction of specialized wind ports is <i>central</i> to job creation in the Central Coast. <br>
-            "
+            "<center><b>Port of Hueneme - Proposed wind port location</b><br><br>Construction of specialized wind ports is <i>cruicial</i> to job creation in the Central Coast. <br><br>
+            Without specialized port infrastructure, many of these high-skill jobs projected could be lost to other parts of the state. If the Central Coast invests in these facilities, it has the opportunity to become a national hub for floating offshore wind.
+",
+            "<center><b>Port of San Luis Obispo - Proposed wind port location</b><br><br>Construction of specialized wind ports is <i>cruicial</i> to job creation in the Central Coast. <br><br>
+            Without specialized port infrastructure, many of these high-skill jobs projected could be lost to other parts of the state. If the Central Coast invests in these facilities, it has the opportunity to become a national hub for floating offshore wind."
         )) |>
         tidygeocoder::geocode(address = address, method = "osm")
     
@@ -512,44 +504,44 @@ server <- function(input, output, session) {
             input$job_type_input,
             input$initial_capacity_input,
             input$final_capacity_input
- #           input$osw_port_input
+            #           input$osw_port_input
         ),
         {
             # OSW total jobs map label ----
             # Calculate annual jobs when port is in CC
- #           if (!("No Central Coast Port" %in% input$osw_port_input)) {
-                # OSW O&M jobs
-                osw_om <- calculate_osw_om_jobs(
-                    county = "Tri-county",
-                    start_year = input$year_range_input[1],
-                    end_year = input$year_range_input[2],
-                    ambition = "High",
-                    initial_capacity = input$initial_capacity_input,
-                    target_capacity = input$final_capacity_input,
-                    direct_jobs = 127,
-                    indirect_jobs = 126,
-                    induced_jobs = 131
-                )
-                
-                # OSW Construction
-                osw_construction <- calculate_osw_construction_jobs(
-                    county = "Tri-County",
-                    start_year = input$year_range_input[1],
-                    end_year = input$year_range_input[2],
-                    ambition = "High",
-                    initial_capacity = input$initial_capacity_input,
-                    target_capacity = input$final_capacity_input,
-                    direct_jobs = 82,
-                    indirect_jobs = 2571,
-                    induced_jobs = 781
-                )
-                
-                # Bind together
-                osw_all <- rbind(osw_om, osw_construction) |>
-                    filter(type == input$job_type_input)
-                
-                # Calculate annual jobs when port is NOT in CC
-                
+            #           if (!("No Central Coast Port" %in% input$osw_port_input)) {
+            # OSW O&M jobs
+            osw_om <- calculate_osw_om_jobs(
+                county = "Tri-county",
+                start_year = input$year_range_input[1],
+                end_year = input$year_range_input[2],
+                ambition = "High",
+                initial_capacity = input$initial_capacity_input,
+                target_capacity = input$final_capacity_input,
+                direct_jobs = 127,
+                indirect_jobs = 126,
+                induced_jobs = 131
+            )
+            
+            # OSW Construction
+            osw_construction <- calculate_osw_construction_jobs(
+                county = "Tri-County",
+                start_year = input$year_range_input[1],
+                end_year = input$year_range_input[2],
+                ambition = "High",
+                initial_capacity = input$initial_capacity_input,
+                target_capacity = input$final_capacity_input,
+                direct_jobs = 82,
+                indirect_jobs = 2571,
+                induced_jobs = 781
+            )
+            
+            # Bind together
+            osw_all <- rbind(osw_om, osw_construction) |>
+                filter(type == input$job_type_input)
+            
+            # Calculate annual jobs when port is NOT in CC
+            
             # } else {
             #     # Return 0 jobs
             #     osw_all <- data.frame(
@@ -615,7 +607,7 @@ server <- function(input, output, session) {
                         popup = ~popup,
                         label = lapply(ports_df$port_name, HTML)
                     ) |>
-                    addProviderTiles(providers$Stadia.StamenTerrain) |>
+                    addProviderTiles("CartoDB.Voyager") |>
                     setView(lng = -120.698189,
                             lat = 34.420830,
                             zoom = 7) |>
@@ -827,7 +819,7 @@ server <- function(input, output, session) {
         
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            addProviderTiles("CartoDB.Voyager") |>
             setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
             addPolygons(
                 color = "darkgreen",
@@ -872,6 +864,8 @@ server <- function(input, output, session) {
     ##### Utility Jobs Output #######
     
     output$utility_jobs_output <- renderPlotly({
+        
+        # SB Utility PV
         sb_utility_pv_om <- calculate_pv_om_jobs(
             county = "Santa Barbara",
             technology = "Utility PV",
@@ -885,7 +879,6 @@ server <- function(input, output, session) {
             induced_jobs = 0.01
         )
         
-        # SB Utility PV
         sb_utility_pv_const <- calculate_pv_construction_jobs(
             county = "Santa Barbara",
             start_year = input$year_range_input_utility[1],
@@ -962,15 +955,30 @@ server <- function(input, output, session) {
             filter(county %in% input$county_input) |>
             select(-ambition)
         
+        # Fix rounding so if 0 < jobs < 1, we see 2 decimal places, otherwise 0 decimals
+        utility_all <- utility_all %>%
+            mutate(
+                n_jobs_rounded = if_else(
+                    n_jobs < 1,
+                    round(n_jobs, 2),
+                    round(n_jobs, 0)
+                ),
+                n_jobs_label = if_else(
+                    n_jobs < 1 & n_jobs > 0,
+                    scales::comma(n_jobs_rounded, accuracy = 0.01),
+                    scales::comma(n_jobs_rounded, accuracy = 1)
+                )
+            )
+        
         #### Utility Jobs Plot ####
         utility_plot <- ggplot(utility_all,
-                            aes(
-                                x = as.factor(year),
-                                y = round(n_jobs, 0),
-                                group = occupation
-                            )) +
+                               aes(
+                                   x = as.factor(year),
+                                   y = n_jobs_rounded,
+                                   group = occupation
+                               )) +
             geom_col(aes(fill = occupation, text = purrr::map(
-                paste0(occupation, " jobs: ", scales::comma(round(n_jobs, 0))), HTML
+                paste0(occupation, " jobs: ", n_jobs_label), HTML
             ))) +
             scale_fill_manual(
                 labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
@@ -980,7 +988,7 @@ server <- function(input, output, session) {
             scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
             labs(
                 title = glue::glue(
-                    "Projected {input$utility_job_type_input} jobs in {input$county_input} County from Utility Solar development"
+                    "Projected {input$utility_job_type_input} Jobs in {input$county_input} County from Utility Solar Development"
                 ),
                 y = "FTE Jobs"
             ) +
@@ -1000,8 +1008,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(utility_plot, tooltip = c("text"))  |>
             config(utility_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                            'zoomIn', 'zoomOut','select',
+                                                            'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1020,7 +1028,6 @@ server <- function(input, output, session) {
     
     # Generate capacity plot based on user selection ---
     output$utility_cap_projections_output <- renderPlotly({
-        # O&M Roof ---
         
         utility <- calculate_pv_om_jobs(
             county = input$roof_counties_input,
@@ -1035,8 +1042,6 @@ server <- function(input, output, session) {
             induced_jobs = 0
         )
         
-        
-        
         ##### Utility Capacity Plot #####
         
         utility_cap_plot <- ggplot() +
@@ -1045,11 +1050,12 @@ server <- function(input, output, session) {
                 aes(x = as.factor(year), 
                     y = total_capacity_mw,
                     text = purrr::map(
-                        paste0("Capacity: ", round(total_capacity_mw, 2), " MW"), HTML
+                        paste0("Capacity: ", scales::comma(round(total_capacity_mw, 2)), " MW"), HTML
                     )),
                 color = "#3A8398"
             ) +
             scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
+            scale_y_continuous(labels = scales::label_comma()) +
             labs(y = "Capacity (MW)", title = "Annual Online Capacity (MW)") +
             theme_minimal() +
             theme(axis.title.x = element_blank())
@@ -1058,8 +1064,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(utility_cap_plot, tooltip = "text") |>
             config(utility_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                                'zoomIn', 'zoomOut','select',
+                                                                'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1277,11 +1283,12 @@ server <- function(input, output, session) {
                 aes(x = as.factor(year), 
                     y = total_capacity_gw,
                     text = purrr::map(
-                        paste0("Capacity: ", round(total_capacity_gw, 2), " GW"), HTML
+                        paste0("Capacity: ", scales::comma(round(total_capacity_gw, 2)), " GW"), HTML
                     )),
                 color = "#3A8398"
             ) +
             scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
+            scale_y_continuous(labels = scales::label_comma()) +
             labs(y = "Capacity (GW)", title = "Annual Online Capacity (GW)") +
             theme_minimal() +
             theme(axis.title.x = element_blank())
@@ -1290,8 +1297,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(osw_cap_plot, tooltip = "text") |>
             config(osw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                            'zoomIn', 'zoomOut','select',
+                                                            'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1303,7 +1310,7 @@ server <- function(input, output, session) {
         
     }) # End OSW capacity plot
     
-######## Rooftop Solar ##########
+    ######## Rooftop Solar ##########
     # Make the default values of capacity in the UI react to user input using renderUI-
     observeEvent(input$roof_counties_input, {
         # Requires a county input
@@ -1417,15 +1424,29 @@ server <- function(input, output, session) {
             filter(type %in% input$roof_job_type_input) |> # Filter to inputted job type
             filter(county %in% input$roof_counties_input)
         
+        roof_all <- roof_all |>
+            mutate(
+                n_jobs_rounded = if_else(
+                    n_jobs < 1,
+                    round(n_jobs, 2),
+                    round(n_jobs, 0)
+                ),
+                n_jobs_label = if_else(
+                    n_jobs < 1 & n_jobs > 0,
+                    scales::comma(n_jobs_rounded, accuracy = 0.01),
+                    scales::comma(n_jobs_rounded, accuracy = 1)
+                )
+            )
+        
         ##### Rooftop Job Plot #####
         roof_plot <- ggplot(roof_all,
-                           aes(
-                               x = as.factor(year),
-                               y = round(n_jobs, 0),
-                               group = occupation
-                           )) +
+                            aes(
+                                x = as.factor(year),
+                                y = n_jobs_rounded,
+                                group = occupation
+                            )) +
             geom_col(aes(fill = occupation, text = purrr::map(
-                paste0(occupation, " jobs: ", scales::comma(round(n_jobs, 0))), HTML
+                paste0(occupation, " jobs: ", n_jobs_label), HTML
             ))) +
             scale_fill_manual(
                 labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
@@ -1435,7 +1456,7 @@ server <- function(input, output, session) {
             scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
             labs(
                 title = glue::glue(
-                    "Projected {input$roof_job_type_input} jobs in CA Central Coast from Rooftop Solar development"
+                    "Projected {input$roof_job_type_input} Jobs in {input$roof_counties_input} County from Rooftop Solar Development"
                 ),
                 y = "FTE Jobs"
             ) +
@@ -1455,8 +1476,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(roof_plot, tooltip = c("text"))  |>
             config(roof_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                         'zoomIn', 'zoomOut','select',
+                                                         'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1498,11 +1519,12 @@ server <- function(input, output, session) {
                 aes(x = as.factor(year), 
                     y = total_capacity_mw,
                     text = purrr::map(
-                        paste0("Capacity: ", round(total_capacity_mw, 2), " MW"), HTML
+                        paste0("Capacity: ", scales::comma(round(total_capacity_mw, 2)), " MW"), HTML
                     )),
                 color = "#3A8398"
             ) +
             scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
+            scale_y_continuous(labels = scales::label_comma()) +
             labs(y = "Capacity (MW)", title = "Annual Online Capacity (MW)") +
             theme_minimal() +
             theme(axis.title.x = element_blank())
@@ -1511,8 +1533,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(roof_cap_plot, tooltip = "text") |>
             config(roof_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                             'zoomIn', 'zoomOut','select',
+                                                             'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1647,8 +1669,8 @@ server <- function(input, output, session) {
         
         # Create joined dataframe
         roof_all <- rbind(sb_roof_pv_om, sb_roof_pv_const,
-                        slo_roof_pv_om, slo_roof_pv_const,
-                        ventura_roof_pv_om, ventura_roof_pv_const) |>
+                          slo_roof_pv_om, slo_roof_pv_const,
+                          ventura_roof_pv_om, ventura_roof_pv_const) |>
             filter(type %in% input$roof_job_type_input) |> # Filter to inputted job type
             filter(county %in% input$roof_counties_input)
     }) # End reactive to get number of jobs
@@ -1709,7 +1731,7 @@ server <- function(input, output, session) {
         
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            addProviderTiles("CartoDB.Voyager") |>
             setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
             addPolygons(
                 color = "darkgreen",
@@ -1860,9 +1882,9 @@ server <- function(input, output, session) {
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
         counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
-            "<b> <br>", counties_with_labels$name, " County </b><br>",
-            "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
-            "O&M: ", scales::comma(counties_with_labels$`O&M`)
+                                             "<b> <br>", counties_with_labels$name, " County </b><br>",
+                                             "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
+                                             "O&M: ", scales::comma(counties_with_labels$`O&M`)
         )
         
         counties_with_labels
@@ -1871,7 +1893,7 @@ server <- function(input, output, session) {
     # Render LW leaflet map
     output$land_wind_map_output <- renderLeaflet({
         counties_sf <- lw_job_labels()
- 
+        
         # Get the coordinates of the centroids
         label_coords <- sf::st_coordinates(sf::st_centroid(counties_sf))
         
@@ -1903,7 +1925,7 @@ server <- function(input, output, session) {
         
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
+            addProviderTiles("CartoDB.Voyager") |>
             setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
             addPolygons(
                 color = "darkgreen",
@@ -2000,15 +2022,29 @@ server <- function(input, output, session) {
             filter(type %in% input$lw_job_type_input) |> # Filter to inputted job type
             filter(county %in% input$lw_counties_input)
         
+        lw_all <- lw_all |>
+            mutate(
+                n_jobs_rounded = if_else(
+                    n_jobs < 1,
+                    round(n_jobs, 2),
+                    round(n_jobs, 0)
+                ),
+                n_jobs_label = if_else(
+                    n_jobs < 1 & n_jobs > 0,
+                    scales::comma(n_jobs_rounded, accuracy = 0.01),
+                    scales::comma(n_jobs_rounded, accuracy = 1)
+                )
+            )
+        
         ##### LW Jobs Plot #####
         lw_plot <- ggplot(lw_all,
                           aes(
                               x = as.factor(year),
-                              y = round(n_jobs, 0),
+                              y = n_jobs_rounded,
                               group = occupation
                           )) +
             geom_col(aes(fill = occupation, text = purrr::map(
-                paste0(occupation, " jobs: ", scales::comma(round(n_jobs, 0))), HTML
+                paste0(occupation, " jobs: ", n_jobs_label), HTML
             ))) +
             scale_fill_manual(
                 labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
@@ -2018,7 +2054,7 @@ server <- function(input, output, session) {
             scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
             labs(
                 title = glue::glue(
-                    "Projected {input$lw_job_type_input} jobs in {input$lw_counties_input} County from Land Wind development"
+                    "Projected {input$lw_job_type_input} Jobs in {input$lw_counties_input} County from Land Wind Development"
                 ),
                 y = "FTE Jobs"
             ) +
@@ -2036,8 +2072,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(lw_plot, tooltip = c("text"))  |>
             config(lw_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                       'zoomIn', 'zoomOut','select',
+                                                       'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -2076,12 +2112,13 @@ server <- function(input, output, session) {
                 aes(x = as.factor(year), 
                     y = total_capacity_gw,
                     text = purrr::map(
-                        paste0("Capacity: ", round(total_capacity_gw, 2), " GW"), HTML
+                        paste0("Capacity: ", scales::comma(round(total_capacity_gw, 2)), " GW"), HTML
                     )),
                 color = "#3A8398"
             ) +
             scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
-            scale_y_continuous(breaks = scales::breaks_pretty(n = 4)) +
+            scale_y_continuous(breaks = scales::breaks_pretty(n = 4),
+                               labels = scales::label_comma()) +
             labs(y = "Capacity (GW)", title = "Annual Online Capacity (GW)") +
             theme_minimal() +
             theme(axis.title.x = element_blank())
@@ -2090,8 +2127,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(lw_cap_plot, tooltip = "text") |>
             config(lw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                           'zoomIn', 'zoomOut','select',
+                                                           'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -2104,7 +2141,7 @@ server <- function(input, output, session) {
     }) # End LW capacity plot
     
     ####### EXPORT LAND BASED WIND AS PDF #############
-    output$export_lb_wind <- downloadHandler(
+    output$export_lw <- downloadHandler(
         filename = "land-wind-jobs.pdf",
         
         content = function(file) {
@@ -2154,15 +2191,16 @@ server <- function(input, output, session) {
             geom_col(position = "dodge", fill = "#A3BDBE") +
             labs(
                 title = glue::glue(
-                    "Projected fossil fuel jobs in {input$phaseout_counties_input} County"),
+                    "Projected Fossil Fuel Fobs in {input$phaseout_counties_input} County"),
                 y = 'Total direct employment') +
+            scale_y_continuous(labels = scales::label_comma()) +
             theme_minimal() +
             theme(axis.title.x = element_blank())
         
         plotly::ggplotly(phaseout_plot, tooltip = "text") |>
             config(phaseout_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                             'zoomIn', 'zoomOut','select',
+                                                             'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -2171,12 +2209,111 @@ server <- function(input, output, session) {
                        scale = 15
                    )) |>
             layout(hovermode = "x unified") 
-
+        
         
     }) # End phaseout jobs plot
     
     
-##### OIL CAPPING #####
+    ##### OIL CAPPING #####
+    
+    # Oil capping jobs plot ----
+    output$oil_capping_jobs_plot <- renderPlotly({
+        
+        
+        # Filter data for selected county
+        county_data <- oil_capping_jobs_all |> 
+            filter(county == input$county_wells_input)
+        
+        # Create ggplot
+        p <- ggplot(county_data) +
+            geom_point(
+                aes(
+                    x = as.factor(year),
+                    y = total_jobs_created,
+                    text = paste0("Year: ", year, "<br>Cumulative Jobs Created: ", scales::comma(total_jobs_created))
+                ),
+                color = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+            scale_y_continuous(
+                labels = scales::label_comma()
+            ) +
+            labs(
+                title = paste("Cumulative Jobs Created in", {input$county_wells_input}, "County"),
+                y = "Total Jobs Created"
+            ) +
+            theme_minimal() +
+            theme(
+                axis.title.x = element_blank()
+            )
+        
+        plotly::ggplotly(p, tooltip = "text") |>
+            config(
+                modeBarButtonsToRemove = c('zoom2d', 'pan2d', 'autoScale',
+                                           'zoomIn', 'zoomOut', 'select',
+                                           'resetScale', 'lasso'),
+                displaylogo = FALSE,
+                toImageButtonOptions = list(
+                    format = "jpeg",
+                    width = 1000,
+                    height = 700,
+                    scale = 15
+                )
+            ) |>
+            layout(hovermode = "x unified")
+    })
+    
+    # Oil capping wells plot ----
+    output$oil_capping_plot <- renderPlotly({
+        
+        
+        # Filter data for selected county
+        county_data <- oil_capping_jobs_all |> 
+            filter(county == input$county_wells_input)
+        
+        # Define max_y for annotation line
+        max_y <- max(county_data$total_wells_capped, na.rm = TRUE)
+        
+        # Create ggplot
+        p <- ggplot(county_data) +
+            geom_point(
+                aes(
+                    x = as.factor(year),
+                    y = total_wells_capped,
+                    text = paste0("Year: ", year, "<br>Wells Capped: ", scales::comma(total_wells_capped))
+                ),
+                color = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+            scale_y_continuous(
+                labels = scales::label_comma()
+            ) +
+            labs(
+                title = paste("Well Capping Projection for", {input$county_wells_input}, "County"),
+                y = "Number of Wells Capped"
+            ) +
+            theme_minimal() +
+            theme(
+                axis.title.x = element_blank()
+            )
+        
+        plotly::ggplotly(p, tooltip = "text") |>
+            config(
+                modeBarButtonsToRemove = c('zoom2d', 'pan2d', 'autoScale',
+                                           'zoomIn', 'zoomOut', 'select',
+                                           'resetScale', 'lasso'),
+                displaylogo = FALSE,
+                toImageButtonOptions = list(
+                    format = "jpeg",
+                    width = 1000,
+                    height = 700,
+                    scale = 15
+                )
+            ) |>
+            layout(hovermode = "x unified")
+    })
+    
+    
     # Oil capping leaflet map output ----
     output$capping_map_output <- renderLeaflet({
         
@@ -2193,12 +2330,12 @@ server <- function(input, output, session) {
         # Prepare the county data with label text
         ca_counties <- ca_counties |>
             mutate(
-                label_text = paste0("<b><u><font size = '2.5'>", name, " County </b></u></font><br>Total Oil & Gas Wells: ", well_count,
-                                    "<br> Total FTE Jobs: ", n_jobs,
+                label_text = paste0("<b><u><font size = '2.5'>", name, " County </b></u></font><br>Total Oil & Gas Wells: ", scales::comma(well_count),
+                                    "<br> Total FTE Jobs: ", scales::comma(n_jobs),
                                     "<br>",
                                     "<br> Capping all idle & active wells from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
-                                    )
-
+                )
+                
             )
         
         # Filter the data to the selected county only for both polygon and label
@@ -2209,8 +2346,8 @@ server <- function(input, output, session) {
         
         # Set up the map
         leaflet_map <- leaflet() |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -120.298189, lat = 34.820830, zoom = 8)
+            addProviderTiles("CartoDB.Voyager") |>
+            setView(lng = -120.40189, lat = 34.920030, zoom = 8)
         
         # Add the polygon for the selected county only (hide others)
         leaflet_map <- leaflet_map |>
@@ -2238,35 +2375,10 @@ server <- function(input, output, session) {
         
         leaflet_map
     })
-    ####### EXPORT WELL CAPPING AS PDF #############
-    output$export_well_cap <- downloadHandler(
-        filename = "well-cap-jobs.pdf",
-        
-        content = function(file) {
-            src <- normalizePath(here::here('app', 'files', 'well-cap-jobs.Rmd'))
-            
-            # Switch to a temp directory
-            owd <- setwd(tempdir())
-            on.exit(setwd(owd), add = TRUE)
-            
-            file.copy(src, 'well-cap-jobs.Rmd', overwrite = TRUE)
-            
-            # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
-            output_file <- rmarkdown::render(
-                input = 'well-cap-jobs.Rmd',
-                output_format = "pdf_document",
-                output_file = "well-cap-jobs.pdf"
-            )
-            
-            # Copy the rendered PDF to the target location
-            file.copy(output_file, file, overwrite = TRUE)
-        }
-        
-    )
+    
     
     #phaseout leaflet map output ----
     output$phaseout_county_map_output <- renderLeaflet({
-
         counties_input <- reactive({
             if (!is.null(input$phaseout_counties_input)) {
                 ca_counties |> filter(name %in% input$phaseout_counties_input)
@@ -2279,67 +2391,7 @@ server <- function(input, output, session) {
             icon = 'helmet-safety',
             iconColor = 'black',
             library = 'fa',
-            markerColor = "orange")
-
-    counties_input <- reactive({
-        if (!is.null(input$phaseout_counties_input)) {
-            ca_counties |> filter(name %in% input$phaseout_counties_input)
-        } else {
-            ca_counties
-        }
-    })
-
-    icons <- awesomeIcons(
-        icon = 'helmet-safety',
-        iconColor = 'black',
-        library = 'fa',
-        markerColor = "orange"
-    )
-
-    label_coords <- data.frame(
-        name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
-        lng = c(-120.7201, -121.0508, -119.4855),
-        lat = c(34.58742, 35.40949, 34.35622)
-    )
-
-    # Get projection data based on input
-    phaseout_projection_data <- phaseout_employment_projection(
-        county_input = input$phaseout_counties_input,
-        setback = input$phaseout_setback_input,
-        setback_existing_filter = input$phaseout_setback_existing_input
-    )
-
-    # Get total employment in 2021 and 2045
-    jobs_2025_total <- phaseout_projection_data %>%
-        filter(year == 2025) %>%
-        summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
-        pull(total_jobs)
-
-    jobs_2045_total <- phaseout_projection_data %>%
-        filter(year == 2045) %>%
-        summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
-        pull(total_jobs)
-
-    # Calculate percent decrease
-    percent_decrease <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
-        round((1 - (jobs_2045_total / jobs_2025_total)) * 100, 1)
-    } else {
-        NA
-    }
-
-    # Build label
-    percent_label <- paste0(
-        "<b>Projected % Decrease in Fossil Fuel Jobs <br>
-        (",input$phaseout_counties_input," County, 2025–2045): </b>", percent_decrease, "%<br><br>",
-        "<b>Projected Jobs in 2045:</b> ",
-        round(jobs_2045_total, 0)
-    )
-
-    # Add label to selected counties
-    ca_counties <- ca_counties |>
-        mutate(
-            label_text = percent_label
-
+            markerColor = "orange"
         )
         
         label_coords <- data.frame(
@@ -2348,60 +2400,67 @@ server <- function(input, output, session) {
             lat = c(34.58742, 35.40949, 34.35622)
         )
         
-        # Get filtered projection data based on inputs
+        # Get projection data based on input
         phaseout_projection_data <- phaseout_employment_projection(
             county_input = input$phaseout_counties_input,
             setback = input$phaseout_setback_input,
-            setback_existing_filter = input$phaseout_setback_existing_input,
+            setback_existing_filter = input$phaseout_setback_existing_input
         )
         
-        # Filter to 2045 and summarize total employment
+        # Get total employment in 2025 and 2045
+        jobs_2025_total <- phaseout_projection_data %>%
+            filter(year == 2025) %>%
+            summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+            pull(total_jobs)
+        
         jobs_2045_total <- phaseout_projection_data %>%
             filter(year == 2045) %>%
             summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
             pull(total_jobs)
         
-        # Prepare the county data with label text
-        ca_counties <- ca_counties |>
-            mutate(
-                label_text = paste0("<b> Total Projected Fossil Fuel Jobs </b>",
-                                    "<br>", "in 2045 in ", name, " County: <br>", round(jobs_2045_total, 0))
-            )
+        # Calculate percent decrease
+        percent_decrease <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
+            round((1 - (jobs_2045_total / jobs_2025_total)) * 100, 1)
+        } else {
+            NA
+        }
         
-        # Filter to 2045 and summarize total employment
-        jobs_2045_total <- phaseout_projection_data %>%
-            filter(year == 2045) %>%
-            summarise(total_jobs = sum(as.numeric(unlist(total_emp)), na.rm = TRUE)) %>%
-            pull(total_jobs)
-        
-        # Format label
-        jobs_label <- paste0(
-            "<b><font size='3'>Projected Total Fossil Fuel Employment in 2045:</font></b><br>",
-            "<font size='4'><b>", formatC(jobs_2045_total, format = "d", big.mark = ","), " FTE Jobs</b></font>"
+        # Build label
+        percent_label <- paste0(
+            "<b>Projected % Decrease in Fossil Fuel Jobs <br>
+        (",input$phaseout_counties_input," County, 2025–2045): </b>", percent_decrease, "%<br><br>",
+            "<b>Projected Jobs in 2045:</b> ",
+            round(jobs_2045_total, 0)
         )
         
-        # Filter the data to the selected county only for both polygon and label
+        # Add label to selected counties
+        ca_counties <- ca_counties |>
+            mutate(
+                label_text = percent_label
+            )
+        
+        # Prepare label data
         label_data <- ca_counties |>
             filter(name == input$phaseout_counties_input) |>
             left_join(label_coords, by = "name") |>
             st_drop_geometry()
         
         leaflet_map <- leaflet() |>
-            addProviderTiles(providers$Stadia.StamenTerrain) |>
-            setView(lng = -119.698189,
+            addProviderTiles("CartoDB.Voyager") |>
+            setView(lng = -121.698189,
                     lat = 34.420830,
                     zoom = 7)
         
-        # Add the polygon for the selected county only (hide others)
+        # Add selected county polygon
         leaflet_map <- leaflet_map |>
             addPolygons(
-                data = ca_counties |> filter(name == input$phaseout_counties_input),  # Only add selected county's polygon
-                color = "forestgreen", 
-                opacity = 0.7,
+                data = ca_counties |> filter(name == input$phaseout_counties_input),
+                color = "forestgreen",
+                opacity = 0.7
             )
         
-        # Add label only for the selected county if a county is selected
-        if (!is.null(input$county_wells_input)) {
+        # Add label if county is selected
+        if (!is.null(input$phaseout_counties_input)) {
             leaflet_map <- leaflet_map |>
                 addLabelOnlyMarkers(
                     lng = label_data$lng,
@@ -2415,39 +2474,15 @@ server <- function(input, output, session) {
                     )
                 )
         }
+        
         leaflet_map
     })
     
-    ####### EXPORT WELL CAPPING AS PDF #############
-    output$export_phaseout <- downloadHandler(
-        filename = "phaseout-jobs.pdf",
-        
-        content = function(file) {
-            src <- normalizePath(here::here('app', 'files', 'phaseout-jobs.Rmd'))
-            
-            # Switch to a temp directory
-            owd <- setwd(tempdir())
-            on.exit(setwd(owd), add = TRUE)
-            
-            file.copy(src, 'phaseout-jobs.Rmd', overwrite = TRUE)
-            
-            # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
-            output_file <- rmarkdown::render(
-                input = 'phaseout-jobs.Rmd',
-                output_format = "pdf_document",
-                output_file = "phaseout-jobs.pdf"
-            )
-            
-            # Copy the rendered PDF to the target location
-            file.copy(output_file, file, overwrite = TRUE)
-        }
-        
-    )
     
     ##### Project Overview image carousel #####
     output$image_carousel <- renderSlickR({
         slickR(
-            c("project_goal2.svg", "why_cc.svg","focus_tech_floating_osw.svg","focus_tech_lb_wind.svg","focus_tech_rooftop_solar.svg","focus_tech_utility_solar.svg","focus_tech_oil_capping.svg","phaseout.png","other_tech.svg") 
+            c("why_cc.svg","project_goal.svg","correct_tech.svg","all_tech.svg","next_step.svg") 
         )
     })
 }
