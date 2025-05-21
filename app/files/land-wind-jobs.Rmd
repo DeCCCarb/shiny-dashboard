@@ -1,0 +1,16 @@
+---
+title: "Land Based Wind Job Impacts"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+mainfont: "Avenir"
+fontsize: 11pt
+geometry: margin=.5in
+---
+
+```{r logo, out.width="3.7in", echo=FALSE}
+knitr::include_graphics(here("app", "www", "the2035initiative-logo.png"))
+knitr::include_graphics(here("app", "www", "communitylabor-logo.png"))
+```
+
