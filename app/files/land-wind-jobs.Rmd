@@ -9,14 +9,13 @@ fontsize: 11pt
 geometry: margin=.5in
 ---
 
-```{r logo, out.width="3.7in", echo=FALSE}
-knitr::include_graphics(here("app", "www", "the2035initiative-logo.png"))
-knitr::include_graphics(here("app", "www", "communitylabor-logo.png"))
+```{r logo, out.width="3.7in", fig.align='center', echo=FALSE}
+knitr::include_graphics(here("app", "www", "logos.jpeg"))
 ```
 
 
 
-```{r}
+```{r, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align="center")
 library(glue)
 library(usdata)
@@ -36,6 +35,71 @@ final_cap <- input$final_gw_land_input
 county <- input$county_input
 
 
+lw_all_jobs <- reactive({
+        counties <- input$lw_counties_input
+        start_year <- input$input_lw_years[1]
+        end_year <- input$input_lw_years[2]
+        initial_capacity <- input$initial_gw_lw_input
+        final_capacity <- input$final_gw_land_input
+        
+        # Define job multipliers per county
+        job_factors <- list(
+            "Santa Barbara" = list(const = c(139, 354, 139), om = c(14, 23, 8)),
+            "San Luis Obispo" = list(const = c(25, 207, 113), om = c(14, 21, 7)),
+            "Ventura" = list(const = c(140, 345, 139), om = c(14, 24, 8))
+        )
+        
+        # Loop through counties and calculate jobs
+        purrr::map_dfr(counties, function(cty) {
+            factors <- job_factors[[cty]]
+            
+            const <- calculate_land_wind_construction_jobs(
+                county = cty,
+                start_year = start_year,
+                end_year = end_year,
+                initial_capacity = initial_capacity,
+                final_capacity = final_capacity,
+                direct_jobs = factors$const[1],
+                indirect_jobs = factors$const[2],
+                induced_jobs = factors$const[3]
+            )
+            
+            om <- calculate_land_wind_om_jobs(
+                county = cty,
+                start_year = start_year,
+                end_year = end_year,
+                initial_capacity = initial_capacity,
+                final_capacity = final_capacity,
+                direct_jobs = factors$om[1],
+                indirect_jobs = factors$om[2],
+                induced_jobs = factors$om[3]
+            )
+            
+            rbind(const, om)
+        }) |> 
+            filter(type %in% input$lw_job_type_input)
+})
+
+jobs <- lw_all_jobs()
+        counties_sf <- counties_input_lw()
+        
+        job_summaries <- jobs |>
+            group_by(county, occupation) |>
+            summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = 'drop') |>
+            tidyr::pivot_wider(names_from = occupation, values_from = n_jobs, values_fill = 0)
+        
+        counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
+        
+        counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
+            "<b> <br>", counties_with_labels$name, " County </b><br>",
+            "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
+            "O&M: ", scales::comma(counties_with_labels$`O&M`)
+        )
+```
+
+
+
+```{r}
 # Calculate jobs by county from user input
         land_wind_om_sb <- calculate_land_wind_om_jobs(
             county = "Santa Barbara",
@@ -109,7 +173,9 @@ county <- input$county_input
                         land_wind_const_v, land_wind_om_v) |>
             filter(type %in% input$lw_job_type_input) |> # Filter to inputted job type
             filter(county %in% input$lw_counties_input)
-        
+```
+ 
+```{r, fig.align="center", fig.show='hold', fig.width = 5.25, fig.height =3.5, warning=FALSE, message=FALSE, quiet=TRUE}
         ##### LW Jobs Plot #####
         lw_plot <- ggplot(lw_all,
                           aes(
@@ -149,7 +215,7 @@ lw_plot
 ```
 
 
-```{r}
+```{r, fig.align="center", fig.show='hold', fig.width = 5.25, fig.height =3.5, warning=FALSE, message=FALSE, quiet=TRUE}
 lw_cap <- calculate_land_wind_om_jobs(
             county = input$lw_counties_input,
             start_year = input$input_lw_years[1],
@@ -179,8 +245,30 @@ lw_cap <- calculate_land_wind_om_jobs(
             theme_minimal() +
             theme(axis.title.x = element_blank(),
                   text = element_text(family = 'Commissioner'))
+lw_cap_plot
 ```
 
 
+
+
+
+
+
+
+
+**Background**
+
+Economic changes driven by decarbonization will impact the labor markets across the Central Coast. These projections are not only intended to inform discussions about offshore wind and other renewable energy jobs to advocate for a just transition but also to serve as a model for how research can support just transitions in energy communities across the United States. Given the uncertainty around county-specific solar and land wind capacity targets and floating offshore wind development, this tool provides flexibility for modeling different scenarios and can be customized based on varying assumptions related to regional energy capacity developments. 
+
+Land based wind in the Central Coast does not have any regional capacity goals for development in the region apart from the established Strauss Wind Project. There is potential for regional expansion of this project to create more installed capacity and overall FTE jobs (job years). Further analyses can use the dashboard tool to project different buildout scenarios of land based wind if capacity goals become publicly available.
+
+The Jobs and Economic Development Impact (JEDI) models, developed by the National Renewable Energy Laboratory, estimate direct, indirect, and induced employment impacts from renewable energy deployment. JEDI incorporates economic multipliers from IMPLAN, which quantify the broader economic effects of industry activity in specific regions. Using county-level IMPLAN multipliers in JEDI’s User Add-in Location feature allowed for analysis at the county level rather than the default state level. 
+
+
+**Model Assumptions**
+
+Total annual construction jobs were then calculated in two steps. First, new jobs created each year were calculated by multiplying JEDI estimates by the newly added capacity that year. Second, total annual jobs were calculated by using a rolling sum of new jobs every year. 
+
+JEDI is a static model. As such, it relies on inter-industry relationships and personal consumption patterns existing in the year of the multipliers. For this analysis, multipliers were for the year 2025. The model does not account for shifts in industry inputs or changes in consumption patterns that could result from changes in prices. Similarly, the model does not automatically take into account industry productivity improvements that may occur over time or changes that may occur in the construction or operations processes.
 
 
