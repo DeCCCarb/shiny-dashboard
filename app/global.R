@@ -1,4 +1,3 @@
-
 # Load packages
 
 library(shiny)
@@ -24,13 +23,14 @@ library(tmap)
 library(usdata)
 library(sf)
 library(readxl)
+library(markdown)
 
 ########### Read in data ####################
 
-counties <- read_excel(here::here('app','data', 'ccc-coords.xlsx'))
+counties <- read_csv(('data/ccc-coords.csv'))
 
 
-job_projections <- read_csv(here::here('app','data','subset_county_results.csv')) %>% 
+job_projections <- read_csv('data/subset_county_results.csv') %>% 
     filter(county %in% c('Santa Barbara','San Luis Obispo','Ventura'))
 
 
@@ -38,7 +38,7 @@ job_projections <- read_csv(here::here('app','data','subset_county_results.csv')
 ########### Shapefile for leaflet map in server ####################
 
 
-ca_counties <- sf::read_sf(here::here('app', 'data', 'ca_counties', 'CA_Counties.shp')) %>%
+ca_counties <- sf::read_sf(('data/ca_counties/CA_Counties.shp')) %>%
     sf::st_transform('+proj=longlat +datum=WGS84') |> 
     janitor::clean_names() |> 
     filter(namelsad %in% c('Santa Barbara County', 'Ventura County', 'San Luis Obispo County'))
@@ -114,7 +114,7 @@ calculate_pv_om_jobs <- function(county, start_year, end_year, technology, ambit
     
     # Stack them together for total jobs
     df_combined <- rbind(df_direct, df_indirect, df_induced)
-
+    
     # Calculate total jobs only for the final year
     df_total <- df_combined %>%
         group_by(county, year, technology, ambition) %>%
@@ -382,38 +382,34 @@ calculate_osw_om_jobs <- function(county, start_year, end_year, ambition, initia
         mutate(occupation = "O&M", 
                type = "Direct", 
                n_jobs = total_capacity_gw * direct_jobs)
-
-   # Calculate indirect jobs
+    
+    # Calculate indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "O&M",
                type = "Indirect",
                n_jobs = total_capacity_gw * indirect_jobs)
-
+    
     # Calculate induced jobs
     df_induced <- df %>%
         mutate(occupation = "O&M",
                type = "Induced",
                n_jobs = total_capacity_gw * induced_jobs)
-
+    
     # Combine direct, indirect, and induced job data
     df_combined <- rbind(df_direct, df_indirect, df_induced)
     
-    # Get the final year
-    final_year <- max(df$year)
-    
-    # Calculate total jobs only for the final year
+    # Calculate total jobs across all types
     df_total <- df_combined %>%
-        filter(year == end_year) %>%
         group_by(county, year, technology, ambition) %>%
         summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") %>%
-        left_join(df %>% filter(year == final_year) %>% 
-                      select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
+        left_join(df %>% select(county, year, new_capacity_mw, total_capacity_mw, new_capacity_gw, total_capacity_gw),
                   by = c("county", "year")) %>%
         mutate(occupation = "O&M", type = "Total")
     
-    # Combine with all job types
+    # Add the total row into the full dataframe
     df_final <- rbind(df_combined, df_total)
     
+    # Return the final dataframe
     return(df_final)
 }
 
@@ -514,19 +510,19 @@ calculate_land_wind_om_jobs <- function(county, start_year, end_year, initial_ca
     df_direct <- df %>%
         mutate(occupation = "O&M", 
                type = "Direct", 
-               n_jobs = round(total_capacity_gw * direct_jobs, 2))
+               n_jobs = total_capacity_gw * direct_jobs)
     
     # Indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "O&M",
                type = "Indirect", 
-               n_jobs = round(total_capacity_gw * indirect_jobs, 2))
+               n_jobs = total_capacity_gw * indirect_jobs)
     
     # Induced jobs
     df_induced <- df %>%
         mutate(occupation = "O&M",
                type = "Induced", 
-               n_jobs = round(total_capacity_gw * induced_jobs, 2))
+               n_jobs = total_capacity_gw * induced_jobs)
     
     # Stack them together for total jobs
     df_combined <- rbind(df_direct, df_indirect, df_induced)
@@ -596,19 +592,19 @@ calculate_land_wind_construction_jobs <- function(county, start_year, end_year, 
     df_direct <- df %>%
         mutate(occupation = "Construction", 
                type = "Direct", 
-               n_jobs = round(new_capacity_gw * direct_jobs, 2))
+               n_jobs = new_capacity_gw * direct_jobs)
     
     # Indirect jobs
     df_indirect <- df %>%
         mutate(occupation = "Construction",
                type = "Indirect", 
-               n_jobs = round(new_capacity_gw * indirect_jobs, 2))
+               n_jobs = new_capacity_gw * indirect_jobs)
     
     # Induced jobs
     df_induced <- df %>%
         mutate(occupation = "Construction",
                type = "Induced", 
-               n_jobs = round(new_capacity_gw * induced_jobs, 2))
+               n_jobs = new_capacity_gw * induced_jobs)
     
     # Stack them together for total jobs
     df_combined <- rbind(df_direct, df_indirect, df_induced)
@@ -645,7 +641,7 @@ calculate_land_wind_construction_jobs <- function(county, start_year, end_year, 
 #' phaseout_employment_projection(setback = 'setback_5280ft')
 
 phaseout_employment_projection <- function(county_input, excise_tax = 'no tax', setback,
-                                       oil_price = 'reference case', prod_quota = 'no quota', setback_existing_filter, carbon_price = 'price floor') {
+                                           oil_price = 'reference case', prod_quota = 'no quota', setback_existing_filter, carbon_price = 'price floor') {
     
     # Filter data according to function inputs
     filtered_data <- job_projections %>%
@@ -662,10 +658,11 @@ phaseout_employment_projection <- function(county_input, excise_tax = 'no tax', 
     
 }
 
+
 #################### Oil Capping Workflow ####################
 
 # Read in well data from Deshmukh et al. paper
-wells <- read_csv(here("app", "data", "AllWells_20210427.csv"))
+wells <- read_csv("data/AllWells_20210427.csv")
 
 ############################# Santa Barbara #############################
 
