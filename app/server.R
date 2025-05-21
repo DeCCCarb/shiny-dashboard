@@ -2016,7 +2016,31 @@ server <- function(input, output, session) {
         
         leaflet_map
     })
-    
+    ####### EXPORT WELL CAPPING AS PDF #############
+    output$export_well_cap <- downloadHandler(
+        filename = "well-cap-jobs.pdf",
+        
+        content = function(file) {
+            src <- normalizePath(here::here('app', 'files', 'well-cap-jobs.Rmd'))
+            
+            # Switch to a temp directory
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd), add = TRUE)
+            
+            file.copy(src, 'well-cap-jobs.Rmd', overwrite = TRUE)
+            
+            # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
+            output_file <- rmarkdown::render(
+                input = 'well-cap-jobs.Rmd',
+                output_format = "pdf_document",
+                output_file = "well-cap-jobs.pdf"
+            )
+            
+            # Copy the rendered PDF to the target location
+            file.copy(output_file, file, overwrite = TRUE)
+        }
+        
+    )
     
     #phaseout leaflet map output ----
     output$phaseout_county_map_output <- renderLeaflet({
@@ -2110,6 +2134,32 @@ server <- function(input, output, session) {
         }
         leaflet_map
     })
+    
+    ####### EXPORT WELL CAPPING AS PDF #############
+    output$export_phaseout <- downloadHandler(
+        filename = "phaseout-jobs.pdf",
+        
+        content = function(file) {
+            src <- normalizePath(here::here('app', 'files', 'phaseout-jobs.Rmd'))
+            
+            # Switch to a temp directory
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd), add = TRUE)
+            
+            file.copy(src, 'phaseout-jobs.Rmd', overwrite = TRUE)
+            
+            # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
+            output_file <- rmarkdown::render(
+                input = 'phaseout-jobs.Rmd',
+                output_format = "pdf_document",
+                output_file = "phaseout-jobs.pdf"
+            )
+            
+            # Copy the rendered PDF to the target location
+            file.copy(output_file, file, overwrite = TRUE)
+        }
+        
+    )
     
     ##### Project Overview image carousel #####
     output$image_carousel <- renderSlickR({

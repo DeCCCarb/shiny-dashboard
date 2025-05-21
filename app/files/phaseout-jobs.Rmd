@@ -1,0 +1,53 @@
+---
+title: "Fossil Fuel Phase Out Job Impacts"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+mainfont: "Avenir"
+fontsize: 11pt
+geometry: margin=.5in
+---
+
+```{r logo, out.width="3.7in", fig.align='center', echo=FALSE}
+knitr::include_graphics(here("app", "www", "logos.jpeg"))
+```
+
+
+```{r, r, fig.align="center", fig.show='hold', fig.width = 5.25, fig.height = 3.5,warning=FALSE, message=FALSE, quiet=TRUE}
+filtered_data <- phaseout_employment_projection(
+            county = input$phaseout_counties_input,
+            excise_tax = 'no tax',
+            setback = input$phaseout_setback_input,
+            setback_existing = as.numeric(input$phaseout_setback_existing_input),
+            oil_price = 'reference case',
+            prod_quota = 'no quota',
+            carbon_price = 'price floor'
+        )
+
+phaseout_plot <- filtered_data %>%
+            ggplot(aes(
+                x = as.factor(year),
+                y = round(total_emp, 0),
+                text = paste("Year:", year, "<br>Jobs:", scales::comma(round(total_emp, 0)))
+            )) +
+            geom_col(position = "dodge", fill = "#A3BDBE") +
+            labs(
+                title = glue::glue(
+                    "Projected fossil fuel jobs in {input$phaseout_counties_input} County"),
+                y = 'Total direct employment') +
+            theme_minimal() +
+            theme(axis.title.x = element_blank())
+
+phaseout_plot
+```
+As California advances toward its climate goals, the decline of fossil fuel employment is expected. Under the state’s current 3,200-foot setback policy for new oil wells, Ventura County is projected to see a 47.4% reduction in fossil fuel employment by 2045, shrinking from 1,085 current jobs to 514. San Luis Obispo and Santa Barbara Counties are also expected to experience fossil job losses of 25.5% and 23.2%, respectively. Even in the absence of setback policies, fossil fuel employment is likely to decline across counties as clean energy sources become more prominent.
+
+
+
+**Background**
+
+
+Deshmukh et. al. developed an empirical model projecting job losses by county in California under various decarbonization policy scenarios. This analysis incorporates these projections, along with additional estimates from the previous MEDS capstone project, Investigating the Social and Environmental Impacts of Supply Side Oil and Gas Policies in California, to model job loss as California transitions away from fossil fuels. The model's 2025 employment projections were validated against current Bureau of Labor Statistics data to ensure continued accuracy and relevance.
+
+All scenarios from Deshmukh et. al. will be visualized in the dashboard to provide context for the broader implications of California’s decarbonization transition.
