@@ -1,7 +1,7 @@
 
 server <- function(input, output, session) {
-
-##### Reactive Title #####
+    
+    ##### Reactive Title #####
     observe({
         title_text <- switch(input$tabs,
                              "f_osw"     = "Floating Offshore Wind",
@@ -18,9 +18,9 @@ server <- function(input, output, session) {
             tags$span(title_text, style = "color: #3D4952; font-weight: bold;")
         })
     })
-##### END Reactive Title #####
+    ##### END Reactive Title #####
     
-##### Tutorials #####
+    ##### Tutorials #####
     
     # Automatically start tutorial on first session load ----
     shown_tutorials <- reactiveValues(
@@ -67,7 +67,7 @@ server <- function(input, output, session) {
                      Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
                      
                      tooltipClass = "introjs-wider"
-                     ),
+                ),
                 list(element = "#osw_capacity_plot_box", 
                      intro = "This plot shows annual operating capacity over time. <br><br>
                      Hover over points with your mouse to view capacity estimates. Hover over the upper right corner 
@@ -449,11 +449,11 @@ server <- function(input, output, session) {
                      <br><br> <b> Happy exploring! </b>")
             )))
         }
-        })
+    })
     
-##### END Tutorials #####
+    ##### END Tutorials #####
     
-##### Download Button In Header Reactive to Current Tab #####
+    ##### Download Button In Header Reactive to Current Tab #####
     output$export_pdf_button <- renderUI({
         current_tab <- input$tabs
         if (current_tab %in% c("f_osw", "utility", "rooftop", "lb_wind", "well_cap", "phaseout")) {
@@ -504,44 +504,44 @@ server <- function(input, output, session) {
             input$job_type_input,
             input$initial_capacity_input,
             input$final_capacity_input
- #           input$osw_port_input
+            #           input$osw_port_input
         ),
         {
             # OSW total jobs map label ----
             # Calculate annual jobs when port is in CC
- #           if (!("No Central Coast Port" %in% input$osw_port_input)) {
-                # OSW O&M jobs
-                osw_om <- calculate_osw_om_jobs(
-                    county = "Tri-county",
-                    start_year = input$year_range_input[1],
-                    end_year = input$year_range_input[2],
-                    ambition = "High",
-                    initial_capacity = input$initial_capacity_input,
-                    target_capacity = input$final_capacity_input,
-                    direct_jobs = 127,
-                    indirect_jobs = 126,
-                    induced_jobs = 131
-                )
-                
-                # OSW Construction
-                osw_construction <- calculate_osw_construction_jobs(
-                    county = "Tri-County",
-                    start_year = input$year_range_input[1],
-                    end_year = input$year_range_input[2],
-                    ambition = "High",
-                    initial_capacity = input$initial_capacity_input,
-                    target_capacity = input$final_capacity_input,
-                    direct_jobs = 82,
-                    indirect_jobs = 2571,
-                    induced_jobs = 781
-                )
-                
-                # Bind together
-                osw_all <- rbind(osw_om, osw_construction) |>
-                    filter(type == input$job_type_input)
-                
-                # Calculate annual jobs when port is NOT in CC
-                
+            #           if (!("No Central Coast Port" %in% input$osw_port_input)) {
+            # OSW O&M jobs
+            osw_om <- calculate_osw_om_jobs(
+                county = "Tri-county",
+                start_year = input$year_range_input[1],
+                end_year = input$year_range_input[2],
+                ambition = "High",
+                initial_capacity = input$initial_capacity_input,
+                target_capacity = input$final_capacity_input,
+                direct_jobs = 127,
+                indirect_jobs = 126,
+                induced_jobs = 131
+            )
+            
+            # OSW Construction
+            osw_construction <- calculate_osw_construction_jobs(
+                county = "Tri-County",
+                start_year = input$year_range_input[1],
+                end_year = input$year_range_input[2],
+                ambition = "High",
+                initial_capacity = input$initial_capacity_input,
+                target_capacity = input$final_capacity_input,
+                direct_jobs = 82,
+                indirect_jobs = 2571,
+                induced_jobs = 781
+            )
+            
+            # Bind together
+            osw_all <- rbind(osw_om, osw_construction) |>
+                filter(type == input$job_type_input)
+            
+            # Calculate annual jobs when port is NOT in CC
+            
             # } else {
             #     # Return 0 jobs
             #     osw_all <- data.frame(
@@ -878,7 +878,7 @@ server <- function(input, output, session) {
             indirect_jobs = 0.02,
             induced_jobs = 0.01
         )
-    
+        
         sb_utility_pv_const <- calculate_pv_construction_jobs(
             county = "Santa Barbara",
             start_year = input$year_range_input_utility[1],
@@ -972,11 +972,11 @@ server <- function(input, output, session) {
         
         #### Utility Jobs Plot ####
         utility_plot <- ggplot(utility_all,
-                            aes(
-                                x = as.factor(year),
-                                y = n_jobs_rounded,
-                                group = occupation
-                            )) +
+                               aes(
+                                   x = as.factor(year),
+                                   y = n_jobs_rounded,
+                                   group = occupation
+                               )) +
             geom_col(aes(fill = occupation, text = purrr::map(
                 paste0(occupation, " jobs: ", n_jobs_label), HTML
             ))) +
@@ -1008,8 +1008,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(utility_plot, tooltip = c("text"))  |>
             config(utility_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                            'zoomIn', 'zoomOut','select',
+                                                            'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1064,8 +1064,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(utility_cap_plot, tooltip = "text") |>
             config(utility_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                                'zoomIn', 'zoomOut','select',
+                                                                'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1297,8 +1297,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(osw_cap_plot, tooltip = "text") |>
             config(osw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                            'zoomIn', 'zoomOut','select',
+                                                            'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1310,7 +1310,7 @@ server <- function(input, output, session) {
         
     }) # End OSW capacity plot
     
-######## Rooftop Solar ##########
+    ######## Rooftop Solar ##########
     # Make the default values of capacity in the UI react to user input using renderUI-
     observeEvent(input$roof_counties_input, {
         # Requires a county input
@@ -1440,11 +1440,11 @@ server <- function(input, output, session) {
         
         ##### Rooftop Job Plot #####
         roof_plot <- ggplot(roof_all,
-                           aes(
-                               x = as.factor(year),
-                               y = n_jobs_rounded,
-                               group = occupation
-                           )) +
+                            aes(
+                                x = as.factor(year),
+                                y = n_jobs_rounded,
+                                group = occupation
+                            )) +
             geom_col(aes(fill = occupation, text = purrr::map(
                 paste0(occupation, " jobs: ", n_jobs_label), HTML
             ))) +
@@ -1476,8 +1476,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(roof_plot, tooltip = c("text"))  |>
             config(roof_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                         'zoomIn', 'zoomOut','select',
+                                                         'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1533,8 +1533,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(roof_cap_plot, tooltip = "text") |>
             config(roof_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                             'zoomIn', 'zoomOut','select',
+                                                             'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -1669,8 +1669,8 @@ server <- function(input, output, session) {
         
         # Create joined dataframe
         roof_all <- rbind(sb_roof_pv_om, sb_roof_pv_const,
-                        slo_roof_pv_om, slo_roof_pv_const,
-                        ventura_roof_pv_om, ventura_roof_pv_const) |>
+                          slo_roof_pv_om, slo_roof_pv_const,
+                          ventura_roof_pv_om, ventura_roof_pv_const) |>
             filter(type %in% input$roof_job_type_input) |> # Filter to inputted job type
             filter(county %in% input$roof_counties_input)
     }) # End reactive to get number of jobs
@@ -1882,9 +1882,9 @@ server <- function(input, output, session) {
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
         counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
-            "<b> <br>", counties_with_labels$name, " County </b><br>",
-            "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
-            "O&M: ", scales::comma(counties_with_labels$`O&M`)
+                                             "<b> <br>", counties_with_labels$name, " County </b><br>",
+                                             "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
+                                             "O&M: ", scales::comma(counties_with_labels$`O&M`)
         )
         
         counties_with_labels
@@ -1893,7 +1893,7 @@ server <- function(input, output, session) {
     # Render LW leaflet map
     output$land_wind_map_output <- renderLeaflet({
         counties_sf <- lw_job_labels()
- 
+        
         # Get the coordinates of the centroids
         label_coords <- sf::st_coordinates(sf::st_centroid(counties_sf))
         
@@ -2072,8 +2072,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(lw_plot, tooltip = c("text"))  |>
             config(lw_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                       'zoomIn', 'zoomOut','select',
+                                                       'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -2127,8 +2127,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(lw_cap_plot, tooltip = "text") |>
             config(lw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                           'zoomIn', 'zoomOut','select',
+                                                           'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -2199,8 +2199,8 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(phaseout_plot, tooltip = "text") |>
             config(phaseout_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                        'zoomIn', 'zoomOut','select',
-                                                        'resetScale', 'lasso'),
+                                                             'zoomIn', 'zoomOut','select',
+                                                             'resetScale', 'lasso'),
                    displaylogo = FALSE,
                    toImageButtonOptions = list(
                        format = "jpeg",
@@ -2209,12 +2209,12 @@ server <- function(input, output, session) {
                        scale = 15
                    )) |>
             layout(hovermode = "x unified") 
-
+        
         
     }) # End phaseout jobs plot
     
     
-##### OIL CAPPING #####
+    ##### OIL CAPPING #####
     
     # Oil capping jobs plot ----
     output$oil_capping_jobs_plot <- renderPlotly({
@@ -2334,8 +2334,8 @@ server <- function(input, output, session) {
                                     "<br> Total FTE Jobs: ", scales::comma(n_jobs),
                                     "<br>",
                                     "<br> Capping all idle & active wells from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
-                                    )
-
+                )
+                
             )
         
         # Filter the data to the selected county only for both polygon and label
@@ -2379,105 +2379,105 @@ server <- function(input, output, session) {
     
     #phaseout leaflet map output ----
     output$phaseout_county_map_output <- renderLeaflet({
-    counties_input <- reactive({
-        if (!is.null(input$phaseout_counties_input)) {
-            ca_counties |> filter(name %in% input$phaseout_counties_input)
+        counties_input <- reactive({
+            if (!is.null(input$phaseout_counties_input)) {
+                ca_counties |> filter(name %in% input$phaseout_counties_input)
+            } else {
+                ca_counties
+            }
+        })
+        
+        icons <- awesomeIcons(
+            icon = 'helmet-safety',
+            iconColor = 'black',
+            library = 'fa',
+            markerColor = "orange"
+        )
+        
+        label_coords <- data.frame(
+            name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
+            lng = c(-120.7201, -121.0508, -119.4855),
+            lat = c(34.58742, 35.40949, 34.35622)
+        )
+        
+        # Get projection data based on input
+        phaseout_projection_data <- phaseout_employment_projection(
+            county_input = input$phaseout_counties_input,
+            setback = input$phaseout_setback_input,
+            setback_existing_filter = input$phaseout_setback_existing_input
+        )
+        
+        # Get total employment in 2025 and 2045
+        jobs_2025_total <- phaseout_projection_data %>%
+            filter(year == 2025) %>%
+            summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+            pull(total_jobs)
+        
+        jobs_2045_total <- phaseout_projection_data %>%
+            filter(year == 2045) %>%
+            summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
+            pull(total_jobs)
+        
+        # Calculate percent decrease
+        percent_decrease <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
+            round((1 - (jobs_2045_total / jobs_2025_total)) * 100, 1)
         } else {
-            ca_counties
+            NA
         }
-    })
-
-    icons <- awesomeIcons(
-        icon = 'helmet-safety',
-        iconColor = 'black',
-        library = 'fa',
-        markerColor = "orange"
-    )
-
-    label_coords <- data.frame(
-        name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
-        lng = c(-120.7201, -121.0508, -119.4855),
-        lat = c(34.58742, 35.40949, 34.35622)
-    )
-
-    # Get projection data based on input
-    phaseout_projection_data <- phaseout_employment_projection(
-        county_input = input$phaseout_counties_input,
-        setback = input$phaseout_setback_input,
-        setback_existing_filter = input$phaseout_setback_existing_input
-    )
-
-    # Get total employment in 2025 and 2045
-    jobs_2025_total <- phaseout_projection_data %>%
-        filter(year == 2025) %>%
-        summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
-        pull(total_jobs)
-
-    jobs_2045_total <- phaseout_projection_data %>%
-        filter(year == 2045) %>%
-        summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
-        pull(total_jobs)
-
-    # Calculate percent decrease
-    percent_decrease <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
-        round((1 - (jobs_2045_total / jobs_2025_total)) * 100, 1)
-    } else {
-        NA
-    }
-
-    # Build label
-    percent_label <- paste0(
-        "<b>Projected % Decrease in Fossil Fuel Jobs <br>
+        
+        # Build label
+        percent_label <- paste0(
+            "<b>Projected % Decrease in Fossil Fuel Jobs <br>
         (",input$phaseout_counties_input," County, 2025–2045): </b>", percent_decrease, "%<br><br>",
-        "<b>Projected Jobs in 2045:</b> ",
-        round(jobs_2045_total, 0)
-    )
-
-    # Add label to selected counties
-    ca_counties <- ca_counties |>
-        mutate(
-            label_text = percent_label
+            "<b>Projected Jobs in 2045:</b> ",
+            round(jobs_2045_total, 0)
         )
-
-    # Prepare label data
-    label_data <- ca_counties |>
-        filter(name == input$phaseout_counties_input) |>
-        left_join(label_coords, by = "name") |>
-        st_drop_geometry()
-
-    leaflet_map <- leaflet() |>
-        addProviderTiles("CartoDB.Voyager") |>
-        setView(lng = -121.698189,
-                lat = 34.420830,
-                zoom = 7)
-
-    # Add selected county polygon
-    leaflet_map <- leaflet_map |>
-        addPolygons(
-            data = ca_counties |> filter(name == input$phaseout_counties_input),
-            color = "forestgreen",
-            opacity = 0.7
-        )
-
-    # Add label if county is selected
-    if (!is.null(input$phaseout_counties_input)) {
-        leaflet_map <- leaflet_map |>
-            addLabelOnlyMarkers(
-                lng = label_data$lng,
-                lat = label_data$lat,
-                label = lapply(label_data$label_text, HTML),
-                labelOptions = labelOptions(
-                    noHide = TRUE,
-                    direction = 'left',
-                    textsize = "12px",
-                    opacity = 0.9
-                )
+        
+        # Add label to selected counties
+        ca_counties <- ca_counties |>
+            mutate(
+                label_text = percent_label
             )
-    }
-
-    leaflet_map
-})
-
+        
+        # Prepare label data
+        label_data <- ca_counties |>
+            filter(name == input$phaseout_counties_input) |>
+            left_join(label_coords, by = "name") |>
+            st_drop_geometry()
+        
+        leaflet_map <- leaflet() |>
+            addProviderTiles("CartoDB.Voyager") |>
+            setView(lng = -121.698189,
+                    lat = 34.420830,
+                    zoom = 7)
+        
+        # Add selected county polygon
+        leaflet_map <- leaflet_map |>
+            addPolygons(
+                data = ca_counties |> filter(name == input$phaseout_counties_input),
+                color = "forestgreen",
+                opacity = 0.7
+            )
+        
+        # Add label if county is selected
+        if (!is.null(input$phaseout_counties_input)) {
+            leaflet_map <- leaflet_map |>
+                addLabelOnlyMarkers(
+                    lng = label_data$lng,
+                    lat = label_data$lat,
+                    label = lapply(label_data$label_text, HTML),
+                    labelOptions = labelOptions(
+                        noHide = TRUE,
+                        direction = 'left',
+                        textsize = "12px",
+                        opacity = 0.9
+                    )
+                )
+        }
+        
+        leaflet_map
+    })
+    
     
     ##### Project Overview image carousel #####
     output$image_carousel <- renderSlickR({
