@@ -1,0 +1,62 @@
+---
+title: "Oil Well Capping Job Impacts"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+mainfont: "Avenir"
+fontsize: 11pt
+geometry: margin=.5in
+---
+
+
+```{r logo, out.width="3.7in", fig.align='center', echo=FALSE}
+knitr::include_graphics(here("app", "www", "logos.jpeg"))
+```
+
+```{r, warning=FALSE, message=FALSE, quiet=TRUE}
+# Well counts, number of jobs, and label coordinates
+        well_count <- c(1977, 3188, 337)
+        n_jobs <- c(494, 797, 84)
+        annual_jobs <- c(25, 40, 4)
+        label_coords <- data.frame(
+            name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
+            lng = c(-120.7201, -121.0508, -119.4855),
+            lat = c(34.58742, 35.40949, 34.35622)
+        )
+        
+# Prepare the county data with label text
+        ca_counties <- ca_counties |>
+            mutate(
+                label_text = paste0("<b><u><font size = '2.5'>", name, " County </b></u></font><br>Total Oil & Gas Wells: ", well_count,
+                                    "<br> Total FTE Jobs: ", n_jobs,
+                                    "<br>",
+                                    "<br> Capping all idle & active wells from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
+                                    )
+
+            )
+        
+    label_data <- ca_counties |>
+        filter(name == input$county_wells_input) |>
+            left_join(label_coords, by = "name") |>
+            st_drop_geometry()
+```
+
+**Background**
+
+Capping oil wells is a crucial step in effective decarbonization. Idle wells pose health risks and environmental hazards, emitting pollutants long after production ends. While job creation from well capping is more modest compared to solar or floating offshore wind, it remains an essential component of the region’s transition. In Ventura County, capping the 3,188 active and idle wells would create an estimated 797 FTE jobs, approximately 40 jobs per year from 2025 to 2045. Santa Barbara’s 1,977 wells would yield 494 FTE jobs, or 25 jobs per year, and San Luis Obispo’s 337 wells would yield 84 FTE jobs, or 4 jobs per year. Though these figures are smaller in scale, they represent vital work that supports public health.
+
+
+**Model Assumptions**
+
+
+To project potential job creation from onshore oil well capping between 2025 and 2045, the average number of jobs created per well was multiplied by the total number of idle and active wells in California’s Central Coast. Using a dataset from Deshmukh et. al. that catalogs all wells in California, the number of idle and active oil and gas wells in Ventura, Santa Barbara, and San Luis Obispo counties was quantified.
+According to Raimi et. al., capping a single oil well generates an average of 0.25 FTE jobs. By multiplying the total number of wells in each county by this factor, we estimate the total number of potential jobs created. To determine annual job creation, this total is divided by 20 years.
+This model has several assumptions:
+1. All active wells will become idle and ready for capping by 2045, consistent with the typical 15–20 year lifespan of an oil well.
+2. Well capping will occur at a steady, linear rate, meaning a similar number of wells will be capped each year.
+3. The number of new wells drilled in the Central Coast between 2025 and 2045 will be negligible.
+
+
+
+
