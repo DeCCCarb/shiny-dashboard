@@ -661,3 +661,90 @@ phaseout_employment_projection <- function(county_input, excise_tax = 'no tax', 
         return(filtered_data)
     
 }
+
+#################### Oil Capping Workflow ####################
+
+# Read in well data from Deshmukh et al. paper
+wells <- read_csv(here("app", "data", "AllWells_20210427.csv"))
+
+############################# Santa Barbara #############################
+
+# Calculate total wells in Santa Barbara to be capped and save - include Idle, Active, and New
+idle_plus_active_wells_sb <- nrow(wells |>
+                                      filter(WellStatus %in% c("Idle", "Active", "New") &
+                                                 WellTypeLa == "Oil & Gas" &
+                                                 CountyName == "Santa Barbara"))
+
+# Calculate the capping rate (number of wells to cap each year)
+capping_rate <- idle_plus_active_wells_sb / (2045-2025)
+
+# Make df with year
+oil_capping_jobs <- data.frame(
+    year = 2025:2045
+)
+
+# Calculate total wells capped at each year
+oil_capping_jobs <- oil_capping_jobs |>
+    mutate(total_wells_capped = round((year - 2025) * capping_rate, 0))
+
+# Calculate total jobs
+oil_capping_jobs_sb <- oil_capping_jobs |>
+    mutate(total_jobs_created = round(total_wells_capped * 0.25, 0),
+           county = "Santa Barbara")
+
+############################# San Luis Obispo #############################
+
+# Calculate total wells in Santa Barbara to be capped and save - include Idle, Active, and New
+idle_plus_active_wells_slo <- nrow(wells |>
+                                       filter(WellStatus %in% c("Idle", "Active", "New") &
+                                                  WellTypeLa == "Oil & Gas" &
+                                                  CountyName == "San Luis Obispo"))
+
+# Calculate the capping rate (number of wells to cap each year)
+capping_rate <- idle_plus_active_wells_slo / (2045-2025)
+
+# Make df with year
+oil_capping_jobs <- data.frame(
+    year = 2025:2045
+)
+
+# Calculate total wells capped at each year
+oil_capping_jobs <- oil_capping_jobs |>
+    mutate(total_wells_capped = round((year - 2025) * capping_rate, 0))
+
+# Calculate total jobs
+oil_capping_jobs_slo <- oil_capping_jobs |>
+    mutate(total_jobs_created = round(total_wells_capped * 0.25, 0),
+           county = "San Luis Obispo")
+
+############################# Ventura #############################
+
+# Calculate total wells in Santa Barbara to be capped and save - include Idle, Active, and New
+idle_plus_active_wells_v <- nrow(wells |>
+                                     filter(WellStatus %in% c("Idle", "Active", "New") &
+                                                WellTypeLa == "Oil & Gas" &
+                                                CountyName == "Ventura"))
+
+# Calculate the capping rate (number of wells to cap each year)
+capping_rate <- idle_plus_active_wells_v / (2045-2025)
+
+# Make df with year
+oil_capping_jobs <- data.frame(
+    year = 2025:2045
+)
+
+# Calculate total wells capped at each year
+oil_capping_jobs <- oil_capping_jobs |>
+    mutate(total_wells_capped = round((year - 2025) * capping_rate, 0))
+
+# Calculate total jobs
+oil_capping_jobs_v <- oil_capping_jobs |>
+    mutate(total_jobs_created = round(total_wells_capped * 0.25, 0),
+           county = "Ventura")
+
+# Combine county data
+oil_capping_jobs_all <- bind_rows(
+    oil_capping_jobs_sb,
+    oil_capping_jobs_slo,
+    oil_capping_jobs_v
+)
