@@ -73,7 +73,7 @@ sidebar <- dashboardSidebar(
             icon = icon('gauge')
         ),
         menuItem(
-            text = 'Oil Well Capping',
+            text = 'Crude Oil Well Capping',
             tabName = 'well_cap',
             icon = icon('oil-well')
         ),
@@ -181,7 +181,7 @@ body <- dashboardBody( introjsUI(),
                                fluidRow(
                                    column(
                                        width = 12,
-                                       tags$h1("Welcome to the Labor Impact Explorer for the California Central Coast", style = "text-align: center; padding-top: 10px;")
+                                       tags$h1("Welcome to California's Central Coast Energy Jobs Explorer", style = "text-align: center; padding-top: 10px;")
                                    )
                                ),
                                

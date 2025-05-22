@@ -8,7 +8,7 @@ server <- function(input, output, session) {
                              "utility"   = "Utility Solar",
                              "rooftop"   = "Rooftop Solar",
                              "lb_wind"   = "Land-Based Wind",
-                             "well_cap"  = "Onshore Oil Well Capping",
+                             "well_cap"  = "Onshore Crude Oil Well Capping",
                              "phaseout"  = "Fossil Fuel Phaseout",
                              "overview" = "Project Overview"
                              
@@ -190,8 +190,8 @@ server <- function(input, output, session) {
             # Well capping ----
         } else if (input$tabs == "well_cap" && !shown_tutorials$well_cap) {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Onshore Oil Well Capping tab! </b><br><br>
-                Capping oil wells is a crucial step in effective decarbonization. 
+                list(intro = "<b>👋 Welcome to the Onshore Crude Oil Well Capping tab! </b><br><br>
+                Capping crude oil wells is a crucial step in effective decarbonization. 
                 Idle wells pose health risks and environmental hazards, emitting pollutants long after production ends. <br><br>
                 In this tab, we show the number of jobs that could be created from capping all idle and active oil and gas wells 
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
@@ -391,8 +391,8 @@ server <- function(input, output, session) {
             # Well capping ----
         } else if (input$tabs == "well_cap") {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Onshore Oil Well Capping tab! </b><br><br>
-                Capping oil wells is a crucial step in effective decarbonization. 
+                list(intro = "<b>👋 Welcome to the Onshore Crude Oil Well Capping tab! </b><br><br>
+                Capping crude oil wells is a crucial step in effective decarbonization. 
                 Idle wells pose health risks and environmental hazards, emitting pollutants long after production ends. <br><br>
                 In this tab, we show the number of jobs that could be created from capping all idle and active oil and gas wells 
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
@@ -481,7 +481,7 @@ server <- function(input, output, session) {
     
     # Define port coordinates
     ports_df <- data.frame(
-        port_name = c("<center><b>Port Hueneme</b><br>Click for more on ports</center>", "<center><b>Port San Luis</b><br>Click for more on ports</center>"),
+        port_name = c("<center><b>Port Hueneme</b><br>Click for more on ports</center>", "<center><b>A Port in San Luis Obispo</b><br>Click for more on ports</center>"),
         address = c(
             "Port of Hueneme, Port Hueneme, CA 93041",
             "699 Embarcadero, Morro Bay, CA 93442"
@@ -490,7 +490,7 @@ server <- function(input, output, session) {
             "<center><b>Port of Hueneme - Proposed wind port location</b><br><br>Construction of specialized wind ports is <i>cruicial</i> to job creation in the Central Coast. <br><br>
             Without specialized port infrastructure, many of these high-skill jobs projected could be lost to other parts of the state. If the Central Coast invests in these facilities, it has the opportunity to become a national hub for floating offshore wind.
 ",
-            "<center><b>Port of San Luis Obispo - Proposed wind port location</b><br><br>Construction of specialized wind ports is <i>cruicial</i> to job creation in the Central Coast. <br><br>
+            "<center><b>Port in San Luis Obispo - Three wind port locations under consideration in the county</b><br><br>Construction of specialized wind ports is <i>cruicial</i> to job creation in the Central Coast. <br><br>
             Without specialized port infrastructure, many of these high-skill jobs projected could be lost to other parts of the state. If the Central Coast invests in these facilities, it has the opportunity to become a national hub for floating offshore wind."
         )) |>
         tidygeocoder::geocode(address = address, method = "osm")
@@ -2191,7 +2191,7 @@ server <- function(input, output, session) {
             geom_col(position = "dodge", fill = "#A3BDBE") +
             labs(
                 title = glue::glue(
-                    "Projected Fossil Fuel Fobs in {input$phaseout_counties_input} County"),
+                    "Projected Fossil Fuel Jobs in {input$phaseout_counties_input} County"),
                 y = 'Total direct employment') +
             scale_y_continuous(labels = scales::label_comma()) +
             theme_minimal() +
@@ -2230,7 +2230,7 @@ server <- function(input, output, session) {
                 aes(
                     x = as.factor(year),
                     y = total_jobs_created,
-                    text = paste0("Year: ", year, "<br>Cumulative Jobs Created: ", scales::comma(total_jobs_created))
+                    text = paste0("Year: ", year, "<br>Cumulative Job Years Created: ", scales::comma(total_jobs_created))
                 ),
                 color = "#3A8398"
             ) +
@@ -2482,7 +2482,7 @@ server <- function(input, output, session) {
     ##### Project Overview image carousel #####
     output$image_carousel <- renderSlickR({
         slickR(
-            c("why_cc.svg","project_goal.svg","correct_tech.svg","all_tech.svg","next_step.svg") 
+            c("why_cc.svg","project_goal.svg","correct_tech.svg","next_step.svg") 
         )
     })
 }
