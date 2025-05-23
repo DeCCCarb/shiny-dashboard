@@ -73,12 +73,12 @@ sidebar <- dashboardSidebar(
             icon = icon('gauge')
         ),
         menuItem(
-            text = 'Crude Oil Well Capping',
+            text = 'Oil Well Capping',
             tabName = 'well_cap',
             icon = icon('oil-well')
         ),
         menuItem(
-            text = 'Fossil Fuel Phaseout',
+            text = 'Crude Oil Phaseout',
             tabName = 'phaseout',
             icon = icon('wrench')
         ),
