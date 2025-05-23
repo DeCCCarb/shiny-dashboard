@@ -201,6 +201,16 @@ body <- dashboardBody( introjsUI(),
                                        )
                                    )
                                ),
+                               # CAPACITY DEFAULT INFO BOX
+                               fluidRow(column(
+                                   width = 12,
+                                   box(
+                                       width = NULL,
+                                       column(1),
+                                       column(10, includeMarkdown('text/capacity-default-info.md')),
+                                       column(1)
+                                   )
+                               )),
                                
                                # ECONOMIC MODELING TOOLS BOX
                                fluidRow(

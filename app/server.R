@@ -2418,18 +2418,18 @@ server <- function(input, output, session) {
             summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
             pull(total_jobs)
         
-        # Calculate percent decrease
-        percent_decrease <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
-            round((1 - (jobs_2045_total / jobs_2025_total)) * 100, 1)
+        # Calculate jobs lost
+        jobs_lost <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
+            round(jobs_2025_total - jobs_2045_total, 0)
         } else {
             NA
         }
         
         # Build label
         percent_label <- paste0(
-            "<b>Projected % Decrease in Crude Oil Jobs <br>
-        (",input$phaseout_counties_input," County, 2025–2045): </b>", percent_decrease, "%<br><br>",
-            "<b>Projected Jobs in 2045:</b> ",
+            "<b>Projected Jobs Lost in Crude Oil<br>
+        (",input$phaseout_counties_input," County, 2025–2045): </b>", jobs_lost, "<br><br>",
+            "<b>Projected Total Jobs in 2045:</b> ",
             round(jobs_2045_total, 0)
         )
         
