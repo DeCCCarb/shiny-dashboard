@@ -8,7 +8,7 @@ server <- function(input, output, session) {
                              "utility"   = "Utility Solar",
                              "rooftop"   = "Rooftop Solar",
                              "lb_wind"   = "Land-Based Wind",
-                             "well_cap"  = "Onshore Crude Oil Well Capping",
+                             "well_cap"  = "Onshore Oil Well Capping",
                              "phaseout"  = "Crude Oil Phaseout",
                              "overview" = "Project Overview"
                              
@@ -190,8 +190,8 @@ server <- function(input, output, session) {
             # Well capping ----
         } else if (input$tabs == "well_cap" && !shown_tutorials$well_cap) {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Onshore Crude Oil Well Capping tab! </b><br><br>
-                Capping crude oil wells is a crucial step in effective decarbonization. 
+                list(intro = "<b>👋 Welcome to the Onshore Oil Well Capping tab! </b><br><br>
+                Capping oil wells is a crucial step in effective decarbonization. 
                 Idle wells pose health risks and environmental hazards, emitting pollutants long after production ends. <br><br>
                 In this tab, we show the number of jobs that could be created from capping all idle and active oil and gas wells 
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
@@ -391,8 +391,8 @@ server <- function(input, output, session) {
             # Well capping ----
         } else if (input$tabs == "well_cap") {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Onshore Crude Oil Well Capping tab! </b><br><br>
-                Capping crude oil wells is a crucial step in effective decarbonization. 
+                list(intro = "<b>👋 Welcome to the Onshore Oil Well Capping tab! </b><br><br>
+                Capping oil wells is a crucial step in effective decarbonization. 
                 Idle wells pose health risks and environmental hazards, emitting pollutants long after production ends. <br><br>
                 In this tab, we show the number of jobs that could be created from capping all idle and active oil and gas wells 
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
