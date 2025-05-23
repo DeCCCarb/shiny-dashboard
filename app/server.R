@@ -9,7 +9,7 @@ server <- function(input, output, session) {
                              "rooftop"   = "Rooftop Solar",
                              "lb_wind"   = "Land-Based Wind",
                              "well_cap"  = "Onshore Crude Oil Well Capping",
-                             "phaseout"  = "Fossil Fuel Phaseout",
+                             "phaseout"  = "Crude Oil Phaseout",
                              "overview" = "Project Overview"
                              
         )
@@ -221,7 +221,7 @@ server <- function(input, output, session) {
             # FF phaseout ---- 
         } else if (input$tabs == "phaseout" && !shown_tutorials$phaseout) {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
+                list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b><br><br>
                      In this tab, we report reusults from an emperical model built by Deshmukh et al. 
                      to allow you to compare direct job loss by county under varying setback policies. <br><br>
                      A setback policy is the required minimum distance between oil and gas drilling activities and certain
@@ -421,7 +421,7 @@ server <- function(input, output, session) {
             # FF phaseout ----
         } else if (input$tabs == "phaseout") {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
+                list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b><br><br>
                      In this tab, we report reusults from an emperical model built by Deshmukh et al. 
                      to allow you to compare direct job loss by county under varying setback policies. <br><br>
                      What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
@@ -2191,7 +2191,7 @@ server <- function(input, output, session) {
             geom_col(position = "dodge", fill = "#A3BDBE") +
             labs(
                 title = glue::glue(
-                    "Projected Fossil Fuel Jobs in {input$phaseout_counties_input} County"),
+                    "Projected Crude Oil Jobs in {input$phaseout_counties_input} County"),
                 y = 'Total direct employment') +
             scale_y_continuous(labels = scales::label_comma()) +
             theme_minimal() +
@@ -2230,7 +2230,7 @@ server <- function(input, output, session) {
                 aes(
                     x = as.factor(year),
                     y = total_jobs_created,
-                    text = paste0("Year: ", year, "<br>Cumulative Job Years Created: ", scales::comma(total_jobs_created))
+                    text = paste0("Year: ", year, "<br>Cumulative Job-Years Created: ", scales::comma(total_jobs_created))
                 ),
                 color = "#3A8398"
             ) +
@@ -2239,7 +2239,7 @@ server <- function(input, output, session) {
                 labels = scales::label_comma()
             ) +
             labs(
-                title = paste("Cumulative Jobs Created in", {input$county_wells_input}, "County"),
+                title = paste("Cumulative Job-Years Created in", {input$county_wells_input}, "County"),
                 y = "Total Jobs Created"
             ) +
             theme_minimal() +
@@ -2427,7 +2427,7 @@ server <- function(input, output, session) {
         
         # Build label
         percent_label <- paste0(
-            "<b>Projected % Decrease in Fossil Fuel Jobs <br>
+            "<b>Projected % Decrease in Crude Oil Jobs <br>
         (",input$phaseout_counties_input," County, 2025–2045): </b>", percent_decrease, "%<br><br>",
             "<b>Projected Jobs in 2045:</b> ",
             round(jobs_2045_total, 0)
