@@ -664,6 +664,60 @@ phaseout_employment_projection <- function(county_input, excise_tax = 'no tax', 
 # Read in well data from Deshmukh et al. paper
 wells <- read_csv("data/AllWells_20210427.csv")
 
+
+#### Calculate total wells in all 3 counties - include idle, active, and new
+
+idle_plus_active_wells_total <- wells |> 
+    filter(WellStatus %in% c("Idle", "Active", "New") &
+               WellTypeLa == "Oil & Gas") |> 
+    filter(CountyName %in% c('Santa Barbara', 'San Luis Obispo', 'Ventura')) |> 
+    group_by(CountyName) |> 
+    summarise(total_wells_capped = n())
+
+############# Calculate Oil Well Capping total exponential growth  ##########
+
+#' @param total_wells_capped_df  Deshmukh et. al dataframe
+calculate_capping_jobs_all <- function(total_wells_capped_df, start_year = 2025, end_year = 2045) {
+    results <- list()
+    
+    for (i in 1:nrow(total_wells_capped_df)) {
+        county_name <- total_wells_capped_df$CountyName[i]
+        final_jobs <- total_wells_capped_df$total_jobs[i]
+        
+        initial_jobs <- 4
+        
+        growth_rate <- (final_jobs / initial_jobs)^(1 / (end_year - start_year)) - 1
+        
+        year <- start_year:end_year
+        employment <- numeric(length(year))
+        new_jobs <- numeric(length(year))
+        
+        for (j in 1:length(year)) {
+            employment[j] <- initial_jobs * (1 + growth_rate)^(year[j] - start_year)
+            if (j == 1) {
+                new_jobs[j] <- employment[j] - initial_jobs
+            } else {
+                new_jobs[j] <- employment[j] - employment[j - 1]
+            }
+        }
+        
+        df <- data.frame(
+            county = county_name,
+            year = year,
+            technology = "Oil Well Capping",
+            new_jobs = round(new_jobs, 2),
+            total_jobs = round(employment, 2)
+        )
+        
+        results[[i]] <- df
+    }
+    
+    return(do.call(rbind, results))
+}
+
+
+
+
 ############################# Santa Barbara #############################
 
 # Calculate total wells in Santa Barbara to be capped and save - include Idle, Active, and New
@@ -688,6 +742,48 @@ oil_capping_jobs <- oil_capping_jobs |>
 oil_capping_jobs_sb <- oil_capping_jobs |>
     mutate(total_jobs_created = round(total_wells_capped * 0.25, 0),
            county = "Santa Barbara")
+
+################# CALCULATE OIL WELL CAPPING EXPONENTIAL GROWTH ################
+calculate_capping_jobs <- function(wells_df){
+    
+    if(wells_df$CountyName == 'Santa Barbara') {
+        final_jobs = oil_capping_jobs_sb
+    } else if(wells_df$CountyName == 'San Luis Obispo'){
+        final_jobs == oil_capping_jobs_slo
+    } else if(wells_df$CountyName == 'Ventura'){
+        final_jobs == oil_capping_jobs_v
+    }
+    
+    # Calculate the annual growth rate
+    growth_rate <- (wells_df$final_jobs / 4)^(1 / (2045 - 2025)) - 1 # 4 jobs to start by default
+    
+    # Create variables to store the results
+    year <- 2025:2045
+    employment <- numeric(length(year))
+    new_jobs <- numeric(length(year))
+    
+    # Calculate the total employment for each year
+    for (i in 1:length(year)) {
+        employment[i] <- initial_jobs * (1 + growth_rate)^(year[i] - start_year)
+        if (i == 1) {
+            new_jobs[i] <- employment[i] - initial_jobs
+        } else {
+            new_jobs[i] <- employment[i] - employment[i-1]
+        }
+    }
+    
+    # Create a data frame with the results
+    df <- data.frame(county = county, 
+                     year = year, 
+                     technology = "Oil Well Capping",
+                     new_jobs = round(new_jobs, 2),
+                     total_jobs = round(employment, 2), # .25 FTE jobs per well
+                     total_wells = round(emplyoment, 2)) # Total wells
+    
+    
+    
+}
+
 
 ############################# San Luis Obispo #############################
 
