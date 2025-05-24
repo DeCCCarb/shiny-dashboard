@@ -47,9 +47,14 @@ sidebar <- dashboardSidebar(
     sidebarMenu(
         id = "tabs",
         menuItem(
+            text = 'Welcome',
+            tabName = 'welcome',
+            icon = icon('star')
+        ),
+        menuItem(
             text = 'Project Overview',
             tabName = 'overview',
-            icon = icon('star')
+            icon = icon('bookmark')
         ),
         menuItem(
             text = 'Floating Offshore Wind',
@@ -73,12 +78,12 @@ sidebar <- dashboardSidebar(
             icon = icon('gauge')
         ),
         menuItem(
-            text = 'Crude Oil Well Capping',
+            text = 'Oil Well Capping',
             tabName = 'well_cap',
             icon = icon('oil-well')
         ),
         menuItem(
-            text = 'Fossil Fuel Phaseout',
+            text = 'Crude Oil Phaseout',
             tabName = 'phaseout',
             icon = icon('wrench')
         ),
@@ -159,10 +164,8 @@ body <- dashboardBody( introjsUI(),
       
     ")), # END larger popup box styling
                        tabItems(
-                           # PROJECT OVERVIEW TAB ITEM ----
-                           tabItem(
-                               tabName = 'overview',
-                               
+                       # WELCOME TAB ----
+                       tabItem(tabName = 'welcome', 
                                tags$head(
                                    tags$style(HTML("
       .slick-slide img {
@@ -176,7 +179,6 @@ body <- dashboardBody( introjsUI(),
       }
     "))
                                ),
-                               
                                # PAGE TITLE
                                fluidRow(
                                    column(
@@ -185,24 +187,23 @@ body <- dashboardBody( introjsUI(),
                                    )
                                ),
                                
-                               # IMAGE CAROUSEL (full width)
-                               fluidRow(
-                                   column(
-                                       width = 12,
-                                       box(
-                                           width = NULL,
-                                           title = NULL,
-                                           solidHeader = TRUE,
-                                           div(
-                                               style = "height: 600px; display: flex; justify-content: center; align-items: center;",
-                                               withSpinner(slickROutput("image_carousel", width = "600px", height = "600px"),
-                                                           type = 1, color = '#09847A'
-                                               ))
+                                   # IMAGE CAROUSEL (full width)
+                                   fluidRow(
+                                       column(
+                                           width = 12,
+                                           box(
+                                               width = NULL,
+                                               title = NULL,
+                                               solidHeader = TRUE,
+                                               div(
+                                                   style = "height: 600px; display: flex; justify-content: center; align-items: center;",
+                                                   withSpinner(slickROutput("image_carousel", width = "600px", height = "600px"),
+                                                               type = 1, color = '#09847A'
+                                                   ))
+                                           )
                                        )
-                                   )
-                               ),
-                               
-                               # ECONOMIC MODELING TOOLS BOX
+                                   ),
+                                   # ECONOMIC MODELING TOOLS BOX
                                fluidRow(
                                    column(
                                        width = 6,
@@ -225,6 +226,25 @@ body <- dashboardBody( introjsUI(),
                                        )
                                    )
                                )
+
+                       ),
+                     
+                           # PROJECT OVERVIEW TAB ITEM ----
+                           tabItem(
+                               tabName = 'overview',
+                               
+                               
+                               # CAPACITY DEFAULT INFO BOX
+                               fluidRow(column(
+                                   width = 12,
+                                   box(
+                                       width = NULL,
+                                       column(1),
+                                       column(10, includeMarkdown('text/capacity-default-info.md')),
+                                       column(1)
+                                   )
+                               ))
+                               
                            ),
                            
                            

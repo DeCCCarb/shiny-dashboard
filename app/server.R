@@ -8,9 +8,10 @@ server <- function(input, output, session) {
                              "utility"   = "Utility Solar",
                              "rooftop"   = "Rooftop Solar",
                              "lb_wind"   = "Land-Based Wind",
-                             "well_cap"  = "Onshore Crude Oil Well Capping",
-                             "phaseout"  = "Fossil Fuel Phaseout",
-                             "overview" = "Project Overview"
+                             "well_cap"  = "Onshore Oil Well Capping",
+                             "phaseout"  = "Crude Oil Phaseout",
+                             "overview" = "Project Overview",
+                             "welcome" = "Welcome"
                              
         )
         
@@ -190,8 +191,8 @@ server <- function(input, output, session) {
             # Well capping ----
         } else if (input$tabs == "well_cap" && !shown_tutorials$well_cap) {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Onshore Crude Oil Well Capping tab! </b><br><br>
-                Capping crude oil wells is a crucial step in effective decarbonization. 
+                list(intro = "<b>👋 Welcome to the Onshore Oil Well Capping tab! </b><br><br>
+                Capping oil wells is a crucial step in effective decarbonization. 
                 Idle wells pose health risks and environmental hazards, emitting pollutants long after production ends. <br><br>
                 In this tab, we show the number of jobs that could be created from capping all idle and active oil and gas wells 
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
@@ -221,7 +222,7 @@ server <- function(input, output, session) {
             # FF phaseout ---- 
         } else if (input$tabs == "phaseout" && !shown_tutorials$phaseout) {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
+                list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b><br><br>
                      In this tab, we report reusults from an emperical model built by Deshmukh et al. 
                      to allow you to compare direct job loss by county under varying setback policies. <br><br>
                      A setback policy is the required minimum distance between oil and gas drilling activities and certain
@@ -391,8 +392,8 @@ server <- function(input, output, session) {
             # Well capping ----
         } else if (input$tabs == "well_cap") {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Onshore Crude Oil Well Capping tab! </b><br><br>
-                Capping crude oil wells is a crucial step in effective decarbonization. 
+                list(intro = "<b>👋 Welcome to the Onshore Oil Well Capping tab! </b><br><br>
+                Capping oil wells is a crucial step in effective decarbonization. 
                 Idle wells pose health risks and environmental hazards, emitting pollutants long after production ends. <br><br>
                 In this tab, we show the number of jobs that could be created from capping all idle and active oil and gas wells 
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
@@ -421,7 +422,7 @@ server <- function(input, output, session) {
             # FF phaseout ----
         } else if (input$tabs == "phaseout") {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Fossil Fuel Phaseout tab!</b><br><br>
+                list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b><br><br>
                      In this tab, we report reusults from an emperical model built by Deshmukh et al. 
                      to allow you to compare direct job loss by county under varying setback policies. <br><br>
                      What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
@@ -2191,7 +2192,7 @@ server <- function(input, output, session) {
             geom_col(position = "dodge", fill = "#A3BDBE") +
             labs(
                 title = glue::glue(
-                    "Projected Fossil Fuel Jobs in {input$phaseout_counties_input} County"),
+                    "Projected Crude Oil Jobs in {input$phaseout_counties_input} County"),
                 y = 'Total direct employment') +
             scale_y_continuous(labels = scales::label_comma()) +
             theme_minimal() +
@@ -2271,7 +2272,7 @@ server <- function(input, output, session) {
                 labels = scales::label_comma()
             ) +
             labs(
-                title = paste("Cumulative Jobs Created in", {input$county_wells_input}, "County"),
+                title = paste("Cumulative Job-Years Created in", {input$county_wells_input}, "County"),
                 y = "Total Jobs Created"
             ) +
             theme_minimal() +
@@ -2526,18 +2527,18 @@ server <- function(input, output, session) {
             summarise(total_jobs = sum(total_emp, na.rm = TRUE)) %>%
             pull(total_jobs)
         
-        # Calculate percent decrease
-        percent_decrease <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
-            round((1 - (jobs_2045_total / jobs_2025_total)) * 100, 1)
+        # Calculate jobs lost
+        jobs_lost <- if (!is.na(jobs_2025_total) && jobs_2025_total > 0) {
+            round(jobs_2025_total - jobs_2045_total, 0)
         } else {
             NA
         }
         
         # Build label
         percent_label <- paste0(
-            "<b>Projected % Decrease in Fossil Fuel Jobs <br>
-        (",input$phaseout_counties_input," County, 2025–2045): </b>", percent_decrease, "%<br><br>",
-            "<b>Projected Jobs in 2045:</b> ",
+            "<b>Projected Jobs Lost in Crude Oil<br>
+        (",input$phaseout_counties_input," County, 2025–2045): </b>", jobs_lost, "<br><br>",
+            "<b>Projected Total Jobs in 2045:</b> ",
             round(jobs_2045_total, 0)
         )
         
