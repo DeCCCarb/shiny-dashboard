@@ -10,7 +10,8 @@ server <- function(input, output, session) {
                              "lb_wind"   = "Land-Based Wind",
                              "well_cap"  = "Onshore Oil Well Capping",
                              "phaseout"  = "Crude Oil Phaseout",
-                             "overview" = "Project Overview"
+                             "overview" = "Project Overview",
+                             "welcome" = "Welcome"
                              
         )
         
