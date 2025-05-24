@@ -7,7 +7,7 @@ server <- function(input, output, session) {
                              "f_osw"     = "Floating Offshore Wind",
                              "utility"   = "Utility Solar",
                              "rooftop"   = "Rooftop Solar",
-                             "lb_wind"   = "Land-Based Wind",
+    #                         "lb_wind"   = "Land-Based Wind",
                              "well_cap"  = "Onshore Oil Well Capping",
                              "phaseout"  = "Crude Oil Phaseout",
                              "overview" = "Project Overview",
@@ -29,7 +29,7 @@ server <- function(input, output, session) {
         f_osw = FALSE,
         utility = FALSE,
         rooftop = FALSE,
-        lb_wind = FALSE,
+ #       lb_wind = FALSE,
         well_cap = FALSE,
         phaseout = FALSE
     )
@@ -151,42 +151,42 @@ server <- function(input, output, session) {
             )))
             shown_tutorials$rooftop <- TRUE # only run the first time a user visits the tab
             
-            # Land wind ----
-        } else if (input$tabs == "lb_wind" && !shown_tutorials$lb_wind) {
-            introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Land Based Wind Development tab!</b><br><br>
-                Currently, the Strauss Wind Farm in Santa Barbara County is the only land based wind project in the Central Coast. 
-                     <br><br>Use this tool to explore potential job creation under different 
-                     deployment scenarios of land based wind development.",
-                     tooltipClass = "introjs-large"),
-                list(element = "#lw_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
-                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     There are no publically available capacity goals for land based wind in the Central Coast. 
-                     Default values are based on the current capacity of the Strauss Wind Farm.",
-                     position = "right"),
-                list(element = "#lw_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
-                from your scenario for land based wind development. <br><br> 
-                         You can think of each FTE job as one full-time job that lasts for one year.",
-                     position = "left"),
-                list(element = "#lw_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
-                <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
-                maintenance jobs. <br><br>
-                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
-                     
-                     tooltipClass = "introjs-wider"),
-                list(element = "#lw_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
-                     Hover over points with your mouse to view capacity estimates. 
-                     Hover over the upper right corner of the plot for the download button."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "Collapse the sidebar using this button to get more space."
-                ),
-                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
-                     you can download all outputs for your scenario as a single PDF."),
-                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
-                     <br><br> <b> Happy exploring! </b>")
-            )))
-            shown_tutorials$lb_wind <- TRUE # only run the first time a user visits the tab
+        #     # Land wind ----
+        # } else if (input$tabs == "lb_wind" && !shown_tutorials$lb_wind) {
+        #     introjs(session, options = list(steps = list(
+        #         list(intro = "<b>👋 Welcome to the Land Based Wind Development tab!</b><br><br>
+        #         Currently, the Strauss Wind Farm in Santa Barbara County is the only land based wind project in the Central Coast. 
+        #              <br><br>Use this tool to explore potential job creation under different 
+        #              deployment scenarios of land based wind development.",
+        #              tooltipClass = "introjs-large"),
+        #         list(element = "#lw_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
+        #         for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+        #              There are no publically available capacity goals for land based wind in the Central Coast. 
+        #              Default values are based on the current capacity of the Strauss Wind Farm.",
+        #              position = "right"),
+        #         list(element = "#lw_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+        #         from your scenario for land based wind development. <br><br> 
+        #                  You can think of each FTE job as one full-time job that lasts for one year.",
+        #              position = "left"),
+        #         list(element = "#lw_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
+        #         <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
+        #         maintenance jobs. <br><br>
+        #              Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+        #              
+        #              tooltipClass = "introjs-wider"),
+        #         list(element = "#lw_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
+        #              Hover over points with your mouse to view capacity estimates. 
+        #              Hover over the upper right corner of the plot for the download button."),
+        #         list(
+        #             element = ".sidebar-toggle",
+        #             intro = "Collapse the sidebar using this button to get more space."
+        #         ),
+        #         list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+        #              you can download all outputs for your scenario as a single PDF."),
+        #         list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. 
+        #              <br><br> <b> Happy exploring! </b>")
+        #     )))
+        #     shown_tutorials$lb_wind <- TRUE # only run the first time a user visits the tab
             
             # Well capping ----
         } else if (input$tabs == "well_cap" && !shown_tutorials$well_cap) {
@@ -358,36 +358,36 @@ server <- function(input, output, session) {
                      <br><br> <b> Happy exploring! </b>")
             )))
             
-            # Land wind ----
-        } else if (input$tabs == "lb_wind") {
-            introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Land Based Wind Development tab!</b><br><br>
-                Currently, the Strauss Wind Farm in Santa Barbara County is the only land based wind project in the Central Coast. 
-                     <br><br>Use this tool to explore potential job creation under different deployment scenarios of land based wind development.",
-                     tooltipClass = "introjs-large"),
-                list(element = "#lw_inputs_box", intro = "Start by choosing your county, and then adjust assumptions for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     There are no publically available capacity goals for land based wind in the Central Coast. Default values are based on the current capacity of the Strauss Wind Farm.",
-                     position = "right"),
-                list(element = "#lw_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
-                from your scenario for land based wind development. <br><br> 
-                         You can think of each FTE job as one full-time job that lasts for one year.",
-                     position = "left"),
-                list(element = "#lw_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
-                <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
-                maintenance jobs. <br><br>
-                     Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
-                     
-                     tooltipClass = "introjs-wider"),
-                list(element = "#lw_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
-                     Hover over points with your mouse to view capacity estimates. Hover over the upper right corner of the plot for the download button."),
-                list(
-                    element = ".sidebar-toggle",
-                    intro = "Collapse the sidebar using this button to get more space."
-                ),
-                list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
-                     you can download all outputs for your scenario as a single PDF."),
-                list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
-            )))
+        #     # Land wind ----
+        # } else if (input$tabs == "lb_wind") {
+        #     introjs(session, options = list(steps = list(
+        #         list(intro = "<b>👋 Welcome to the Land Based Wind Development tab!</b><br><br>
+        #         Currently, the Strauss Wind Farm in Santa Barbara County is the only land based wind project in the Central Coast. 
+        #              <br><br>Use this tool to explore potential job creation under different deployment scenarios of land based wind development.",
+        #              tooltipClass = "introjs-large"),
+        #         list(element = "#lw_inputs_box", intro = "Start by choosing your county, and then adjust assumptions for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
+        #              There are no publically available capacity goals for land based wind in the Central Coast. Default values are based on the current capacity of the Strauss Wind Farm.",
+        #              position = "right"),
+        #         list(element = "#lw_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+        #         from your scenario for land based wind development. <br><br> 
+        #                  You can think of each FTE job as one full-time job that lasts for one year.",
+        #              position = "left"),
+        #         list(element = "#lw_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
+        #         <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
+        #         maintenance jobs. <br><br>
+        #              Want to share this plot? Hover your mouse in the top-right corner to reveal a download button.",
+        #              
+        #              tooltipClass = "introjs-wider"),
+        #         list(element = "#lw_capacity_plot_box", intro = "This plot shows annual operating capacity over time. <br><br>
+        #              Hover over points with your mouse to view capacity estimates. Hover over the upper right corner of the plot for the download button."),
+        #         list(
+        #             element = ".sidebar-toggle",
+        #             intro = "Collapse the sidebar using this button to get more space."
+        #         ),
+        #         list(element = "#pdf_button", intro = "When you are finished setting up your scenario, 
+        #              you can download all outputs for your scenario as a single PDF."),
+        #         list(element = "#tutorial_button", intro = "Click here to replay this tutorial at any time. <br><br> <b> Happy exploring! </b>")
+        #     )))
             
             # Well capping ----
         } else if (input$tabs == "well_cap") {
@@ -1775,397 +1775,398 @@ server <- function(input, output, session) {
         # Update the UI defaults based on county
         updateNumericInput(session, inputId = 'final_mw_roof_input', value = final_val)
     })
-    ########### Slider Input Range of Years for Land Based WIND ########
     
-    output$value <- renderPrint({
-        input$input_lw_years
-    })
-    
-    ####### Land Based Wind Output Render Jobs ################
-    output$lw_jobs_output <- renderTable({
-        land_wind_construction_test <- calculate_land_wind_construction_jobs(
-            county = input$lw_counties_input,
-            start_year = input$input_lw_years[1],
-            end_year = input$input_lw_years[2],
-            initial_capacity = 0.98,
-            final_capacity = 5,
-            direct_jobs = 1,
-            indirect_jobs = 1,
-            induced_jobs = 1
-        )
-        
-        land_wind_om_test <- calculate_land_wind_om_jobs(
-            county = input$lw_counties_input,
-            start_year = input$input_lw_years[1],
-            end_year = input$input_lw_years[2],
-            initial_capacity = 0.98,
-            final_capacity = 5,
-            direct_jobs = 1,
-            indirect_jobs = 1,
-            induced_jobs = 1
-        )
-        
-        # Join roof jobs by selected counties and job type
-        county_lw <- rbind(land_wind_construction_test, land_wind_om_test) |>
-            filter(type %in% input$lw_job_type_input) |>
-            select(-ambition)
-        
-        return(county_lw)
-    })
-    
-    ############### Land Based Wind Leaflet Map ###############
-    
-    # Reactive counties input for Land Wind Map
-    counties_input_lw <- reactive({
-        if (!is.null(input$lw_counties_input)) {
-            ca_counties |> filter(name %in% input$lw_counties_input)
-        } else {
-            ca_counties
-        }
-    })
-    
-    # Reactive job calculations for selected counties
-    lw_all_jobs <- reactive({
-        counties <- input$lw_counties_input
-        start_year <- input$input_lw_years[1]
-        end_year <- input$input_lw_years[2]
-        initial_capacity <- input$initial_gw_lw_input
-        final_capacity <- input$final_gw_land_input
-        
-        # Define job multipliers per county
-        job_factors <- list(
-            "Santa Barbara" = list(const = c(139, 354, 139), om = c(14, 23, 8)),
-            "San Luis Obispo" = list(const = c(25, 207, 113), om = c(14, 21, 7)),
-            "Ventura" = list(const = c(140, 345, 139), om = c(14, 24, 8))
-        )
-        
-        # Loop through counties and calculate jobs
-        purrr::map_dfr(counties, function(cty) {
-            factors <- job_factors[[cty]]
-            
-            const <- calculate_land_wind_construction_jobs(
-                county = cty,
-                start_year = start_year,
-                end_year = end_year,
-                initial_capacity = initial_capacity,
-                final_capacity = final_capacity,
-                direct_jobs = factors$const[1],
-                indirect_jobs = factors$const[2],
-                induced_jobs = factors$const[3]
-            )
-            
-            om <- calculate_land_wind_om_jobs(
-                county = cty,
-                start_year = start_year,
-                end_year = end_year,
-                initial_capacity = initial_capacity,
-                final_capacity = final_capacity,
-                direct_jobs = factors$om[1],
-                indirect_jobs = factors$om[2],
-                induced_jobs = factors$om[3]
-            )
-            
-            rbind(const, om)
-        }) |> 
-            filter(type %in% input$lw_job_type_input)
-    }) # End reactive job calculations per county
-    
-    # Reactive county labels with job summaries
-    lw_job_labels <- reactive({
-        jobs <- lw_all_jobs()
-        counties_sf <- counties_input_lw()
-        
-        job_summaries <- jobs |>
-            group_by(county, occupation) |>
-            summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = 'drop') |>
-            tidyr::pivot_wider(names_from = occupation, values_from = n_jobs, values_fill = 0)
-        
-        counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
-        
-        counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
-                                             "<b> <br>", counties_with_labels$name, " County </b><br>",
-                                             "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
-                                             "O&M: ", scales::comma(counties_with_labels$`O&M`)
-        )
-        
-        counties_with_labels
-    }) # End reactive county labels 
-    
-    # Render LW leaflet map
-    output$land_wind_map_output <- renderLeaflet({
-        counties_sf <- lw_job_labels()
-        
-        # Get the coordinates of the centroids
-        label_coords <- sf::st_coordinates(sf::st_centroid(counties_sf))
-        
-        # Define specific offsets for each county
-        county_offsets <- list(
-            "Santa Barbara" = c(x = -0.70, y = 0.04),  
-            "San Luis Obispo" = c(x = -0.5, y = -0.2), 
-            "Ventura" = c(x = -0.4, y = 0) 
-        )
-        
-        # Apply the county-specific offsets for each county
-        for (i in 1:nrow(counties_sf)) {
-            county_name <- counties_sf$name[i]
-            
-            # Retrieve the corresponding offset for this county
-            offset <- county_offsets[[county_name]]
-            
-            # Apply the offset to the centroid coordinates
-            label_coords[i, 1] <- label_coords[i, 1] + offset["x"]
-            label_coords[i, 2] <- label_coords[i, 2] + offset["y"]
-        }
-        
-        # Convert the label coordinates into an sf object for plotting
-        label_points <- st_as_sf(
-            data.frame(lng = label_coords[, 1], lat = label_coords[, 2]),
-            coords = c("lng", "lat"),
-            crs = st_crs(counties_sf)
-        )
-        
-        # Generate the leaflet map with labels at the adjusted centroids
-        leaflet(counties_sf) |>
-            addProviderTiles("CartoDB.Voyager") |>
-            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
-            addPolygons(
-                color = "darkgreen",
-                opacity = 0.7
-            ) |>
-            addLabelOnlyMarkers(
-                data = label_points,
-                label = lapply(counties_sf$label, HTML),
-                labelOptions = labelOptions(
-                    noHide = TRUE,
-                    direction = 'left',
-                    textsize = "12px",
-                    opacity = 0.9
-                )
-            )
-    }) # End render leaflet map
-    
-    
-    
-    ######## Land wind plot output #######
-    output$land_wind_jobs_plot_output <- renderPlotly({
-        
-        # Calculate jobs by county from user input
-        land_wind_om_sb <- calculate_land_wind_om_jobs(
-            county = "Santa Barbara",
-            start_year = input$input_lw_years[1],
-            end_year = input$input_lw_years[2],
-            initial_capacity = input$initial_gw_lw_input,
-            final_capacity = input$final_gw_land_input,
-            direct_jobs = 14,
-            indirect_jobs = 23,
-            induced_jobs = 8
-        )
-        
-        land_wind_const_sb <- calculate_land_wind_construction_jobs(
-            county = "Santa Barbara",
-            start_year = input$input_lw_years[1],
-            end_year = input$input_lw_years[2],
-            initial_capacity = input$initial_gw_lw_input,
-            final_capacity = input$final_gw_land_input,
-            direct_jobs = 139,
-            indirect_jobs = 354,
-            induced_jobs = 139
-        )
-        
-        land_wind_om_slo <- calculate_land_wind_om_jobs(
-            county = "San Luis Obispo",
-            start_year = input$input_lw_years[1],
-            end_year = input$input_lw_years[2],
-            initial_capacity = input$initial_gw_lw_input,
-            final_capacity = input$final_gw_land_input,
-            direct_jobs = 14,
-            indirect_jobs = 21,
-            induced_jobs = 7
-        )
-        
-        land_wind_const_slo <- calculate_land_wind_construction_jobs(
-            county = "San Luis Obispo",
-            start_year = input$input_lw_years[1],
-            end_year = input$input_lw_years[2],
-            initial_capacity = input$initial_gw_lw_input,
-            final_capacity = input$final_gw_land_input,
-            direct_jobs = 25,
-            indirect_jobs = 207,
-            induced_jobs = 113
-        )
-        
-        land_wind_om_v <- calculate_land_wind_om_jobs(
-            county = "Ventura",
-            start_year = input$input_lw_years[1],
-            end_year = input$input_lw_years[2],
-            initial_capacity = input$initial_gw_lw_input,
-            final_capacity = input$final_gw_land_input,
-            direct_jobs = 14,
-            indirect_jobs = 24,
-            induced_jobs = 8
-        )
-        
-        land_wind_const_v <- calculate_land_wind_construction_jobs(
-            county = "Ventura",
-            start_year = input$input_lw_years[1],
-            end_year = input$input_lw_years[2],
-            initial_capacity = input$initial_gw_lw_input,
-            final_capacity = input$final_gw_land_input,
-            direct_jobs = 140,
-            indirect_jobs = 345,
-            induced_jobs = 139
-        )
-        
-        # Create joined dataframe
-        lw_all <- rbind(land_wind_const_sb, land_wind_om_sb,
-                        land_wind_const_slo, land_wind_om_slo,
-                        land_wind_const_v, land_wind_om_v) |>
-            filter(type %in% input$lw_job_type_input) |> # Filter to inputted job type
-            filter(county %in% input$lw_counties_input)
-        
-        lw_all <- lw_all |>
-            mutate(
-                n_jobs_rounded = if_else(
-                    n_jobs < 1,
-                    round(n_jobs, 2),
-                    round(n_jobs, 0)
-                ),
-                n_jobs_label = if_else(
-                    n_jobs < 1 & n_jobs > 0,
-                    scales::comma(n_jobs_rounded, accuracy = 0.01),
-                    scales::comma(n_jobs_rounded, accuracy = 1)
-                )
-            )
-        
-        ##### LW Jobs Plot #####
-        lw_plot <- ggplot(lw_all,
-                          aes(
-                              x = as.factor(year),
-                              y = n_jobs_rounded,
-                              group = occupation
-                          )) +
-            geom_col(aes(fill = occupation, text = purrr::map(
-                paste0(occupation, " jobs: ", n_jobs_label), HTML
-            ))) +
-            scale_fill_manual(
-                labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
-                values = c("#3A8398", "#A3BDBE")
-            ) +
-            scale_y_continuous(labels = scales::comma) +
-            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
-            labs(
-                title = glue::glue(
-                    "Projected {input$lw_job_type_input} Jobs in {input$lw_counties_input} County from Land Wind Development"
-                ),
-                y = "FTE Jobs"
-            ) +
-            theme_minimal() +
-            theme(
-                # Axes
-                axis.title.x = element_blank(),
-                axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
-                
-                # Legend
-                legend.title = element_blank(),
-                legend.position = "bottom"
-                
-            )
-        
-        plotly::ggplotly(lw_plot, tooltip = c("text"))  |>
-            config(lw_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                       'zoomIn', 'zoomOut','select',
-                                                       'resetScale', 'lasso'),
-                   displaylogo = FALSE,
-                   toImageButtonOptions = list(
-                       format = "jpeg",
-                       width = 1000,
-                       height = 700,
-                       scale = 15
-                   )) |>
-            layout(hovermode = "x unified",
-                   legend = list(x = 0.7, 
-                                 xanchor = 'left',
-                                 yanchor = 'top',
-                                 orientation = 'h',
-                                 title = "Occupation"))
-        
-    }) # end lw jobs plot
-    
-    ##### LW Capacity Plot #####
-    
-    output$lw_cap_projections_output <- renderPlotly({
-        lw_cap <- calculate_land_wind_om_jobs(
-            county = input$lw_counties_input,
-            start_year = input$input_lw_years[1],
-            end_year = input$input_lw_years[2],
-            initial_capacity = input$initial_gw_lw_input,
-            final_capacity = input$final_gw_land_input,
-            direct_jobs = 127,
-            indirect_jobs = 126,
-            induced_jobs = 131
-        )
-        
-        
-        # Generate capacity plot based on user selection
-        lw_cap_plot <- ggplot() +
-            geom_point(
-                data = lw_cap,
-                aes(x = as.factor(year), 
-                    y = total_capacity_gw,
-                    text = purrr::map(
-                        paste0("Capacity: ", scales::comma(round(total_capacity_gw, 2)), " GW"), HTML
-                    )),
-                color = "#3A8398"
-            ) +
-            scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
-            scale_y_continuous(breaks = scales::breaks_pretty(n = 4),
-                               labels = scales::label_comma()) +
-            labs(y = "Capacity (GW)", title = "Annual Online Capacity (GW)") +
-            theme_minimal() +
-            theme(axis.title.x = element_blank())
-        
-        
-        
-        plotly::ggplotly(lw_cap_plot, tooltip = "text") |>
-            config(lw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                           'zoomIn', 'zoomOut','select',
-                                                           'resetScale', 'lasso'),
-                   displaylogo = FALSE,
-                   toImageButtonOptions = list(
-                       format = "jpeg",
-                       width = 1000,
-                       height = 700,
-                       scale = 15
-                   )) |>
-            layout(hovermode = "x unified")
-        
-    }) # End LW capacity plot
-    
-    ####### EXPORT LAND BASED WIND AS PDF #############
-    output$export_lw <- downloadHandler(
-        filename = "land-wind-jobs.pdf",
-        
-        content = function(file) {
-            src <- normalizePath(here::here('app', 'files', 'land-wind-jobs.Rmd'))
-            
-            # Switch to a temp directory
-            owd <- setwd(tempdir())
-            on.exit(setwd(owd), add = TRUE)
-            
-            file.copy(src, 'land-wind-jobs.Rmd', overwrite = TRUE)
-            
-            # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
-            output_file <- rmarkdown::render(
-                input = 'land-wind-jobs.Rmd',
-                output_format = "pdf_document",
-                output_file = "land-wind-jobs.pdf"
-            )
-            
-            # Copy the rendered PDF to the target location
-            file.copy(output_file, file, overwrite = TRUE)
-        }
-        
-    )
+    # ########### LAND BASED WIND ########
+    # 
+    # output$value <- renderPrint({
+    #     input$input_lw_years
+    # })
+    # 
+    # ####### Land Based Wind Output Render Jobs ################
+    # output$lw_jobs_output <- renderTable({
+    #     land_wind_construction_test <- calculate_land_wind_construction_jobs(
+    #         county = input$lw_counties_input,
+    #         start_year = input$input_lw_years[1],
+    #         end_year = input$input_lw_years[2],
+    #         initial_capacity = 0.98,
+    #         final_capacity = 5,
+    #         direct_jobs = 1,
+    #         indirect_jobs = 1,
+    #         induced_jobs = 1
+    #     )
+    #     
+    #     land_wind_om_test <- calculate_land_wind_om_jobs(
+    #         county = input$lw_counties_input,
+    #         start_year = input$input_lw_years[1],
+    #         end_year = input$input_lw_years[2],
+    #         initial_capacity = 0.98,
+    #         final_capacity = 5,
+    #         direct_jobs = 1,
+    #         indirect_jobs = 1,
+    #         induced_jobs = 1
+    #     )
+    #     
+    #     # Join roof jobs by selected counties and job type
+    #     county_lw <- rbind(land_wind_construction_test, land_wind_om_test) |>
+    #         filter(type %in% input$lw_job_type_input) |>
+    #         select(-ambition)
+    #     
+    #     return(county_lw)
+    # })
+    # 
+    # ############### Land Based Wind Leaflet Map ###############
+    # 
+    # # Reactive counties input for Land Wind Map
+    # counties_input_lw <- reactive({
+    #     if (!is.null(input$lw_counties_input)) {
+    #         ca_counties |> filter(name %in% input$lw_counties_input)
+    #     } else {
+    #         ca_counties
+    #     }
+    # })
+    # 
+    # # Reactive job calculations for selected counties
+    # lw_all_jobs <- reactive({
+    #     counties <- input$lw_counties_input
+    #     start_year <- input$input_lw_years[1]
+    #     end_year <- input$input_lw_years[2]
+    #     initial_capacity <- input$initial_gw_lw_input
+    #     final_capacity <- input$final_gw_land_input
+    #     
+    #     # Define job multipliers per county
+    #     job_factors <- list(
+    #         "Santa Barbara" = list(const = c(139, 354, 139), om = c(14, 23, 8)),
+    #         "San Luis Obispo" = list(const = c(25, 207, 113), om = c(14, 21, 7)),
+    #         "Ventura" = list(const = c(140, 345, 139), om = c(14, 24, 8))
+    #     )
+    #     
+    #     # Loop through counties and calculate jobs
+    #     purrr::map_dfr(counties, function(cty) {
+    #         factors <- job_factors[[cty]]
+    #         
+    #         const <- calculate_land_wind_construction_jobs(
+    #             county = cty,
+    #             start_year = start_year,
+    #             end_year = end_year,
+    #             initial_capacity = initial_capacity,
+    #             final_capacity = final_capacity,
+    #             direct_jobs = factors$const[1],
+    #             indirect_jobs = factors$const[2],
+    #             induced_jobs = factors$const[3]
+    #         )
+    #         
+    #         om <- calculate_land_wind_om_jobs(
+    #             county = cty,
+    #             start_year = start_year,
+    #             end_year = end_year,
+    #             initial_capacity = initial_capacity,
+    #             final_capacity = final_capacity,
+    #             direct_jobs = factors$om[1],
+    #             indirect_jobs = factors$om[2],
+    #             induced_jobs = factors$om[3]
+    #         )
+    #         
+    #         rbind(const, om)
+    #     }) |> 
+    #         filter(type %in% input$lw_job_type_input)
+    # }) # End reactive job calculations per county
+    # 
+    # # Reactive county labels with job summaries
+    # lw_job_labels <- reactive({
+    #     jobs <- lw_all_jobs()
+    #     counties_sf <- counties_input_lw()
+    #     
+    #     job_summaries <- jobs |>
+    #         group_by(county, occupation) |>
+    #         summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = 'drop') |>
+    #         tidyr::pivot_wider(names_from = occupation, values_from = n_jobs, values_fill = 0)
+    #     
+    #     counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
+    #     
+    #     counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
+    #                                          "<b> <br>", counties_with_labels$name, " County </b><br>",
+    #                                          "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
+    #                                          "O&M: ", scales::comma(counties_with_labels$`O&M`)
+    #     )
+    #     
+    #     counties_with_labels
+    # }) # End reactive county labels 
+    # 
+    # # Render LW leaflet map
+    # output$land_wind_map_output <- renderLeaflet({
+    #     counties_sf <- lw_job_labels()
+    #     
+    #     # Get the coordinates of the centroids
+    #     label_coords <- sf::st_coordinates(sf::st_centroid(counties_sf))
+    #     
+    #     # Define specific offsets for each county
+    #     county_offsets <- list(
+    #         "Santa Barbara" = c(x = -0.70, y = 0.04),  
+    #         "San Luis Obispo" = c(x = -0.5, y = -0.2), 
+    #         "Ventura" = c(x = -0.4, y = 0) 
+    #     )
+    #     
+    #     # Apply the county-specific offsets for each county
+    #     for (i in 1:nrow(counties_sf)) {
+    #         county_name <- counties_sf$name[i]
+    #         
+    #         # Retrieve the corresponding offset for this county
+    #         offset <- county_offsets[[county_name]]
+    #         
+    #         # Apply the offset to the centroid coordinates
+    #         label_coords[i, 1] <- label_coords[i, 1] + offset["x"]
+    #         label_coords[i, 2] <- label_coords[i, 2] + offset["y"]
+    #     }
+    #     
+    #     # Convert the label coordinates into an sf object for plotting
+    #     label_points <- st_as_sf(
+    #         data.frame(lng = label_coords[, 1], lat = label_coords[, 2]),
+    #         coords = c("lng", "lat"),
+    #         crs = st_crs(counties_sf)
+    #     )
+    #     
+    #     # Generate the leaflet map with labels at the adjusted centroids
+    #     leaflet(counties_sf) |>
+    #         addProviderTiles("CartoDB.Voyager") |>
+    #         setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+    #         addPolygons(
+    #             color = "darkgreen",
+    #             opacity = 0.7
+    #         ) |>
+    #         addLabelOnlyMarkers(
+    #             data = label_points,
+    #             label = lapply(counties_sf$label, HTML),
+    #             labelOptions = labelOptions(
+    #                 noHide = TRUE,
+    #                 direction = 'left',
+    #                 textsize = "12px",
+    #                 opacity = 0.9
+    #             )
+    #         )
+    # }) # End render leaflet map
+    # 
+    # 
+    # 
+    # ######## Land wind plot output #######
+    # output$land_wind_jobs_plot_output <- renderPlotly({
+    #     
+    #     # Calculate jobs by county from user input
+    #     land_wind_om_sb <- calculate_land_wind_om_jobs(
+    #         county = "Santa Barbara",
+    #         start_year = input$input_lw_years[1],
+    #         end_year = input$input_lw_years[2],
+    #         initial_capacity = input$initial_gw_lw_input,
+    #         final_capacity = input$final_gw_land_input,
+    #         direct_jobs = 14,
+    #         indirect_jobs = 23,
+    #         induced_jobs = 8
+    #     )
+    #     
+    #     land_wind_const_sb <- calculate_land_wind_construction_jobs(
+    #         county = "Santa Barbara",
+    #         start_year = input$input_lw_years[1],
+    #         end_year = input$input_lw_years[2],
+    #         initial_capacity = input$initial_gw_lw_input,
+    #         final_capacity = input$final_gw_land_input,
+    #         direct_jobs = 139,
+    #         indirect_jobs = 354,
+    #         induced_jobs = 139
+    #     )
+    #     
+    #     land_wind_om_slo <- calculate_land_wind_om_jobs(
+    #         county = "San Luis Obispo",
+    #         start_year = input$input_lw_years[1],
+    #         end_year = input$input_lw_years[2],
+    #         initial_capacity = input$initial_gw_lw_input,
+    #         final_capacity = input$final_gw_land_input,
+    #         direct_jobs = 14,
+    #         indirect_jobs = 21,
+    #         induced_jobs = 7
+    #     )
+    #     
+    #     land_wind_const_slo <- calculate_land_wind_construction_jobs(
+    #         county = "San Luis Obispo",
+    #         start_year = input$input_lw_years[1],
+    #         end_year = input$input_lw_years[2],
+    #         initial_capacity = input$initial_gw_lw_input,
+    #         final_capacity = input$final_gw_land_input,
+    #         direct_jobs = 25,
+    #         indirect_jobs = 207,
+    #         induced_jobs = 113
+    #     )
+    #     
+    #     land_wind_om_v <- calculate_land_wind_om_jobs(
+    #         county = "Ventura",
+    #         start_year = input$input_lw_years[1],
+    #         end_year = input$input_lw_years[2],
+    #         initial_capacity = input$initial_gw_lw_input,
+    #         final_capacity = input$final_gw_land_input,
+    #         direct_jobs = 14,
+    #         indirect_jobs = 24,
+    #         induced_jobs = 8
+    #     )
+    #     
+    #     land_wind_const_v <- calculate_land_wind_construction_jobs(
+    #         county = "Ventura",
+    #         start_year = input$input_lw_years[1],
+    #         end_year = input$input_lw_years[2],
+    #         initial_capacity = input$initial_gw_lw_input,
+    #         final_capacity = input$final_gw_land_input,
+    #         direct_jobs = 140,
+    #         indirect_jobs = 345,
+    #         induced_jobs = 139
+    #     )
+    #     
+    #     # Create joined dataframe
+    #     lw_all <- rbind(land_wind_const_sb, land_wind_om_sb,
+    #                     land_wind_const_slo, land_wind_om_slo,
+    #                     land_wind_const_v, land_wind_om_v) |>
+    #         filter(type %in% input$lw_job_type_input) |> # Filter to inputted job type
+    #         filter(county %in% input$lw_counties_input)
+    #     
+    #     lw_all <- lw_all |>
+    #         mutate(
+    #             n_jobs_rounded = if_else(
+    #                 n_jobs < 1,
+    #                 round(n_jobs, 2),
+    #                 round(n_jobs, 0)
+    #             ),
+    #             n_jobs_label = if_else(
+    #                 n_jobs < 1 & n_jobs > 0,
+    #                 scales::comma(n_jobs_rounded, accuracy = 0.01),
+    #                 scales::comma(n_jobs_rounded, accuracy = 1)
+    #             )
+    #         )
+    #     
+    #     ##### LW Jobs Plot #####
+    #     lw_plot <- ggplot(lw_all,
+    #                       aes(
+    #                           x = as.factor(year),
+    #                           y = n_jobs_rounded,
+    #                           group = occupation
+    #                       )) +
+    #         geom_col(aes(fill = occupation, text = purrr::map(
+    #             paste0(occupation, " jobs: ", n_jobs_label), HTML
+    #         ))) +
+    #         scale_fill_manual(
+    #             labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
+    #             values = c("#3A8398", "#A3BDBE")
+    #         ) +
+    #         scale_y_continuous(labels = scales::comma) +
+    #         scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+    #         labs(
+    #             title = glue::glue(
+    #                 "Projected {input$lw_job_type_input} Jobs in {input$lw_counties_input} County from Land Wind Development"
+    #             ),
+    #             y = "FTE Jobs"
+    #         ) +
+    #         theme_minimal() +
+    #         theme(
+    #             # Axes
+    #             axis.title.x = element_blank(),
+    #             axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
+    #             
+    #             # Legend
+    #             legend.title = element_blank(),
+    #             legend.position = "bottom"
+    #             
+    #         )
+    #     
+    #     plotly::ggplotly(lw_plot, tooltip = c("text"))  |>
+    #         config(lw_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+    #                                                    'zoomIn', 'zoomOut','select',
+    #                                                    'resetScale', 'lasso'),
+    #                displaylogo = FALSE,
+    #                toImageButtonOptions = list(
+    #                    format = "jpeg",
+    #                    width = 1000,
+    #                    height = 700,
+    #                    scale = 15
+    #                )) |>
+    #         layout(hovermode = "x unified",
+    #                legend = list(x = 0.7, 
+    #                              xanchor = 'left',
+    #                              yanchor = 'top',
+    #                              orientation = 'h',
+    #                              title = "Occupation"))
+    #     
+    # }) # end lw jobs plot
+    # 
+    # ##### LW Capacity Plot #####
+    # 
+    # output$lw_cap_projections_output <- renderPlotly({
+    #     lw_cap <- calculate_land_wind_om_jobs(
+    #         county = input$lw_counties_input,
+    #         start_year = input$input_lw_years[1],
+    #         end_year = input$input_lw_years[2],
+    #         initial_capacity = input$initial_gw_lw_input,
+    #         final_capacity = input$final_gw_land_input,
+    #         direct_jobs = 127,
+    #         indirect_jobs = 126,
+    #         induced_jobs = 131
+    #     )
+    #     
+    #     
+    #     # Generate capacity plot based on user selection
+    #     lw_cap_plot <- ggplot() +
+    #         geom_point(
+    #             data = lw_cap,
+    #             aes(x = as.factor(year), 
+    #                 y = total_capacity_gw,
+    #                 text = purrr::map(
+    #                     paste0("Capacity: ", scales::comma(round(total_capacity_gw, 2)), " GW"), HTML
+    #                 )),
+    #             color = "#3A8398"
+    #         ) +
+    #         scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
+    #         scale_y_continuous(breaks = scales::breaks_pretty(n = 4),
+    #                            labels = scales::label_comma()) +
+    #         labs(y = "Capacity (GW)", title = "Annual Online Capacity (GW)") +
+    #         theme_minimal() +
+    #         theme(axis.title.x = element_blank())
+    #     
+    #     
+    #     
+    #     plotly::ggplotly(lw_cap_plot, tooltip = "text") |>
+    #         config(lw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+    #                                                        'zoomIn', 'zoomOut','select',
+    #                                                        'resetScale', 'lasso'),
+    #                displaylogo = FALSE,
+    #                toImageButtonOptions = list(
+    #                    format = "jpeg",
+    #                    width = 1000,
+    #                    height = 700,
+    #                    scale = 15
+    #                )) |>
+    #         layout(hovermode = "x unified")
+    #     
+    # }) # End LW capacity plot
+    # 
+    # ####### EXPORT LAND BASED WIND AS PDF #############
+    # output$export_lw <- downloadHandler(
+    #     filename = "land-wind-jobs.pdf",
+    #     
+    #     content = function(file) {
+    #         src <- normalizePath(here::here('app', 'files', 'land-wind-jobs.Rmd'))
+    #         
+    #         # Switch to a temp directory
+    #         owd <- setwd(tempdir())
+    #         on.exit(setwd(owd), add = TRUE)
+    #         
+    #         file.copy(src, 'land-wind-jobs.Rmd', overwrite = TRUE)
+    #         
+    #         # Render the Rmd to PDF, output file will be named 'utility-jobs.pdf'
+    #         output_file <- rmarkdown::render(
+    #             input = 'land-wind-jobs.Rmd',
+    #             output_format = "pdf_document",
+    #             output_file = "land-wind-jobs.pdf"
+    #         )
+    #         
+    #         # Copy the rendered PDF to the target location
+    #         file.copy(output_file, file, overwrite = TRUE)
+    #     }
+    #     
+    # ) ##### END LAND WIND #####
     
     
     # Define reactive data frame for filtered_data
