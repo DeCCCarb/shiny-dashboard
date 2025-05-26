@@ -1,7 +1,7 @@
 
 server <- function(input, output, session) {
     
-    ##### Reactive Title #####
+    ########## Reactive Title ##########
     observe({
         title_text <- switch(input$tabs,
                              "f_osw"     = "Floating Offshore Wind",
@@ -18,10 +18,17 @@ server <- function(input, output, session) {
         output$dynamic_header_title <- renderUI({
             tags$span(title_text, style = "color: #3D4952; font-weight: bold;")
         })
-    })
-    ##### END Reactive Title #####
+    }) # END reactive title
     
-    ##### Tutorials #####
+    ##### Project Overview image carousel #####
+    output$image_carousel <- renderSlickR({
+        slickR(
+            c("why_cc.svg","project_goal.svg","correct_tech.svg","next_step.svg") 
+        )
+    }) # END image carousel
+    
+
+    ########## Tutorials ##########
     
     # Automatically start tutorial on first session load ----
     shown_tutorials <- reactiveValues(
@@ -2051,266 +2058,13 @@ server <- function(input, output, session) {
     #     
     # )
 
-    ########## PHASEOUT TAB ##########
+   
+########## CAPPING TAB ##########
     
-    # Define reactive data frame for filtered_data
-    filtered_data <- reactive({
-        phaseout_employment_projection(
-            county = input$phaseout_counties_input,
-            excise_tax = 'no tax',
-            setback = input$phaseout_setback_input,
-            setback_existing = as.numeric(input$phaseout_setback_existing_input),
-            oil_price = 'reference case',
-            prod_quota = 'no quota',
-            carbon_price = 'price floor'
-        )
-    })
-    
-    ##### Phaseout Jobs Plot #####
-    output$phaseout_plot <- renderPlotly({
-        phaseout_plot <- filtered_data() %>%
-            ggplot(aes(
-                x = as.factor(year),
-                y = round(total_emp, 0),
-                text = paste("Year:", year, "<br>Jobs:", scales::comma(round(total_emp, 0)))
-            )) +
-            geom_col(position = "dodge", fill = "#A3BDBE") +
-            labs(
-                title = glue::glue(
-                    "Projected Crude Oil Jobs in {input$phaseout_counties_input} County"),
-                y = 'Total direct employment') +
-            scale_y_continuous(labels = scales::label_comma()) +
-            theme_minimal() +
-            theme(axis.title.x = element_blank())
-        
-        plotly::ggplotly(phaseout_plot, tooltip = "text") |>
-            config(phaseout_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                             'zoomIn', 'zoomOut','select',
-                                                             'resetScale', 'lasso'),
-                   displaylogo = FALSE,
-                   toImageButtonOptions = list(
-                       format = "jpeg",
-                       width = 1000,
-                       height = 700,
-                       scale = 15
-                   )) |>
-            layout(hovermode = "x unified") 
-        
-        
-    }) # End phaseout jobs plot
-    
-    
-    ##### OIL CAPPING #####
-    
-    ####### EXPORT OIL CAPPING AS PDF #############
-    output$export_well_cap <- downloadHandler(
-        filename = "well-cap-jobs.pdf",
-        
-        content = function(file) {
-            src <- normalizePath(here::here('app', 'files', 'well-cap-jobs.Rmd'))
-            
-            # Switch to a temp directory
-            owd <- setwd(tempdir())
-            on.exit(setwd(owd), add = TRUE)
-            
-            file.copy(src, 'well-cap-jobs.Rmd', overwrite = TRUE)
-            
-            # Render the Rmd to PDF, output file will be named 'rooftop-jobs.pdf'
-            output_file <- rmarkdown::render(
-                input = 'well-cap-jobs.Rmd',
-                output_format = "pdf_document",
-                output_file = "well-cap-jobs.pdf"
-            )
-            
-            # Copy the rendered PDF to the target location
-            file.copy(output_file, file, overwrite = TRUE)
-        }
-        
-    )
-    
-    start_year <- 2025
-    end_year <- 2045
-    
-    ##### Exponential capping wells plot ----
-    output$oil_capping_jobs_plot <- renderPlotly({
-        
-        total_wells_capped <- data.frame(
-            CountyName = c("San Luis Obispo", "Santa Barbara", "Ventura"),
-            total_jobs = c(337*.25, 1977*.25, 3188*.25) # .25 FTE jobs per capped well
-        ) |> 
-            filter(CountyName == input$county_wells_input)
-        
-        # Call projection function
-        county_wells_growth <- calculate_capping_jobs_all(total_wells_capped)
-        
-        p <- ggplot(county_wells_growth) +
-            geom_col(
-                aes(
-                    x = as.factor(year),
-                    y = total_jobs,
-                    text = paste0("Year: ", year, "<br>Cumulative Job Years Created: ", scales::comma(total_jobs))
-                ),
-                fill = "#3A8398"
-            ) +
-            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
-            scale_y_continuous(
-                labels = scales::label_comma()
-            ) +
-            labs(
-                title = paste("Cumulative Job-Years Created in", {input$county_wells_input}, "County"),
-                y = "Total Jobs Created"
-            ) +
-            theme_minimal() +
-            theme(
-                axis.title.x = element_blank()
-            )
-        
-        plotly::ggplotly(p, tooltip = "text") |>
-            config(
-                modeBarButtonsToRemove = c('zoom2d', 'pan2d', 'autoScale',
-                                           'zoomIn', 'zoomOut', 'select',
-                                           'resetScale', 'lasso'),
-                displaylogo = FALSE,
-                toImageButtonOptions = list(
-                    format = "jpeg",
-                    width = 1000,
-                    height = 700,
-                    scale = 15
-                )
-            ) |>
-            layout(hovermode = "x unified")
-        
-        
-    })
-    # 
-    # # Oil capping jobs plot ----
-    # output$oil_capping_jobs_plot <- renderPlotly({
-    #     
-    #     
-    #     # Filter data for selected county
-    #     county_data <- oil_capping_jobs_all |> 
-    #         filter(county == input$county_wells_input)
-    #     
-    #     # Create ggplot
-    #     p <- ggplot(county_data) +
-    #         geom_col(
-    #             aes(
-    #                 x = as.factor(year),
-    #                 y = total_jobs_created,
-    #                 text = paste0("Year: ", year, "<br>Cumulative Job Years Created: ", scales::comma(total_jobs_created))
-    #             ),
-    #             fill = "#3A8398"
-    #         ) +
-    #         scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
-    #         scale_y_continuous(
-    #             labels = scales::label_comma()
-    #         ) +
-    #         labs(
-    #             title = paste("Cumulative Jobs Created in", {input$county_wells_input}, "County"),
-    #             y = "Total Jobs Created"
-    #         ) +
-    #         theme_minimal() +
-    #         theme(
-    #             axis.title.x = element_blank()
-    #         )
-    #     
-    #     plotly::ggplotly(p, tooltip = "text") |>
-    #         config(
-    #             modeBarButtonsToRemove = c('zoom2d', 'pan2d', 'autoScale',
-    #                                        'zoomIn', 'zoomOut', 'select',
-    #                                        'resetScale', 'lasso'),
-    #             displaylogo = FALSE,
-    #             toImageButtonOptions = list(
-    #                 format = "jpeg",
-    #                 width = 1000,
-    #                 height = 700,
-    #                 scale = 15
-    #             )
-    #         ) |>
-    #         layout(hovermode = "x unified")
-    # })
-    
-    ####### EXPORT OSW AS PDF #############
-    output$export_phaseout<- downloadHandler(
-        filename = "phaseout-jobs.pdf",
-        
-        content = function(file) {
-            src <- normalizePath(here::here('app', 'files', 'phaseout-jobs.Rmd'))
-            
-            # Switch to a temp directory
-            owd <- setwd(tempdir())
-            on.exit(setwd(owd), add = TRUE)
-            
-            file.copy(src, 'phaseout-jobs.Rmd', overwrite = TRUE)
-            
-            # Render the Rmd to PDF, output file will be named 'rooftop-jobs.pdf'
-            output_file <- rmarkdown::render(
-                input = 'phaseout-jobs.Rmd',
-                output_format = "pdf_document",
-                output_file = "phaseout-jobs.pdf"
-            )
-            
-            # Copy the rendered PDF to the target location
-            file.copy(output_file, file, overwrite = TRUE)
-        }
-        
-    )
-    
-    # Oil capping wells plot ----
-    output$oil_capping_plot <- renderPlotly({
-        total_wells_capped <- data.frame(
-            CountyName = c("San Luis Obispo", "Santa Barbara", "Ventura"),
-            total_jobs = c(337, 1977, 3188) # .25 FTE jobs per capped well
-        ) |> 
-            filter(CountyName == input$county_wells_input)
-        
-        # Call projection function
-        county_wells_growth <- calculate_capping_jobs_all(total_wells_capped)
-        
-        # Create ggplot
-        p <- ggplot(county_wells_growth) +
-            geom_point(
-                aes(
-                    x = as.factor(year),
-                    y = total_jobs, # total_jobs because we did not pass in .25 FTE job per well, so this actually represents the total wells
-                    text = paste0("Year: ", year, "<br>Wells Capped: ", scales::comma(total_jobs))
-                ),
-                color = "#3A8398"
-            ) +
-            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
-            scale_y_continuous(
-                labels = scales::label_comma()
-            ) +
-            labs(
-                title = paste("Well Capping Projection for", {input$county_wells_input}, "County"),
-                y = "Number of Wells Capped"
-            ) +
-            theme_minimal() +
-            theme(
-                axis.title.x = element_blank()
-            )
-        
-        plotly::ggplotly(p, tooltip = "text") |>
-            config(
-                modeBarButtonsToRemove = c('zoom2d', 'pan2d', 'autoScale',
-                                           'zoomIn', 'zoomOut', 'select',
-                                           'resetScale', 'lasso'),
-                displaylogo = FALSE,
-                toImageButtonOptions = list(
-                    format = "jpeg",
-                    width = 1000,
-                    height = 700,
-                    scale = 15
-                )
-            ) |>
-            layout(hovermode = "x unified")
-    })
-        
-    
-    
-    # Oil capping leaflet map output ----
+    ##### Capping Map #####
     output$capping_map_output <- renderLeaflet({
         
+        # Labels ----
         # Well counts, number of jobs, and label coordinates
         well_count <- c(1977, 3188, 337)
         n_jobs <- c(494, 797, 84)
@@ -2343,7 +2097,7 @@ server <- function(input, output, session) {
             addProviderTiles("CartoDB.Voyager") |>
             setView(lng = -120.40189, lat = 34.920030, zoom = 8)
         
-        # Add the polygon for the selected county only (hide others)
+        # Add county shapes by user input ----
         leaflet_map <- leaflet_map |>
             addPolygons(
                 data = ca_counties |> filter(name == input$county_wells_input),  # Only add selected county's polygon
@@ -2370,10 +2124,145 @@ server <- function(input, output, session) {
         leaflet_map
     })
     
+    ##### Capped wells plot #####
+    output$oil_capping_plot <- renderPlotly({
+        total_wells_capped <- data.frame(
+            CountyName = c("San Luis Obispo", "Santa Barbara", "Ventura"),
+            total_jobs = c(337, 1977, 3188) # .25 FTE jobs per capped well
+        ) |> 
+            filter(CountyName == input$county_wells_input)
+        
+        # Call projection function
+        county_wells_growth <- calculate_capping_jobs_all(total_wells_capped)
+        
+        # ggplot ----
+        p <- ggplot(county_wells_growth) +
+            geom_point(
+                aes(
+                    x = as.factor(year),
+                    y = total_jobs, # total_jobs because we did not pass in .25 FTE job per well, so this actually represents the total wells
+                    text = paste0("Year: ", year, "<br>Wells Capped: ", scales::comma(total_jobs))
+                ),
+                color = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+            scale_y_continuous(
+                labels = scales::label_comma()
+            ) +
+            labs(
+                title = paste("Well Capping Projection for", {input$county_wells_input}, "County"),
+                y = "Number of Wells Capped"
+            ) +
+            theme_minimal() +
+            theme(
+                axis.title.x = element_blank()
+            )
+        
+        # plotly ----
+        plotly::ggplotly(p, tooltip = "text") |>
+            config(
+                modeBarButtonsToRemove = c('zoom2d', 'pan2d', 'autoScale',
+                                           'zoomIn', 'zoomOut', 'select',
+                                           'resetScale', 'lasso'),
+                displaylogo = FALSE,
+                toImageButtonOptions = list(
+                    format = "jpeg",
+                    width = 1000,
+                    height = 700,
+                    scale = 15
+                )
+            ) |>
+            layout(hovermode = "x unified")
+    })
     
-    #phaseout leaflet map output ----
+    
+    ##### Capping jobs plot #####
+    output$oil_capping_jobs_plot <- renderPlotly({
+        
+        total_wells_capped <- data.frame(
+            CountyName = c("San Luis Obispo", "Santa Barbara", "Ventura"),
+            total_jobs = c(337*.25, 1977*.25, 3188*.25) # .25 FTE jobs per capped well
+        ) |> 
+            filter(CountyName == input$county_wells_input)
+        
+        # Call projection function
+        county_wells_growth <- calculate_capping_jobs_all(total_wells_capped)
+        
+        # ggplot ----
+        p <- ggplot(county_wells_growth) +
+            geom_col(
+                aes(
+                    x = as.factor(year),
+                    y = total_jobs,
+                    text = paste0("Year: ", year, "<br>Cumulative Job Years Created: ", scales::comma(total_jobs))
+                ),
+                fill = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+            scale_y_continuous(
+                labels = scales::label_comma()
+            ) +
+            labs(
+                title = paste("Cumulative Job-Years Created in", {input$county_wells_input}, "County"),
+                y = "Total Jobs Created"
+            ) +
+            theme_minimal() +
+            theme(
+                axis.title.x = element_blank()
+            )
+        
+        # plotly ----
+        plotly::ggplotly(p, tooltip = "text") |>
+            config(
+                modeBarButtonsToRemove = c('zoom2d', 'pan2d', 'autoScale',
+                                           'zoomIn', 'zoomOut', 'select',
+                                           'resetScale', 'lasso'),
+                displaylogo = FALSE,
+                toImageButtonOptions = list(
+                    format = "jpeg",
+                    width = 1000,
+                    height = 700,
+                    scale = 15
+                )
+            ) |>
+            layout(hovermode = "x unified")
+    })
+   
+    
+    ##### Capping PDF #####
+    output$export_well_cap <- downloadHandler(
+        filename = "well-cap-jobs.pdf",
+        
+        content = function(file) {
+            src <- normalizePath(here::here('app', 'files', 'well-cap-jobs.Rmd'))
+            
+            # Switch to a temp directory
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd), add = TRUE)
+            
+            file.copy(src, 'well-cap-jobs.Rmd', overwrite = TRUE)
+            
+            # Render the Rmd to PDF, output file will be named 'rooftop-jobs.pdf'
+            output_file <- rmarkdown::render(
+                input = 'well-cap-jobs.Rmd',
+                output_format = "pdf_document",
+                output_file = "well-cap-jobs.pdf"
+            )
+            
+            # Copy the rendered PDF to the target location
+            file.copy(output_file, file, overwrite = TRUE)
+        }
+    ) # End capping PDF 
+    
+    
+    
+########## PHASEOUT TAB ##########
+    
+    ##### Phaseout map #####
     output$phaseout_county_map_output <- renderLeaflet({
-        counties_input <- reactive({
+       
+        # Add county shapes by user input ----
+         counties_input <- reactive({
             if (!is.null(input$phaseout_counties_input)) {
                 ca_counties |> filter(name %in% input$phaseout_counties_input)
             } else {
@@ -2381,13 +2270,7 @@ server <- function(input, output, session) {
             }
         })
         
-        icons <- awesomeIcons(
-            icon = 'helmet-safety',
-            iconColor = 'black',
-            library = 'fa',
-            markerColor = "orange"
-        )
-        
+        # Labels ---- 
         label_coords <- data.frame(
             name = c("Santa Barbara", "San Luis Obispo", "Ventura"),
             lng = c(-120.7201, -121.0508, -119.4855),
@@ -2439,6 +2322,7 @@ server <- function(input, output, session) {
             left_join(label_coords, by = "name") |>
             st_drop_geometry()
         
+        # Leaflet ----
         leaflet_map <- leaflet() |>
             addProviderTiles("CartoDB.Voyager") |>
             setView(lng = -121.698189,
@@ -2471,12 +2355,83 @@ server <- function(input, output, session) {
         
         leaflet_map
     })
+
     
+    ##### Phaseout Jobs Plot #####
     
-    ##### Project Overview image carousel #####
-    output$image_carousel <- renderSlickR({
-        slickR(
-            c("why_cc.svg","project_goal.svg","correct_tech.svg","next_step.svg") 
+    # Define reactive data frame for filtered_data
+    filtered_data <- reactive({
+        phaseout_employment_projection(
+            county = input$phaseout_counties_input,
+            excise_tax = 'no tax',
+            setback = input$phaseout_setback_input,
+            setback_existing = as.numeric(input$phaseout_setback_existing_input),
+            oil_price = 'reference case',
+            prod_quota = 'no quota',
+            carbon_price = 'price floor'
         )
     })
+    
+
+    output$phaseout_plot <- renderPlotly({
+        phaseout_plot <- filtered_data() %>%
+            
+            # ggplot ----
+            ggplot(aes(
+                x = as.factor(year),
+                y = round(total_emp, 0),
+                text = paste("Year:", year, "<br>Jobs:", scales::comma(round(total_emp, 0)))
+            )) +
+            geom_col(position = "dodge", fill = "#A3BDBE") +
+            labs(
+                title = glue::glue(
+                    "Projected Crude Oil Jobs in {input$phaseout_counties_input} County"),
+                y = 'Total direct employment') +
+            scale_y_continuous(labels = scales::label_comma()) +
+            theme_minimal() +
+            theme(axis.title.x = element_blank())
+        
+        # plotly ----
+        plotly::ggplotly(phaseout_plot, tooltip = "text") |>
+            config(phaseout_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                             'zoomIn', 'zoomOut','select',
+                                                             'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
+            layout(hovermode = "x unified") 
+
+    }) # End phaseout jobs plot
+    
+    
+
+    ##### Phaseout PDF #####
+    output$export_phaseout<- downloadHandler(
+        filename = "phaseout-jobs.pdf",
+        
+        content = function(file) {
+            src <- normalizePath(here::here('app', 'files', 'phaseout-jobs.Rmd'))
+            
+            # Switch to a temp directory
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd), add = TRUE)
+            
+            file.copy(src, 'phaseout-jobs.Rmd', overwrite = TRUE)
+            
+            # Render the Rmd to PDF, output file will be named 'rooftop-jobs.pdf'
+            output_file <- rmarkdown::render(
+                input = 'phaseout-jobs.Rmd',
+                output_format = "pdf_document",
+                output_file = "phaseout-jobs.pdf"
+            )
+            
+            # Copy the rendered PDF to the target location
+            file.copy(output_file, file, overwrite = TRUE)
+        }
+    ) # END phaseout PDF
+    
 }
