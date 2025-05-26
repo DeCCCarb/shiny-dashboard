@@ -263,7 +263,7 @@ server <- function(input, output, session) {
                 👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
                 
                 A new froniter for clean energy in California's Central Coast, 
-                floating offshore wind is predicted to power up to 3.5 million homes, 
+                floating offshore wind is predicted to power up to 3.5 million homes<sup><a href='https://reachcentralcoast.org/offshore-wind/' target='_blank'>1</a></sup>, 
                 marking a significant step towards California’s carbon neutrality goals and catalyzing a new economy
                 around clean energy in the region. <br><br>
                 
@@ -452,35 +452,19 @@ server <- function(input, output, session) {
         }
     })
     
-    ##### END Tutorials #####
+##### END Tutorials #####
     
-    ##### Download Button In Header Reactive to Current Tab #####
+    ##### PDF Download Button In Header Reactive to Current Tab #####
     output$export_pdf_button <- renderUI({
         current_tab <- input$tabs
         if (current_tab %in% c("f_osw", "utility", "rooftop", "lb_wind", "well_cap", "phaseout")) {
             downloadButton(outputId = paste0("export_", current_tab), label = NULL, icon = icon("file-pdf"))
         }
-    })
+    }) # END PDF download button ----
     
+    ##### OSW TAB #####
     
-    #  # Create reactive port for OSW map
-    # 
-    # port_input <- reactive({
-    #     data.frame(
-    #         port_name = c("Hueneme", "San Luis Obispo"),
-    #         address = c(
-    #             "Port of Hueneme, Port Hueneme, CA 93041",
-    #             "699 Embarcadero, Morro Bay, CA 93442"
-    #         )
-    #     ) %>%
-    #         tidygeocoder::geocode(address = address, method = "osm") |>
-    #         filter(port_name == input$osw_port_input)
-    #     
-    #     
-    #     
-    # })
-    
-    # Define port coordinates
+    # Define port coordinates ----
     ports_df <- data.frame(
         port_name = c("<center><b>Port Hueneme</b><br>Click for more on ports</center>", "<center><b>A Port in San Luis Obispo</b><br>Click for more on ports</center>"),
         address = c(
@@ -498,20 +482,18 @@ server <- function(input, output, session) {
     
     
     
-    # Interactive OSW Map ----
+    # OSW Map ----
     observeEvent(
         c(
             input$year_range_input,
             input$job_type_input,
             input$initial_capacity_input,
             input$final_capacity_input
-            #           input$osw_port_input
         ),
         {
-            # OSW total jobs map label ----
-            # Calculate annual jobs when port is in CC
-            #           if (!("No Central Coast Port" %in% input$osw_port_input)) {
-            # OSW O&M jobs
+            # Label ----
+            
+            # Calculate OSW O&M jobs
             osw_om <- calculate_osw_om_jobs(
                 county = "Tri-county",
                 start_year = input$year_range_input[1],
@@ -524,7 +506,7 @@ server <- function(input, output, session) {
                 induced_jobs = 131
             )
             
-            # OSW Construction
+            # Calculate OSW Construction
             osw_construction <- calculate_osw_construction_jobs(
                 county = "Tri-County",
                 start_year = input$year_range_input[1],
@@ -540,19 +522,6 @@ server <- function(input, output, session) {
             # Bind together
             osw_all <- rbind(osw_om, osw_construction) |>
                 filter(type == input$job_type_input)
-            
-            # Calculate annual jobs when port is NOT in CC
-            
-            # } else {
-            #     # Return 0 jobs
-            #     osw_all <- data.frame(
-            #         year = integer(),
-            #         n_jobs = numeric(),
-            #         occupation = character(),
-            #         type = character(),
-            #         stringsAsFactors = FALSE
-            #     )
-            # }
             
             # Calculate total construction jobs
             const_njobs_label <- osw_all |>
@@ -580,7 +549,7 @@ server <- function(input, output, session) {
             )
             
             
-            # OSW map ----
+            # Leaflet ----
             output$osw_map_output <- renderLeaflet({
                 port_icon <- awesomeIcons(
                     icon = 'helmet-safety',
@@ -629,33 +598,175 @@ server <- function(input, output, session) {
                         )
                     )
                 
-                
-                # Only add markers if ports are selected
-                # if (!("No Central Coast Port" %in% input$osw_port_input)) {
-                #     ports_df <- data.frame(
-                #         port_name = c("Hueneme", "San Luis Obispo"),
-                #         address = c(
-                #             "Port of Hueneme, Port Hueneme, CA 93041",
-                #             "699 Embarcadero, Morro Bay, CA 93442"
-                #         )
-                #     ) |>
-                #         filter(port_name %in% input$osw_port_input) |>
-                #         tidygeocoder::geocode(address = 'address', method = "osm")
-                #     
-                #     leaflet_map <- leaflet_map |>
-                #         addAwesomeMarkers(
-                #             data = ports_df,
-                #             lng = ports_df$long,
-                #             lat = ports_df$lat,
-                #             icon = port_icon,
-                #             popup = paste('Port:', ports_df$port_name)
-                #         )
-                # }
-                
                 leaflet_map
             })
         }
-    ) # end osw map observe event
+    ) # END osw map observe event
+    
+
+    ##### OSW Job Plot #####
+    output$model_jobs_output <- renderPlotly({
+        
+        # Calculate O&M based on user input
+        osw_om <- calculate_osw_om_jobs(
+            county = "Tri-county",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High",
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 127,
+            indirect_jobs = 126,
+            induced_jobs = 131
+        )
+        
+        # Calculate construction based on user input
+        osw_construction <- calculate_osw_construction_jobs(
+            county = "Tri-County",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High",
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 82,
+            indirect_jobs = 2571,
+            induced_jobs = 781
+        )
+        
+        # Join O&M and Construction
+        osw_all <- rbind(osw_construction, osw_om) |>
+            filter(type %in% input$job_type_input) # Filter to inputted job type
+        
+        # Job ggplot ----
+        osw_plot <- ggplot(osw_all,
+                           aes(
+                               x = as.factor(year),
+                               y = round(n_jobs, 0),
+                               group = occupation
+                           )) +
+            geom_col(aes(fill = occupation, text = purrr::map(
+                paste0(occupation, " jobs: ", scales::comma(round(n_jobs, 0))), HTML
+            ))) +
+            scale_fill_manual(
+                labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
+                values = c("#3A8398", "#A3BDBE")
+            ) +
+            scale_y_continuous(labels = scales::comma) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
+            labs(
+                title = glue::glue(
+                    "Projected {input$job_type_input} Jobs in CA Central Coast from Floating OSW development"
+                ),
+                y = "FTE Jobs"
+            ) +
+            theme_minimal() +
+            theme(
+                # Axes
+                axis.title.x = element_blank(),
+                axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
+                
+                # Legend
+                legend.title = element_blank(),
+                legend.position = "bottom"
+                
+            )
+        
+        # Plotly ----
+        plotly::ggplotly(osw_plot, tooltip = c("text"))  |>
+            config(osw_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                        'zoomIn', 'zoomOut','select',
+                                                        'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 1000,
+                       height = 700,
+                       scale = 15
+                   )) |>
+            layout(hovermode = "x unified",
+                   legend = list(x = 0.7, 
+                                 xanchor = 'left',
+                                 yanchor = 'top',
+                                 orientation = 'h',
+                                 title = "Occupation"))
+        
+        
+    }) # end osw jobs plot
+    
+    
+    ##### OSW Capacity Plot #####
+    output$osw_cap_projections_output <- renderPlotly({
+        # O&M (for capacity values)
+        osw <- calculate_osw_om_jobs(
+            county = "Tri-county",
+            start_year = input$year_range_input[1],
+            end_year = input$year_range_input[2],
+            ambition = "High",
+            initial_capacity = input$initial_capacity_input,
+            target_capacity = input$final_capacity_input,
+            direct_jobs = 127,
+            indirect_jobs = 126,
+            induced_jobs = 131
+        )
+        
+        # Capacity ggplot ----
+        osw_cap_plot <- ggplot() +
+            geom_point(
+                data = osw,
+                aes(x = as.factor(year), 
+                    y = total_capacity_gw,
+                    text = purrr::map(
+                        paste0("Capacity: ", scales::comma(round(total_capacity_gw, 2)), " GW"), HTML
+                    )),
+                color = "#3A8398"
+            ) +
+            scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
+            scale_y_continuous(labels = scales::label_comma()) +
+            labs(y = "Capacity (GW)", title = "Annual Online Capacity (GW)") +
+            theme_minimal() +
+            theme(axis.title.x = element_blank())
+        
+        
+        # Plotly ----
+        plotly::ggplotly(osw_cap_plot, tooltip = "text") |>
+            config(osw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
+                                                            'zoomIn', 'zoomOut','select',
+                                                            'resetScale', 'lasso'),
+                   displaylogo = FALSE,
+                   toImageButtonOptions = list(
+                       format = "jpeg",
+                       width = 900,
+                       height = 700,
+                       scale = 15
+                   )) |>
+            layout(hovermode = "x unified")
+        
+    }) # End OSW capacity plot
+    
+    ##### OSW PDF #####
+    output$export_f_osw <- downloadHandler(
+        filename = "osw-jobs.pdf",
+        
+        content = function(file) {
+            src <- normalizePath(here::here('app', 'files', 'osw-jobs.Rmd'))
+            
+            # Switch to a temp directory
+            owd <- setwd(tempdir())
+            on.exit(setwd(owd), add = TRUE)
+            
+            file.copy(src, 'osw-jobs.Rmd', overwrite = TRUE)
+            
+            # Render the Rmd to PDF, output file will be named 'rooftop-jobs.pdf'
+            output_file <- rmarkdown::render(
+                input = 'osw-jobs.Rmd',
+                output_format = "pdf_document",
+                output_file = "osw-jobs.pdf"
+            )
+            
+            # Copy the rendered PDF to the target location
+            file.copy(output_file, file, overwrite = TRUE)
+        }
+    ) # END OSW PDF
     
     
     ###### Utility Solar Leaflet Map #######
@@ -1112,204 +1223,7 @@ server <- function(input, output, session) {
     )
     
     
-    ####### EXPORT OSW AS PDF #############
-    output$export_f_osw <- downloadHandler(
-        filename = "osw-jobs.pdf",
-        
-        content = function(file) {
-            src <- normalizePath(here::here('app', 'files', 'osw-jobs.Rmd'))
-            
-            # Switch to a temp directory
-            owd <- setwd(tempdir())
-            on.exit(setwd(owd), add = TRUE)
-            
-            file.copy(src, 'osw-jobs.Rmd', overwrite = TRUE)
-            
-            # Render the Rmd to PDF, output file will be named 'rooftop-jobs.pdf'
-            output_file <- rmarkdown::render(
-                input = 'osw-jobs.Rmd',
-                output_format = "pdf_document",
-                output_file = "osw-jobs.pdf"
-            )
-            
-            # Copy the rendered PDF to the target location
-            file.copy(output_file, file, overwrite = TRUE)
-        }
-        
-    )
-    
-    output$model_jobs_output <- renderPlotly({
-        # Define inputs
-        # Floating Offshore Wind ------
-        if ("No Central Coast Port" %in% input$osw_port_input) {
-            # Generate a dummy df to preserve x and y axis
-            years <- input$year_range_input[1]:input$year_range_input[2]
-            dummy_df <- data.frame(
-                year = years,
-                n_jobs = rep(0, length(years)),
-                occupation = factor(rep(NA, length(years))),
-                type = rep(NA, length(years))
-            )
-            # Plot showing no jobs
-            empty_plot <- ggplot(dummy_df, aes(x = as.factor(year), y = n_jobs)) +
-                geom_col(fill = "#cccccc") +
-                scale_y_continuous(limits = c(0, 2000),
-                                   labels = scales::comma) +
-                scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
-                labs(title = "Projected jobs in CA Central Coast from Floating OSW development", y = "FTE Jobs") +
-                annotate(
-                    "text",
-                    x = as.factor(median(years)),
-                    y = 1000,
-                    label = "No Port in Central Coast — job projections are 0",
-                    size = 5,
-                    color = "gray30"
-                ) +
-                theme_minimal() +
-                theme(
-                    axis.title.x = element_blank(),
-                    axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
-                    legend.position = "none"
-                )
-            
-            plotly::ggplotly(empty_plot)
-            
-        } else {
-            osw_om <- calculate_osw_om_jobs(
-                county = "Tri-county",
-                start_year = input$year_range_input[1],
-                end_year = input$year_range_input[2],
-                ambition = "High",
-                initial_capacity = input$initial_capacity_input,
-                target_capacity = input$final_capacity_input,
-                direct_jobs = 127,
-                indirect_jobs = 126,
-                induced_jobs = 131
-            )
-            
-            # Construction OSW --
-            osw_construction <- calculate_osw_construction_jobs(
-                county = "Tri-County",
-                start_year = input$year_range_input[1],
-                end_year = input$year_range_input[2],
-                ambition = "High",
-                initial_capacity = input$initial_capacity_input,
-                target_capacity = input$final_capacity_input,
-                direct_jobs = 82,
-                indirect_jobs = 2571,
-                induced_jobs = 781
-            )
-            
-            
-            # Create joined dataframe
-            osw_all <- rbind(osw_construction, osw_om) |>
-                filter(type %in% input$job_type_input) # Filter to inputted job type
-            
-            ######## OSW Job Plot ##############
-            osw_plot <- ggplot(osw_all,
-                               aes(
-                                   x = as.factor(year),
-                                   y = round(n_jobs, 0),
-                                   group = occupation
-                               )) +
-                geom_col(aes(fill = occupation, text = purrr::map(
-                    paste0(occupation, " jobs: ", scales::comma(round(n_jobs, 0))), HTML
-                ))) +
-                scale_fill_manual(
-                    labels = c("Construction Jobs", "Operations & Maintenance Jobs"),
-                    values = c("#3A8398", "#A3BDBE")
-                ) +
-                scale_y_continuous(labels = scales::comma) +
-                scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
-                labs(
-                    title = glue::glue(
-                        "Projected {input$job_type_input} Jobs in CA Central Coast from Floating OSW development"
-                    ),
-                    y = "FTE Jobs"
-                ) +
-                theme_minimal() +
-                theme(
-                    # Axes
-                    axis.title.x = element_blank(),
-                    axis.title.y = element_text(margin = margin(10, 10, 10, 10)),
-                    
-                    # Legend
-                    legend.title = element_blank(),
-                    legend.position = "bottom"
-                    
-                )
-            
-            plotly::ggplotly(osw_plot, tooltip = c("text"))  |>
-                config(osw_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                            'zoomIn', 'zoomOut','select',
-                                                            'resetScale', 'lasso'),
-                       displaylogo = FALSE,
-                       toImageButtonOptions = list(
-                           format = "jpeg",
-                           width = 1000,
-                           height = 700,
-                           scale = 15
-                       )) |>
-                layout(hovermode = "x unified",
-                       legend = list(x = 0.7, 
-                                     xanchor = 'left',
-                                     yanchor = 'top',
-                                     orientation = 'h',
-                                     title = "Occupation"))
-        }
-        
-    }) # end osw jobs plot
-    
-    
-    # Generate capacity plot based on user selection ---
-    output$osw_cap_projections_output <- renderPlotly({
-        # O&M OSW ---
-        osw <- calculate_osw_om_jobs(
-            county = "Tri-county",
-            start_year = input$year_range_input[1],
-            end_year = input$year_range_input[2],
-            ambition = "High",
-            initial_capacity = input$initial_capacity_input,
-            target_capacity = input$final_capacity_input,
-            direct_jobs = 127,
-            indirect_jobs = 126,
-            induced_jobs = 131
-        )
-        
-        ######## OSW Capacity Plot ##############
-        
-        osw_cap_plot <- ggplot() +
-            geom_point(
-                data = osw,
-                aes(x = as.factor(year), 
-                    y = total_capacity_gw,
-                    text = purrr::map(
-                        paste0("Capacity: ", scales::comma(round(total_capacity_gw, 2)), " GW"), HTML
-                    )),
-                color = "#3A8398"
-            ) +
-            scale_x_discrete(breaks = scales::breaks_pretty(n = 4)) +
-            scale_y_continuous(labels = scales::label_comma()) +
-            labs(y = "Capacity (GW)", title = "Annual Online Capacity (GW)") +
-            theme_minimal() +
-            theme(axis.title.x = element_blank())
-        
-        
-        
-        plotly::ggplotly(osw_cap_plot, tooltip = "text") |>
-            config(osw_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
-                                                            'zoomIn', 'zoomOut','select',
-                                                            'resetScale', 'lasso'),
-                   displaylogo = FALSE,
-                   toImageButtonOptions = list(
-                       format = "jpeg",
-                       width = 900,
-                       height = 700,
-                       scale = 15
-                   )) |>
-            layout(hovermode = "x unified")
-        
-    }) # End OSW capacity plot
+
     
     ######## Rooftop Solar ##########
     # Make the default values of capacity in the UI react to user input using renderUI-
