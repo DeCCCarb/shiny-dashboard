@@ -462,7 +462,7 @@ server <- function(input, output, session) {
         }
     }) # END PDF download button ----
     
-    ##### OSW TAB #####
+    ########## OSW TAB ##########
     
     # Define port coordinates ----
     ports_df <- data.frame(
@@ -482,7 +482,7 @@ server <- function(input, output, session) {
     
     
     
-    # OSW Map ----
+    ##### OSW Map #####
     observeEvent(
         c(
             input$year_range_input,
@@ -769,10 +769,42 @@ server <- function(input, output, session) {
     ) # END OSW PDF
     
     
-    ###### Utility Solar Leaflet Map #######
+    ########## UTILITY SOLAR TAB ##########
     
+    # Utility defaults by county ----
+    observeEvent(input$county_input, {
+        # Requires a county input
+        req(input$county_input)
+        
+        # Assign selected county
+        selected_county <- as.character(input$county_input)[1]  # make sure it's a string
+        
+        # Placeholder for default initial capacity that changes based on county selection
+        initial_val <- utility_targets %>% # Find targets in global.R
+            filter(values == "initial") %>%
+            pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
+        
+        # Placeholder for default final capacity that changes based on county selection
+        final_val <- utility_targets |>
+            filter(values == 'final') |>
+            pull(!!sym(selected_county))
+        
+        # Update the UI defaults based on county
+        updateNumericInput(session, inputId = "initial_mw_utility_input", value = initial_val)
+        
+        # Update the UI defaults based on county
+        updateNumericInput(session, inputId = 'final_mw_utility_input', value = final_val)
+    })
     
-    # Reactive counties input for utility pv Map
+    ##### Utility map #####
+    
+    ####################### HELP WHAT IS THIS FOR!?!?! NOTHING BREAKS WHEN COMMENTED OUT #############
+    # Add county shapes by user input ---- 
+    # counties_input <- reactive({
+    #     counties |>
+    #         filter(County == input$county_input)
+    # })
+    
     counties_input_utility <- reactive({
         if (!is.null(input$county_input)) {
             ca_counties |> filter(name %in% input$county_input)
@@ -781,9 +813,10 @@ server <- function(input, output, session) {
         }
     })
     
-    # Reactive job calculations for selected counties
+    # Reactive job calculations based on user input 
     utility_all_jobs <- reactive({
         
+        # SB Utility PV O&M
         sb_utility_pv_om <- calculate_pv_om_jobs(
             county = "Santa Barbara",
             technology = "Utility PV",
@@ -797,7 +830,7 @@ server <- function(input, output, session) {
             induced_jobs = 0.01
         )
         
-        # SB Utility PV
+        # SB Utility PV construction
         sb_utility_pv_const <- calculate_pv_construction_jobs(
             county = "Santa Barbara",
             start_year = input$year_range_input_utility[1],
@@ -811,7 +844,7 @@ server <- function(input, output, session) {
             induced_jobs = 0.5
         )
         
-        # SLO Utility PV
+        # SLO Utility PV O&M
         slo_utility_pv_om <- calculate_pv_om_jobs(
             county = "San Luis Obispo",
             technology = "Utility PV",
@@ -825,6 +858,7 @@ server <- function(input, output, session) {
             induced_jobs = 0.01
         )
         
+        # SLO Utility PV construction
         slo_utility_pv_const <- calculate_pv_construction_jobs(
             county = "San Luis Obispo",
             start_year = input$year_range_input_utility[1],
@@ -838,7 +872,7 @@ server <- function(input, output, session) {
             induced_jobs = 0.51
         )
         
-        # Ventura Utility PV
+        # Ventura Utility PV O&M
         ventura_utility_pv_om <- calculate_pv_om_jobs(
             county = "Ventura",
             technology = "Utility PV",
@@ -852,7 +886,7 @@ server <- function(input, output, session) {
             induced_jobs = 0.01
         )
         
-        # Construction Utility PV
+        # Ventura Utility PV Construction 
         ventura_utility_pv_const <- calculate_pv_construction_jobs(
             county = "Ventura",
             start_year = input$year_range_input_utility[1],
@@ -866,16 +900,16 @@ server <- function(input, output, session) {
             induced_jobs = 0.5
         )
         
-        # Join roof jobs by selected counties and job type
+        # Join all counties
         county_utility <- rbind(sb_utility_pv_const, sb_utility_pv_om,
                                 slo_utility_pv_const, slo_utility_pv_om,
                                 ventura_utility_pv_const, ventura_utility_pv_om) |>
             filter(type %in% input$utility_job_type_input) |>
             filter(county %in% input$county_input) |>
             select(-ambition)
-    }) # End reactive to get number of jobs
+    }) # End reactive to calculate number of jobs
     
-    # Reactive county labels with job summaries
+    # Labels ----
     utility_job_labels <- reactive({
         jobs <- utility_all_jobs()
         counties_sf <- counties_input_utility()
@@ -896,7 +930,7 @@ server <- function(input, output, session) {
         counties_with_labels
     }) # End reactive county labels 
     
-    # Render Utility leaflet map
+    # Leaflet ---- 
     output$utility_map_output <- renderLeaflet({
         counties_sf <- utility_job_labels()
         
@@ -949,31 +983,8 @@ server <- function(input, output, session) {
             )
     }) # End render leaflet map
     
-    # Make the default values of UTILITY capacity in the UI react to user input using renderUI------
-    observeEvent(input$county_input, {
-        # Requires a county input
-        req(input$county_input)
-        
-        # Assign selected county
-        selected_county <- as.character(input$county_input)[1]  # make sure it's a string
-        
-        # Placeholder for default initial capacity that changes based on county selection
-        initial_val <- utility_targets %>% # Find targets in global.R
-            filter(values == "initial") %>%
-            pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
-        
-        # Placeholder for default final capacity that changes based on county selection
-        final_val <- utility_targets |>
-            filter(values == 'final') |>
-            pull(!!sym(selected_county))
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = "initial_mw_utility_input", value = initial_val)
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = 'final_mw_utility_input', value = final_val)
-    })
-    ##### Utility Jobs Output #######
+   
+    ##### Utility Jobs Plot #####
     
     output$utility_jobs_output <- renderPlotly({
         
@@ -1045,7 +1056,6 @@ server <- function(input, output, session) {
             induced_jobs = 0.01
         )
         
-        # Construction Utility PV
         ventura_utility_pv_const <- calculate_pv_construction_jobs(
             county = "Ventura",
             start_year = input$year_range_input_utility[1],
@@ -1067,7 +1077,7 @@ server <- function(input, output, session) {
             filter(county %in% input$county_input) |>
             select(-ambition)
         
-        # Fix rounding so if 0 < jobs < 1, we see 2 decimal places, otherwise 0 decimals
+        # Rounding so if 0 < jobs < 1, we see 2 decimal places, otherwise 0 decimals
         utility_all <- utility_all %>%
             mutate(
                 n_jobs_rounded = if_else(
@@ -1082,7 +1092,7 @@ server <- function(input, output, session) {
                 )
             )
         
-        #### Utility Jobs Plot ####
+        # Jobs ggplot ----
         utility_plot <- ggplot(utility_all,
                                aes(
                                    x = as.factor(year),
@@ -1116,8 +1126,7 @@ server <- function(input, output, session) {
                 
             )
         
-        
-        
+        # plotly ----
         plotly::ggplotly(utility_plot, tooltip = c("text"))  |>
             config(utility_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
                                                             'zoomIn', 'zoomOut','select',
@@ -1138,7 +1147,7 @@ server <- function(input, output, session) {
         
     })
     
-    # Generate capacity plot based on user selection ---
+    ##### Utility Capacity Plot #####
     output$utility_cap_projections_output <- renderPlotly({
         
         utility <- calculate_pv_om_jobs(
@@ -1154,8 +1163,7 @@ server <- function(input, output, session) {
             induced_jobs = 0
         )
         
-        ##### Utility Capacity Plot #####
-        
+        # Capacity ggplot ----
         utility_cap_plot <- ggplot() +
             geom_point(
                 data = utility,
@@ -1172,8 +1180,7 @@ server <- function(input, output, session) {
             theme_minimal() +
             theme(axis.title.x = element_blank())
         
-        
-        
+        # plotly ----
         plotly::ggplotly(utility_cap_plot, tooltip = "text") |>
             config(utility_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
                                                                 'zoomIn', 'zoomOut','select',
@@ -1188,15 +1195,9 @@ server <- function(input, output, session) {
             layout(hovermode = "x unified") 
         
     }) # End Utility capacity plot
+
     
-    
-    # County selection
-    counties_input <- reactive({
-        counties |>
-            filter(County == input$county_input)
-    })
-    
-    ####### EXPORT UTILITY SOLAR AS PDF #############
+    ##### Utility PDF #####
     output$export_utility <- downloadHandler(
         filename = "utility-jobs.pdf",
         
@@ -1219,14 +1220,14 @@ server <- function(input, output, session) {
             # Copy the rendered PDF to the target location
             file.copy(output_file, file, overwrite = TRUE)
         }
-        
-    )
+    ) # END utility PDF
     
     
 
     
-    ######## Rooftop Solar ##########
-    # Make the default values of capacity in the UI react to user input using renderUI-
+########## ROOFTOP SOLAR TAB ##########
+    
+    # Rooftop defaults by county ----
     observeEvent(input$roof_counties_input, {
         # Requires a county input
         req(input$roof_counties_input)
@@ -1251,8 +1252,182 @@ server <- function(input, output, session) {
         updateNumericInput(session, inputId = 'final_mw_roof_input', value = final_val)
     })
     
+    ##### Rooftop Map #####
     
-    ##### Rooftop Solar Job Projections ####### 
+    # Add county shapes by user input ----
+    counties_input_roof <- reactive({
+        if (!is.null(input$roof_counties_input)) {
+            ca_counties |> filter(name %in% input$roof_counties_input)
+        } else {
+            ca_counties
+        }
+    })
+    
+    # Reactive job calculations for selected counties
+    roof_all_jobs <- reactive({
+        
+        # Calculation of rooftop solar jobs (construction and operations)
+        sb_roof_pv_om <- calculate_pv_om_jobs(
+            county = "Santa Barbara",
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.22,
+            indirect_jobs = 0.028,
+            induced_jobs = 0.014
+        )
+        
+        sb_roof_pv_const <- calculate_pv_construction_jobs(
+            county = "Santa Barbara",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            technology = "Rooftop PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 5.688,
+            indirect_jobs = 4.028,
+            induced_jobs = 2.05
+        )
+        
+        slo_roof_pv_om <- calculate_pv_om_jobs(
+            county = "San Luis Obispo",
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.22,
+            indirect_jobs = 0.028,
+            induced_jobs = 0.014
+        )
+        
+        slo_roof_pv_const <- calculate_pv_construction_jobs(
+            county = "San Luis Obispo",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            technology = "Rooftop PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 6.042,
+            indirect_jobs = 4.564,
+            induced_jobs = 1.91
+        )
+        
+        ventura_roof_pv_om <- calculate_pv_om_jobs(
+            county = "Ventura",
+            technology = "Rooftop PV",
+            ambition = "High",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 0.22,
+            indirect_jobs = 0.028,
+            induced_jobs = 0.014
+        )
+        
+        ventura_roof_pv_const <- calculate_pv_construction_jobs(
+            county = "Ventura",
+            start_year = input$year_range_input_roof[1],
+            end_year = input$year_range_input_roof[2],
+            technology = "Rooftop PV",
+            ambition = "High",
+            initial_capacity = input$initial_mw_roof_input,
+            final_capacity = input$final_mw_roof_input,
+            direct_jobs = 5.906,
+            indirect_jobs = 3.964,
+            induced_jobs = 2.026
+        )
+        
+        # Create joined dataframe
+        roof_all <- rbind(sb_roof_pv_om, sb_roof_pv_const,
+                          slo_roof_pv_om, slo_roof_pv_const,
+                          ventura_roof_pv_om, ventura_roof_pv_const) |>
+            filter(type %in% input$roof_job_type_input) |> # Filter to inputted job type
+            filter(county %in% input$roof_counties_input)
+    }) # End reactive to get number of jobs
+    
+    # Labels ---- 
+    roof_job_labels <- reactive({
+        jobs <- roof_all_jobs()
+        counties_sf <- counties_input_roof()
+        
+        job_summaries <- jobs |>
+            group_by(county, occupation) |>
+            summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = 'drop') |>
+            tidyr::pivot_wider(names_from = occupation, values_from = n_jobs, values_fill = 0)
+        
+        counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
+        
+        counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
+                                             "<b> <br>", counties_with_labels$name, " County </b><br>",
+                                             "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
+                                             "O&M: ", scales::comma(counties_with_labels$`O&M`)
+        )
+        
+        counties_with_labels
+    }) # End reactive county labels 
+    
+    # Leaflet ---- 
+    output$roof_map_output <- renderLeaflet({
+        counties_sf <- roof_job_labels()
+        
+        # Get the coordinates of the centroids
+        label_coords <- sf::st_coordinates(sf::st_centroid(counties_sf))
+        
+        # Define specific offsets for each county
+        county_offsets <- list(
+            "Santa Barbara" = c(x = -0.70, y = 0.04),  
+            "San Luis Obispo" = c(x = -0.5, y = -0.2), 
+            "Ventura" = c(x = -0.4, y = 0) 
+        )
+        
+        # Apply the county-specific offsets for each county
+        for (i in 1:nrow(counties_sf)) {
+            county_name <- counties_sf$name[i]
+            
+            # Retrieve the corresponding offset for this county
+            offset <- county_offsets[[county_name]]
+            
+            # Apply the offset to the centroid coordinates
+            label_coords[i, 1] <- label_coords[i, 1] + offset["x"]
+            label_coords[i, 2] <- label_coords[i, 2] + offset["y"]
+        }
+        
+        # Convert the label coordinates into an sf object for plotting
+        label_points <- st_as_sf(
+            data.frame(lng = label_coords[, 1], lat = label_coords[, 2]),
+            coords = c("lng", "lat"),
+            crs = st_crs(counties_sf)
+        )
+        
+        # Generate the leaflet map with labels at the adjusted centroids
+        leaflet(counties_sf) |>
+            addProviderTiles("CartoDB.Voyager") |>
+            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            addPolygons(
+                color = "darkgreen",
+                opacity = 0.7
+            ) |>
+            addLabelOnlyMarkers(
+                data = label_points,
+                label = lapply(counties_sf$label, HTML),
+                labelOptions = labelOptions(
+                    noHide = TRUE,
+                    direction = 'left',
+                    textsize = "12px",
+                    opacity = 0.9
+                )
+            )
+    }) # End render leaflet map
+    
+    ##### Rooftop jobs plot #####
     output$roof_jobs_output <- renderPlotly({
         # Calculation of rooftop solar jobs (construction and operations)
         sb_roof_pv_om <- calculate_pv_om_jobs(
@@ -1353,7 +1528,7 @@ server <- function(input, output, session) {
                 )
             )
         
-        ##### Rooftop Job Plot #####
+        # Jobs ggplot ----
         roof_plot <- ggplot(roof_all,
                             aes(
                                 x = as.factor(year),
@@ -1387,8 +1562,7 @@ server <- function(input, output, session) {
                 
             )
         
-        
-        
+        # plotly ----
         plotly::ggplotly(roof_plot, tooltip = c("text"))  |>
             config(roof_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
                                                          'zoomIn', 'zoomOut','select',
@@ -1408,7 +1582,7 @@ server <- function(input, output, session) {
                                  title = "Occupation"))
     })
     
-    # Generate capacity plot based on user selection ---
+    ##### Rooftop Capacity Plot #####
     output$roof_cap_projections_output <- renderPlotly({
         # O&M Roof ---
         
@@ -1424,10 +1598,8 @@ server <- function(input, output, session) {
             indirect_jobs = 0,
             induced_jobs = 0
         )
-        
-        
-        ##### Rooftop Capacity Plot #####
-        
+
+        # Capacity ggplot ----
         roof_cap_plot <- ggplot() +
             geom_point(
                 data = roof,
@@ -1445,7 +1617,7 @@ server <- function(input, output, session) {
             theme(axis.title.x = element_blank())
         
         
-        
+        # plotly ----
         plotly::ggplotly(roof_cap_plot, tooltip = "text") |>
             config(roof_cap_plot, modeBarButtonsToRemove = c('zoom2d','pan2d','autoScale',
                                                              'zoomIn', 'zoomOut','select',
@@ -1461,8 +1633,7 @@ server <- function(input, output, session) {
         
     }) # End Rooftop capacity plot
     
-    # EXPORT ROOFTOP JOBS AS PDF #############
-    
+    ##### Rooftop PDF #####
     output$export_rooftop <- downloadHandler(
         filename = "rooftop-jobs.pdf",
         
@@ -1485,213 +1656,10 @@ server <- function(input, output, session) {
             # Copy the rendered PDF to the target location
             file.copy(output_file, file, overwrite = TRUE)
         }
-        
-    )
-    
-    ###### Rooftop Solar Leaflet Map #######
-    
-    
-    # Reactive counties input for Land Wind Map
-    counties_input_roof <- reactive({
-        if (!is.null(input$roof_counties_input)) {
-            ca_counties |> filter(name %in% input$roof_counties_input)
-        } else {
-            ca_counties
-        }
-    })
-    
-    # Reactive job calculations for selected counties
-    roof_all_jobs <- reactive({
-        
-        # Calculation of rooftop solar jobs (construction and operations) ----
-        sb_roof_pv_om <- calculate_pv_om_jobs(
-            county = "Santa Barbara",
-            technology = "Rooftop PV",
-            ambition = "High",
-            start_year = input$year_range_input_roof[1],
-            end_year = input$year_range_input_roof[2],
-            initial_capacity = input$initial_mw_roof_input,
-            final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.22,
-            indirect_jobs = 0.028,
-            induced_jobs = 0.014
-        )
-        
-        sb_roof_pv_const <- calculate_pv_construction_jobs(
-            county = "Santa Barbara",
-            start_year = input$year_range_input_roof[1],
-            end_year = input$year_range_input_roof[2],
-            technology = "Rooftop PV",
-            ambition = "High",
-            initial_capacity = input$initial_mw_roof_input,
-            final_capacity = input$final_mw_roof_input,
-            direct_jobs = 5.688,
-            indirect_jobs = 4.028,
-            induced_jobs = 2.05
-        )
-        
-        slo_roof_pv_om <- calculate_pv_om_jobs(
-            county = "San Luis Obispo",
-            technology = "Rooftop PV",
-            ambition = "High",
-            start_year = input$year_range_input_roof[1],
-            end_year = input$year_range_input_roof[2],
-            initial_capacity = input$initial_mw_roof_input,
-            final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.22,
-            indirect_jobs = 0.028,
-            induced_jobs = 0.014
-        )
-        
-        slo_roof_pv_const <- calculate_pv_construction_jobs(
-            county = "San Luis Obispo",
-            start_year = input$year_range_input_roof[1],
-            end_year = input$year_range_input_roof[2],
-            technology = "Rooftop PV",
-            ambition = "High",
-            initial_capacity = input$initial_mw_roof_input,
-            final_capacity = input$final_mw_roof_input,
-            direct_jobs = 6.042,
-            indirect_jobs = 4.564,
-            induced_jobs = 1.91
-        )
-        
-        ventura_roof_pv_om <- calculate_pv_om_jobs(
-            county = "Ventura",
-            technology = "Rooftop PV",
-            ambition = "High",
-            start_year = input$year_range_input_roof[1],
-            end_year = input$year_range_input_roof[2],
-            initial_capacity = input$initial_mw_roof_input,
-            final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.22,
-            indirect_jobs = 0.028,
-            induced_jobs = 0.014
-        )
-        
-        ventura_roof_pv_const <- calculate_pv_construction_jobs(
-            county = "Ventura",
-            start_year = input$year_range_input_roof[1],
-            end_year = input$year_range_input_roof[2],
-            technology = "Rooftop PV",
-            ambition = "High",
-            initial_capacity = input$initial_mw_roof_input,
-            final_capacity = input$final_mw_roof_input,
-            direct_jobs = 5.906,
-            indirect_jobs = 3.964,
-            induced_jobs = 2.026
-        )
-        
-        # Create joined dataframe
-        roof_all <- rbind(sb_roof_pv_om, sb_roof_pv_const,
-                          slo_roof_pv_om, slo_roof_pv_const,
-                          ventura_roof_pv_om, ventura_roof_pv_const) |>
-            filter(type %in% input$roof_job_type_input) |> # Filter to inputted job type
-            filter(county %in% input$roof_counties_input)
-    }) # End reactive to get number of jobs
-    
-    # Reactive county labels with job summaries
-    roof_job_labels <- reactive({
-        jobs <- roof_all_jobs()
-        counties_sf <- counties_input_roof()
-        
-        job_summaries <- jobs |>
-            group_by(county, occupation) |>
-            summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = 'drop') |>
-            tidyr::pivot_wider(names_from = occupation, values_from = n_jobs, values_fill = 0)
-        
-        counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
-        
-        counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
-                                             "<b> <br>", counties_with_labels$name, " County </b><br>",
-                                             "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
-                                             "O&M: ", scales::comma(counties_with_labels$`O&M`)
-        )
-        
-        counties_with_labels
-    }) # End reactive county labels 
-    
-    # Render rooftop leaflet map
-    output$roof_map_output <- renderLeaflet({
-        counties_sf <- roof_job_labels()
-        
-        # Get the coordinates of the centroids
-        label_coords <- sf::st_coordinates(sf::st_centroid(counties_sf))
-        
-        # Define specific offsets for each county
-        county_offsets <- list(
-            "Santa Barbara" = c(x = -0.70, y = 0.04),  
-            "San Luis Obispo" = c(x = -0.5, y = -0.2), 
-            "Ventura" = c(x = -0.4, y = 0) 
-        )
-        
-        # Apply the county-specific offsets for each county
-        for (i in 1:nrow(counties_sf)) {
-            county_name <- counties_sf$name[i]
-            
-            # Retrieve the corresponding offset for this county
-            offset <- county_offsets[[county_name]]
-            
-            # Apply the offset to the centroid coordinates
-            label_coords[i, 1] <- label_coords[i, 1] + offset["x"]
-            label_coords[i, 2] <- label_coords[i, 2] + offset["y"]
-        }
-        
-        # Convert the label coordinates into an sf object for plotting
-        label_points <- st_as_sf(
-            data.frame(lng = label_coords[, 1], lat = label_coords[, 2]),
-            coords = c("lng", "lat"),
-            crs = st_crs(counties_sf)
-        )
-        
-        # Generate the leaflet map with labels at the adjusted centroids
-        leaflet(counties_sf) |>
-            addProviderTiles("CartoDB.Voyager") |>
-            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
-            addPolygons(
-                color = "darkgreen",
-                opacity = 0.7
-            ) |>
-            addLabelOnlyMarkers(
-                data = label_points,
-                label = lapply(counties_sf$label, HTML),
-                labelOptions = labelOptions(
-                    noHide = TRUE,
-                    direction = 'left',
-                    textsize = "12px",
-                    opacity = 0.9
-                )
-            )
-    }) # End render leaflet map
-    
-    
-    # Change UI Rooftop ambition targets --
-    observeEvent(input$roof_counties_input, {
-        # Requires a county input
-        req(input$roof_counties_input)
-        
-        # Assign selected county
-        selected_county <- as.character(input$roof_counties_input)[1]  # make sure it's a string
-        
-        # Placeholder for default initial capacity that changes based on county selection
-        initial_val <- rooftop_targets %>%
-            filter(values == "initial") %>%
-            pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
-        
-        # Placeholder for default final capacity that changes based on county selection
-        final_val <- rooftop_targets |>
-            filter(values == 'final') |>
-            pull(!!sym(selected_county))
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = "initial_mw_roof_input", value = initial_val)
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = 'final_mw_roof_input', value = final_val)
-    })
+    ) # End rooftop PDF
     
 
-    # ########### LAND BASED WIND ########
+    # ########## LAND BASED WIND ##########
     # 
     # output$value <- renderPrint({
     #     input$input_lw_years
@@ -1729,7 +1697,7 @@ server <- function(input, output, session) {
     #     return(county_lw)
     # })
     # 
-    # ############### Land Based Wind Leaflet Map ###############
+    # ##### Land Wind Map #####
     # 
     # # Reactive counties input for Land Wind Map
     # counties_input_lw <- reactive({
@@ -1862,7 +1830,7 @@ server <- function(input, output, session) {
     # 
     # 
     # 
-    # ######## Land wind plot output #######
+    # ##### Land wind jobs plot #####
     # output$land_wind_jobs_plot_output <- renderPlotly({
     #     
     #     # Calculate jobs by county from user input
@@ -2057,7 +2025,7 @@ server <- function(input, output, session) {
     #     
     # }) # End LW capacity plot
     # 
-    # ####### EXPORT LAND BASED WIND AS PDF #############
+    # ##### Land Wind PDF #####
     # output$export_lw <- downloadHandler(
     #     filename = "land-wind-jobs.pdf",
     #     
@@ -2081,9 +2049,9 @@ server <- function(input, output, session) {
     #         file.copy(output_file, file, overwrite = TRUE)
     #     }
     #     
-    # ) ##### END LAND WIND #####
+    # )
 
-    
+    ########## PHASEOUT TAB ##########
     
     # Define reactive data frame for filtered_data
     filtered_data <- reactive({
