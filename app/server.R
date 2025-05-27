@@ -931,6 +931,8 @@ server <- function(input, output, session) {
                           slo_utility_pv_const, slo_utility_pv_om,
                           ventura_utility_pv_const, ventura_utility_pv_om)
         
+        # Sum capacities and jobs
+        
         # Define counties to include
         counties_to_include <- if ("All Counties" %in% input$county_input) {
             c("Santa Barbara", "San Luis Obispo", "Ventura")
@@ -1109,21 +1111,31 @@ server <- function(input, output, session) {
         # Join and filter job data
         utility_all <- rbind(sb_utility_pv_const, sb_utility_pv_om,
                              slo_utility_pv_const, slo_utility_pv_om,
-                             ventura_utility_pv_const, ventura_utility_pv_om) |>
+                             ventura_utility_pv_const, ventura_utility_pv_om)
+        
+        # Sum jobs and capacity across Central Coast 
+        cc_utility <- utility_all |>
+            group_by(year, occupation, type) |>
+            summarise(n_jobs = sum(n_jobs),
+                      total_capacity_mw = sum(total_capacity_mw),
+                      new_capacity_mw = sum(new_capacity_mw),
+                      total_capacity_gw = sum(total_capacity_gw),
+                      new_capacity_gw = sum(new_capacity_gw)) |>
+            mutate(county = "All Counties",
+                   technology = "Utility PV",
+                   ambition = "High")
+        
+        # Order columns to match
+        cc_utility <- cc_utility[names(utility_all)]
+        
+        # Add CC back into utility df
+        utility_all <- rbind(utility_all, cc_utility)
+        
+        # Filter based on user input
+        utility_all <- utility_all |>
             filter(type %in% input$utility_job_type_input) |>
-            filter(if ("All Counties" %in% input$county_input) TRUE else county %in% input$county_input) |>
+            filter(county %in% input$county_input) |>
             select(-ambition)
-        
-        # Early exit if no data
-        if (nrow(utility_all) == 0) return(NULL)
-        
-        # SUM jobs across all counties if "All Counties" is selected
-        if ("All Counties" %in% input$county_input) {
-            utility_all <- utility_all |>
-                group_by(year, occupation, type) |>
-                summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") |>
-                mutate(county = "Central Coast")  # Replace county field
-        }
         
         # Rounding so if 0 < jobs < 1, we see 2 decimal places, otherwise 0 decimals
         utility_all <- utility_all %>%
