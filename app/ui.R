@@ -431,7 +431,7 @@ body <- dashboardBody( introjsUI(),
                                                                   style = "color:#0072B2;",
                                                                   title = "Choose a county to analyze."
                                                               )),
-                                                          choices = unique(counties$County),
+                                                          choices = c(unique(counties$County), "All Counties"),
                                                           selected = c('Ventura'),
                                                           multiple = FALSE,
                                                           options = pickerOptions(actionsBox = TRUE)

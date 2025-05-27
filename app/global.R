@@ -115,7 +115,7 @@ calculate_pv_om_jobs <- function(county, start_year, end_year, technology, ambit
     # Stack them together for total jobs
     df_combined <- rbind(df_direct, df_indirect, df_induced)
     
-    # Calculate total jobs only for the final year
+    # Calculate total jobs
     df_total <- df_combined %>%
         group_by(county, year, technology, ambition) %>%
         summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") %>%
