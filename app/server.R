@@ -783,24 +783,39 @@ server <- function(input, output, session) {
         # Requires a county input
         req(input$county_input)
         
-        # Assign selected county
-        selected_county <- as.character(input$county_input)[1]  # make sure it's a string
+        selected_county <- input$county_input
         
-        # Placeholder for default initial capacity that changes based on county selection
-        initial_val <- utility_targets %>% # Find targets in global.R
-            filter(values == "initial") %>%
-            pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
-        
-        # Placeholder for default final capacity that changes based on county selection
-        final_val <- utility_targets |>
-            filter(values == 'final') |>
-            pull(!!sym(selected_county))
+        if (selected_county == "All Counties") {
+            # Use sum across selected counties for defaults
+            initial_val <- utility_targets %>%
+                filter(values == "initial") %>%
+                select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
+                unlist() %>%
+                sum(na.rm = TRUE)
+            
+            final_val <- utility_targets %>%
+                filter(values == "final") %>%
+                select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
+                unlist() %>%
+                sum(na.rm = TRUE)
+        } else {
+            # Assign selected county
+            selected_county <- as.character(input$county_input)[1]  # make sure it's a string
+            
+            # Placeholder for default initial capacity that changes based on county selection
+            initial_val <- utility_targets %>%
+                filter(values == "initial") %>%
+                pull(!!sym(selected_county))
+            
+            # Placeholder for default final capacity that changes based on county selection
+            final_val <- utility_targets %>%
+                filter(values == 'final') %>%
+                pull(!!sym(selected_county))
+        }
         
         # Update the UI defaults based on county
-        updateNumericInput(session, inputId = "initial_mw_utility_input", value = initial_val)
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = 'final_mw_utility_input', value = final_val)
+        updateNumericInput(session, inputId = "initial_mw_utility_input", value = round(initial_val))
+        updateNumericInput(session, inputId = 'final_mw_utility_input', value = round(final_val))
     })
     
     ##### Utility map #####
@@ -814,7 +829,11 @@ server <- function(input, output, session) {
     
     counties_input_utility <- reactive({
         if (!is.null(input$county_input)) {
-            ca_counties |> filter(name %in% input$county_input)
+            if (input$county_input == "All Counties") {
+                ca_counties |> filter(name %in% c("Santa Barbara", "San Luis Obispo", "Ventura"))
+            } else {
+                ca_counties |> filter(name == input$county_input)
+            }
         } else {
             ca_counties
         }
@@ -907,13 +926,24 @@ server <- function(input, output, session) {
             induced_jobs = 0.5
         )
         
-        # Join all counties
-        county_utility <- rbind(sb_utility_pv_const, sb_utility_pv_om,
-                                slo_utility_pv_const, slo_utility_pv_om,
-                                ventura_utility_pv_const, ventura_utility_pv_om) |>
+        # Combine all counties' job data
+        all_jobs <- rbind(sb_utility_pv_const, sb_utility_pv_om,
+                          slo_utility_pv_const, slo_utility_pv_om,
+                          ventura_utility_pv_const, ventura_utility_pv_om)
+        
+        # Define counties to include
+        counties_to_include <- if ("All Counties" %in% input$county_input) {
+            c("Santa Barbara", "San Luis Obispo", "Ventura")
+        } else {
+            input$county_input
+        }
+        
+        # Filter to selected counties and job type
+        all_jobs |>
             filter(type %in% input$utility_job_type_input) |>
-            filter(county %in% input$county_input) |>
+            filter(county %in% counties_to_include) |>
             select(-ambition)
+        
     }) # End reactive to calculate number of jobs
     
     # Labels ----
@@ -1076,13 +1106,24 @@ server <- function(input, output, session) {
             induced_jobs = 0.5
         )
         
-        # Join roof jobs by selected counties and job type
+        # Join and filter job data
         utility_all <- rbind(sb_utility_pv_const, sb_utility_pv_om,
                              slo_utility_pv_const, slo_utility_pv_om,
                              ventura_utility_pv_const, ventura_utility_pv_om) |>
-            filter(type %in% input$utility_job_type_input) |> # Filter to inputted job type
-            filter(county %in% input$county_input) |>
+            filter(type %in% input$utility_job_type_input) |>
+            filter(if ("All Counties" %in% input$county_input) TRUE else county %in% input$county_input) |>
             select(-ambition)
+        
+        # Early exit if no data
+        if (nrow(utility_all) == 0) return(NULL)
+        
+        # SUM jobs across all counties if "All Counties" is selected
+        if ("All Counties" %in% input$county_input) {
+            utility_all <- utility_all |>
+                group_by(year, occupation, type) |>
+                summarise(n_jobs = sum(n_jobs, na.rm = TRUE), .groups = "drop") |>
+                mutate(county = "Central Coast")  # Replace county field
+        }
         
         # Rounding so if 0 < jobs < 1, we see 2 decimal places, otherwise 0 decimals
         utility_all <- utility_all %>%
@@ -1117,7 +1158,7 @@ server <- function(input, output, session) {
             scale_x_discrete(breaks = scales::breaks_pretty(n = 5)) +
             labs(
                 title = glue::glue(
-                    "Projected {input$utility_job_type_input} Jobs in {input$county_input} County from Utility Solar Development"
+                    "Projected {input$utility_job_type_input} Jobs in {if ('All Counties' %in% input$county_input) 'Central Coast' else paste(input$county_input, collapse = ', ')} County from Utility Solar Development"
                 ),
                 y = "FTE Jobs"
             ) +
