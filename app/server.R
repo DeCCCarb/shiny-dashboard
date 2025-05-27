@@ -49,7 +49,7 @@ server <- function(input, output, session) {
                 👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
                 
                 A new froniter for clean energy in California's Central Coast, 
-                floating offshore wind is predicted to power up to 3.5 million homes<sup><a href='https://reachcentralcoast.org/offshore-wind/' target='_blank'>1</a></sup>, 
+                floating offshore wind is projected to power up to 3.5 million homes<sup><a href='https://reachcentralcoast.org/offshore-wind/' target='_blank'>1</a></sup>, 
                 marking a significant step towards California’s carbon neutrality goals and catalyzing a new economy
                 around clean energy in the region. <br><br>
                 
@@ -270,7 +270,7 @@ server <- function(input, output, session) {
                 👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
                 
                 A new froniter for clean energy in California's Central Coast, 
-                floating offshore wind is predicted to power up to 3.5 million homes<sup><a href='https://reachcentralcoast.org/offshore-wind/' target='_blank'>1</a></sup>, 
+                floating offshore wind is projected to power up to 3.5 million homes<sup><a href='https://reachcentralcoast.org/offshore-wind/' target='_blank'>1</a></sup>, 
                 marking a significant step towards California’s carbon neutrality goals and catalyzing a new economy
                 around clean energy in the region. <br><br>
                 
