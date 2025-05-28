@@ -72,11 +72,11 @@ sidebar <- dashboardSidebar(
             tabName = 'rooftop',
             icon = icon('house')
         ),
-        menuItem(
-            text = 'Land Based Wind',
-            tabName = 'lb_wind',
-            icon = icon('gauge')
-        ),
+        # menuItem(
+        #     text = 'Land Based Wind',
+        #     tabName = 'lb_wind',
+        #     icon = icon('gauge')
+        # ),
         menuItem(
             text = 'Oil Well Capping',
             tabName = 'well_cap',
@@ -431,7 +431,7 @@ body <- dashboardBody( introjsUI(),
                                                                   style = "color:#0072B2;",
                                                                   title = "Choose a county to analyze."
                                                               )),
-                                                          choices = unique(counties$County),
+                                                          choices = c(unique(counties$County), "All Counties"),
                                                           selected = c('Ventura'),
                                                           multiple = FALSE,
                                                           options = pickerOptions(actionsBox = TRUE)
@@ -651,129 +651,129 @@ body <- dashboardBody( introjsUI(),
                                
                            ),  # End Rooftop Solar tabItem
                            
-                           # LAND WIND TAB ----
-                           tabItem(
-                               
-                               tabName = 'lb_wind',
-                               
-                               
-                               fluidRow( ##### First fluidRow (picker inputs) #####
-                                         
-                                         box(
-                                             
-                                             width = 4,
-                                             
-                                             pickerInput( ###### county input ######
-                                                          inputId = 'lw_counties_input',
-                                                          label = tags$span('County',
-                                                                            tags$i(
-                                                                                class = "glyphicon glyphicon-info-sign", 
-                                                                                style = "color:#0072B2;",
-                                                                                title = "County that land wind project will be based. Currently, Santa Barbara County is the only Tri-county with land wind (Strauss Wind Project)."
-                                                                            )),
-                                                          choices = unique(counties$County),
-                                                          selected = c('Santa Barbara'),
-                                                          multiple = FALSE,
-                                                          options = pickerOptions(actionsBox = TRUE)
-                                             ), 
-                                             
-                                             sliderInput( ###### year range slider input ######
-                                                          inputId = 'input_lw_years',
-                                                          label = tags$span('Year Construction Starts - Year to Meet Target',
-                                                                            tags$i(
-                                                                                class = "glyphicon glyphicon-info-sign", 
-                                                                                style = "color:#0072B2;",
-                                                                                title = "Input the range of years for analysis, starting with the year associated with inital capacity and ending with the year to meet capacity targets."
-                                                                            )),
-                                                          min = 2025,
-                                                          max = 2045,
-                                                          value = c(2025, 2045),
-                                                          step = 1,
-                                                          ticks = FALSE,
-                                                          dragRange = TRUE,
-                                                          sep = ''
-                                             ), 
-                                             
-                                             verbatimTextOutput("input_lw_years"), 
-                                             
-                                             
-                                             numericInput( ###### initial capacity input ######
-                                                           inputId = 'initial_gw_lw_input',
-                                                           label = tags$span('Initial Capacity (GW)',
-                                                                             tags$i(
-                                                                                 class = "glyphicon glyphicon-info-sign",
-                                                                                 style = "color:#0072B2;",
-                                                                                 title = "Existing land wind capacity (GW) in selected county. If no existing wind farms, enter size (capacity) of initial construction project. Default 0.95 GW is 2025 nameplate capacity of Strauss Wind Farm in Santa Barbara County."
-                                                                             )),
-                                                           value = 0.95,  # Nameplate capacity (GW) of Strauss Wind Farm
-                                                           min = 0
-                                             ), 
-                                             
-                                             numericInput( ###### final capacity input ######
-                                                           inputId = 'final_gw_land_input',
-                                                           label = tags$span('Target Capacity (GW)',
-                                                                             tags$i(
-                                                                                 class = "glyphicon glyphicon-info-sign",
-                                                                                 style = "color:#0072B2;",
-                                                                                 title = "Capacity (GW) to come online in year specified to meet targets above. Default matches current capacity in Santa Barbara County, as no county goals for land wind expansion are currently defined."
-                                                                             )),
-                                                           value = 0.95,
-                                                           min = 0
-                                             ),
-                                             
-                                             pickerInput( ###### job type input ######
-                                                          inputId = 'lw_job_type_input',
-                                                          label = tags$span('Direct, Indirect, or Induced Jobs',
-                                                                            tags$i(
-                                                                                class = "glyphicon glyphicon-info-sign",
-                                                                                style = "color:#0072B2;",
-                                                                                title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs."
-                                                                            )),
-                                                          choices = c('Direct', 'Indirect', 'Induced', 'Total'),
-                                                          multiple = FALSE,
-                                                          options = pickerOptions(actionsBox = TRUE)
-                                             ),
-                                             
-                                             id = "lw_inputs_box"  # for tutorial
-                                         ), # End input box
-                                         
-                                         box( ###### map output ######
-                                              width = 8,
-                                              
-                                              leafletOutput(outputId = 'land_wind_map_output') |>
-                                                  withSpinner(type = 1, color = '#09847A'),
-                                              
-                                              id = "lw_map_box"  # for tutorial
-                                              
-                                              
-                                         )  # END leaflet box
-                                         
-                               ), # End fluid Row
-                               
-                               fluidRow( ##### Second fluid row (plotly outputs) #####
-                                         
-                                         box( ###### job projections plot ######
-                                              width = 7,
-                                              # Create a plot based on input
-                                              #  title = tags$strong('Labor Impact'),
-                                              plotly::plotlyOutput(outputId = 'land_wind_jobs_plot_output') |> # Changed to table output to show data
-                                                  withSpinner(type = 1, color = '#09847A'),
-                                              
-                                              id = "lw_jobs_plot_box"  # for tutorial
-                                         ), 
-                                         
-                                         box( ###### capacity projections plot ######
-                                              width = 5,
-                                              plotly::plotlyOutput(outputId = 'lw_cap_projections_output') |>
-                                                  withSpinner(type = 1, color = '#09847A'),
-                                              id = "lw_capacity_plot_box"  # for tutorial
-                                         )
-                                         
-                                         
-                                         
-                               ) # End 2nd fluidRow
-                           ), # End Land Based Wind tabItem
-                           
+                           # LAND WIND TAB (REMOVED) ----
+                           # tabItem(
+                           #     
+                           #     tabName = 'lb_wind',
+                           #     
+                           #     
+                           #     fluidRow( ##### First fluidRow (picker inputs) #####
+                           #               
+                           #               box(
+                           #                   
+                           #                   width = 4,
+                           #                   
+                           #                   pickerInput( ###### county input ######
+                           #                                inputId = 'lw_counties_input',
+                           #                                label = tags$span('County',
+                           #                                                  tags$i(
+                           #                                                      class = "glyphicon glyphicon-info-sign", 
+                           #                                                      style = "color:#0072B2;",
+                           #                                                      title = "County that land wind project will be based. Currently, Santa Barbara County is the only Tri-county with land wind (Strauss Wind Project)."
+                           #                                                  )),
+                           #                                choices = unique(counties$County),
+                           #                                selected = c('Santa Barbara'),
+                           #                                multiple = FALSE,
+                           #                                options = pickerOptions(actionsBox = TRUE)
+                           #                   ), 
+                           #                   
+                           #                   sliderInput( ###### year range slider input ######
+                           #                                inputId = 'input_lw_years',
+                           #                                label = tags$span('Year Construction Starts - Year to Meet Target',
+                           #                                                  tags$i(
+                           #                                                      class = "glyphicon glyphicon-info-sign", 
+                           #                                                      style = "color:#0072B2;",
+                           #                                                      title = "Input the range of years for analysis, starting with the year associated with inital capacity and ending with the year to meet capacity targets."
+                           #                                                  )),
+                           #                                min = 2025,
+                           #                                max = 2045,
+                           #                                value = c(2025, 2045),
+                           #                                step = 1,
+                           #                                ticks = FALSE,
+                           #                                dragRange = TRUE,
+                           #                                sep = ''
+                           #                   ), 
+                           #                   
+                           #                   verbatimTextOutput("input_lw_years"), 
+                           #                   
+                           #                   
+                           #                   numericInput( ###### initial capacity input ######
+                           #                                 inputId = 'initial_gw_lw_input',
+                           #                                 label = tags$span('Initial Capacity (GW)',
+                           #                                                   tags$i(
+                           #                                                       class = "glyphicon glyphicon-info-sign",
+                           #                                                       style = "color:#0072B2;",
+                           #                                                       title = "Existing land wind capacity (GW) in selected county. If no existing wind farms, enter size (capacity) of initial construction project. Default 0.95 GW is 2025 nameplate capacity of Strauss Wind Farm in Santa Barbara County."
+                           #                                                   )),
+                           #                                 value = 0.95,  # Nameplate capacity (GW) of Strauss Wind Farm
+                           #                                 min = 0
+                           #                   ), 
+                           #                   
+                           #                   numericInput( ###### final capacity input ######
+                           #                                 inputId = 'final_gw_land_input',
+                           #                                 label = tags$span('Target Capacity (GW)',
+                           #                                                   tags$i(
+                           #                                                       class = "glyphicon glyphicon-info-sign",
+                           #                                                       style = "color:#0072B2;",
+                           #                                                       title = "Capacity (GW) to come online in year specified to meet targets above. Default matches current capacity in Santa Barbara County, as no county goals for land wind expansion are currently defined."
+                           #                                                   )),
+                           #                                 value = 0.95,
+                           #                                 min = 0
+                           #                   ),
+                           #                   
+                           #                   pickerInput( ###### job type input ######
+                           #                                inputId = 'lw_job_type_input',
+                           #                                label = tags$span('Direct, Indirect, or Induced Jobs',
+                           #                                                  tags$i(
+                           #                                                      class = "glyphicon glyphicon-info-sign",
+                           #                                                      style = "color:#0072B2;",
+                           #                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs."
+                           #                                                  )),
+                           #                                choices = c('Direct', 'Indirect', 'Induced', 'Total'),
+                           #                                multiple = FALSE,
+                           #                                options = pickerOptions(actionsBox = TRUE)
+                           #                   ),
+                           #                   
+                           #                   id = "lw_inputs_box"  # for tutorial
+                           #               ), # End input box
+                           #               
+                           #               box( ###### map output ######
+                           #                    width = 8,
+                           #                    
+                           #                    leafletOutput(outputId = 'land_wind_map_output') |>
+                           #                        withSpinner(type = 1, color = '#09847A'),
+                           #                    
+                           #                    id = "lw_map_box"  # for tutorial
+                           #                    
+                           #                    
+                           #               )  # END leaflet box
+                           #               
+                           #     ), # End fluid Row
+                           #     
+                           #     fluidRow( ##### Second fluid row (plotly outputs) #####
+                           #               
+                           #               box( ###### job projections plot ######
+                           #                    width = 7,
+                           #                    # Create a plot based on input
+                           #                    #  title = tags$strong('Labor Impact'),
+                           #                    plotly::plotlyOutput(outputId = 'land_wind_jobs_plot_output') |> # Changed to table output to show data
+                           #                        withSpinner(type = 1, color = '#09847A'),
+                           #                    
+                           #                    id = "lw_jobs_plot_box"  # for tutorial
+                           #               ), 
+                           #               
+                           #               box( ###### capacity projections plot ######
+                           #                    width = 5,
+                           #                    plotly::plotlyOutput(outputId = 'lw_cap_projections_output') |>
+                           #                        withSpinner(type = 1, color = '#09847A'),
+                           #                    id = "lw_capacity_plot_box"  # for tutorial
+                           #               )
+                           #               
+                           #               
+                           #               
+                           #     ) # End 2nd fluidRow
+                           # ), # End Land Based Wind tabItem
+                           # 
                            # OIL WELL CAPPING TAB ----
                            tabItem(tabName = 'well_cap', 
                                    
