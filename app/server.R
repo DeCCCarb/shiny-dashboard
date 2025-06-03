@@ -23,7 +23,7 @@ server <- function(input, output, session) {
     ##### Project Overview image carousel #####
     output$image_carousel <- renderSlickR({
         slickR(
-            c("why_cc.svg","project_goal.svg","correct_tech.svg","next_step.svg") 
+            c("cc_final.svg","project_goal.svg","focus_tech.svg","next_step.svg") 
         )
     }) # END image carousel
     
@@ -1121,9 +1121,10 @@ server <- function(input, output, session) {
                       new_capacity_mw = sum(new_capacity_mw),
                       total_capacity_gw = sum(total_capacity_gw),
                       new_capacity_gw = sum(new_capacity_gw)) |>
+            ungroup() |>
             mutate(county = "All Counties",
                    technology = "Utility PV",
-                   ambition = "High")
+                   ambition = "High") 
         
         # Order columns to match
         cc_utility <- cc_utility[names(utility_all)]
