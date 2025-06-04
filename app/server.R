@@ -58,10 +58,13 @@ server <- function(input, output, session) {
                      
                      tooltipClass = "introjs-large"  # Custom class
                 ),
-                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years 
-                and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     Default capacity values are scaled from the statewide goal of 25 GW by 2045 
-                     (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
+                list(element = "#scenario_buttons_box", intro = "Select from predefined scenarios here. <br><br>
+                     15 GW by 2045 is an ambitious goal, scaled to 60% of the statewide goal of 25 GW by 2045 
+                     (defined by the California Energy Commission), to a regional goal of 15 GW in the Central Coast. <br><br>
+                     6 GW by 2045 is less ambitious, at about a quarter of the state goal.",
+                     position = "right"),
+                list(element = "#osw_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting assumptions for construction years 
+                and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#osw_map_box", 
                      intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created from your 
@@ -279,8 +282,13 @@ server <- function(input, output, session) {
                      
                      tooltipClass = "introjs-large"  # Custom class
                 ),
-                list(element = "#osw_inputs_box", intro = "Start by adjusting assumptions for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     Default capacity values are scaled from the statewide goal of 25 GW by 2045 (defined by the California Energy Commission) to a regional goal of 15 GW in the Central Coast. ",
+                list(element = "#scenario_buttons_box", intro = "Select from predefined scenarios here. <br><br>
+                     15 GW by 2045 is an ambitious goal, scaled to 60% of the statewide goal of 25 GW by 2045 
+                     (defined by the California Energy Commission), to a regional goal of 15 GW in the Central Coast. <br><br>
+                     6 GW by 2045 is less ambitious, at about a quarter of the state goal.",
+                     position = "right"),
+                list(element = "#osw_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting assumptions for construction years 
+                and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#osw_map_box", 
                      intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created from your scenario for offshore wind development. <br><br> 
@@ -487,6 +495,39 @@ server <- function(input, output, session) {
         )) |>
         tidygeocoder::geocode(address = address, method = "osm")
     
+    # Default button scenarios ----
+    observeEvent(input$load_scenario1, {
+        updateSliderInput(session, "year_range_input", value = c(2030, 2045))
+        updateNumericInput(session, "initial_capacity_input", value = 0.5)
+        updateNumericInput(session, "final_capacity_input", value = 15)
+        updatePickerInput(session, "job_type_input", selected = "Direct")
+    })
+    
+    observeEvent(input$load_scenario2, {
+        updateSliderInput(session, "year_range_input", value = c(2030, 2045))
+        updateNumericInput(session, "initial_capacity_input", value = 0.5)
+        updateNumericInput(session, "final_capacity_input", value = 6)
+        updatePickerInput(session, "job_type_input", selected = "Direct")
+    })
+    
+    observeEvent(input$load_scenario1, {
+        shinyjs::addClass("load_scenario1", "selected")
+        shinyjs::removeClass("load_scenario2", "selected")
+        # your logic to load Scenario 1
+    })
+    
+    observeEvent(input$load_scenario2, {
+        shinyjs::addClass("load_scenario2", "selected")
+        shinyjs::removeClass("load_scenario1", "selected")
+        # your logic to load Scenario 2
+    })
+    
+    # Automatically select Scenario 1 when page loads
+    observe({
+        shinyjs::addClass("load_scenario1", "selected")
+        # Optional: auto trigger it
+        # shinyjs::runjs("$('#load_scenario1').click();")
+    })
     
     
     ##### OSW Map #####

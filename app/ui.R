@@ -163,11 +163,20 @@ body <- dashboardBody( introjsUI(),
       }
       
     ")), # END larger popup box styling
+                       # Color selected scenario buttons
+                       tags$style(HTML("
+    .scenario-btn.selected {
+      background-color: #0072B2 !important;
+      color: white !important;
+      border-color: #005f8a !important;
+    }
+  ")),
+                       
                        tabItems(
-                       # WELCOME TAB ----
-                       tabItem(tabName = 'welcome', 
-                               tags$head(
-                                   tags$style(HTML("
+                           # WELCOME TAB ----
+                           tabItem(tabName = 'welcome', 
+                                   tags$head(
+                                       tags$style(HTML("
       .slick-slide img {
         max-width: 100%;
         max-height: 100%;
@@ -178,15 +187,15 @@ body <- dashboardBody( introjsUI(),
         object-fit: contain;
       }
     "))
-                               ),
-                               # PAGE TITLE
-                               fluidRow(
-                                   column(
-                                       width = 12,
-                                       tags$h1("Welcome to California's Central Coast Energy Jobs Explorer", style = "text-align: center; padding-top: 10px;")
-                                   )
-                               ),
-                               
+                                   ),
+                                   # PAGE TITLE
+                                   fluidRow(
+                                       column(
+                                           width = 12,
+                                           tags$h1("Welcome to California's Central Coast Energy Jobs Explorer", style = "text-align: center; padding-top: 10px;")
+                                       )
+                                   ),
+                                   
                                    # IMAGE CAROUSEL (full width)
                                    fluidRow(
                                        column(
@@ -204,31 +213,31 @@ body <- dashboardBody( introjsUI(),
                                        )
                                    ),
                                    # ECONOMIC MODELING TOOLS BOX
-                               fluidRow(
-                                   column(
-                                       width = 6,
-                                       box(
-                                           width = NULL,
-                                           title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools Used')),
-                                           column(1),
-                                           column(10, includeMarkdown('text/citation.md')),
-                                           column(1)
-                                       )
-                                   ),
-                                   column(
-                                       width = 6,
-                                       box(
-                                           width = NULL,
-                                           title = tagList(icon('user'), tags$strong('Our Partners')),
-                                           column(1),
-                                           column(10, includeMarkdown('text/disclaimer.md')),
-                                           column(1)
+                                   fluidRow(
+                                       column(
+                                           width = 6,
+                                           box(
+                                               width = NULL,
+                                               title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools Used')),
+                                               column(1),
+                                               column(10, includeMarkdown('text/citation.md')),
+                                               column(1)
+                                           )
+                                       ),
+                                       column(
+                                           width = 6,
+                                           box(
+                                               width = NULL,
+                                               title = tagList(icon('user'), tags$strong('Our Partners')),
+                                               column(1),
+                                               column(10, includeMarkdown('text/disclaimer.md')),
+                                               column(1)
+                                           )
                                        )
                                    )
-                               )
-
-                       ),
-                     
+                                   
+                           ),
+                           
                            # PROJECT OVERVIEW TAB ITEM ----
                            tabItem(
                                tabName = 'overview',
@@ -250,167 +259,155 @@ body <- dashboardBody( introjsUI(),
                            
                            
                            # FLOATING OFFSHORE WIND TAB ----
-                           
                            tabItem(
-                               
                                tabName = 'f_osw',
                                
-                               fluidRow( ##### First fluidRow (picker inputs) #####
+                               fluidRow( ##### First fluidRow (buttons, inputs, and map) #####
                                          
-                                         box(
+                                         # Left column
+                                         column(
                                              width = 4,
                                              
-                                             shinyjs::useShinyjs(),
-                                             
-                                             ###### year range slider input ######
-                                             sliderInput(
-                                                 inputId = 'year_range_input',
-                                                 label = tags$span(
-                                                     "Year Construction Starts - Year to Meet Target", 
-                                                     tags$i(
-                                                         class = "glyphicon glyphicon-info-sign", 
-                                                         style = "color:#0072B2;",
-                                                         title = "Construction requires, on average, 5 years. Time to reach capacity goals must be greater than 5 years."
-                                                     )
-                                                 ), 
-                                                 min = 2025, 
-                                                 max = 2045, 
-                                                 value = c(2025, 2045),
-                                                 step = 1, 
-                                                 ticks = F,
-                                                 sep = ""
-                                                 
+                                             # Scenario buttons          
+                                             box(
+                                                 width = 12,
+                                                 title = "Choose a predefined scenario",
+                                                 div(style = "display: flex; flex-direction: column; gap: 10px;",
+                                                     actionButton("load_scenario1", "Scenario 1 - 15GW by 2045", icon = icon("bolt"), class = "scenario-btn"),
+                                                     actionButton("load_scenario2", "Scenario 2 - 6GW by 2045", icon = icon("bolt"), class = "scenario-btn")
+                                                 ),
+                                                 id = "scenario_buttons_box"
                                              ),
-                                             # Make a year slider have a minimum range of 6 years
-                                             tags$script(
-                                                 HTML("
-                            // Wait until the document is ready
-                            $(document).on('shiny:connected', function() {
-                            // Custom minimum range
-                            var minRange = 6; // Construction year boundary, minimum to reach target
- // Target the slider
-                                                                       var slider = $('#year_range_input').data('ionRangeSlider');
-                                                                       if (slider) {
-                                                                         slider.update({
-                                                                           onChange: function(data) {
-                                                                             var from = data.from;
-                                                                             var to = data.to;
-                                                                             if ((to - from) < minRange) {
-                                                                               var newTo = from + minRange;
-                                                                               if (newTo > data.max) {
-                                                                                 newTo = data.max;
-                                                                                 from = newTo - minRange;
-                                                                               }
-                                                                               slider.update({ from: from, to: newTo });
-                                                                             }
-                                                                           }
-                                                                         });
-                                                                       }
-                                                                     });
-                                                                   "
-                                                 )
-                                             ), 
-                                             ###### initial capacity input  ######
-                                             numericInput(
-                                                 inputId = 'initial_capacity_input',
-                                                 label =
-                                                     tags$span(
-                                                         'Capacity (GW) of Initial Construction Project', 
-                                                         tags$i(
-                                                             class = "glyphicon glyphicon-info-sign", 
-                                                             style = "color:#0072B2;",
-                                                             title = "Capacity (GW) for initial construction project, to go online 5 years following start year. Value must not be 0.")
-                                                     ),
-                                                 value = 0.5,
-                                                 min = 0
-                                             ), 
-                                             ###### final capacity input  ######
-                                             numericInput(
-                                                 inputId = 'final_capacity_input',
-                                                 label =
-                                                     tags$span(
-                                                         'Target Capacity (GW)', 
-                                                         tags$i(
-                                                             class = "glyphicon glyphicon-info-sign", 
-                                                             style = "color:#0072B2;",
-                                                             title = "Enter total capacity to be up-and-running in the final year.")
-                                                     ),
-                                                 value = 15,
-                                                 min = 0
-                                             ), 
-                                             ###### job type input  ######
-                                             pickerInput(
-                                                 inputId = 'job_type_input',
-                                                 label =
-                                                     tags$span(
-                                                         'Direct, Indirect, or Induced Jobs', 
-                                                         tags$i(
-                                                             class = "glyphicon glyphicon-info-sign", 
-                                                             style = "color:#0072B2;",
-                                                             title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs.")), 
-                                                 choices = c('Direct', # Change to capital
-                                                             'Indirect', 'Induced', 'Total'),
-                                                 multiple = FALSE,
-                                                 options = pickerOptions(actionsBox = TRUE)
-                                             ), 
-                                             # ###### port input  ######
-                                             # pickerInput(
-                                             #     inputId = 'osw_port_input',
-                                             #     label =
-                                             #         tags$span(
-                                             #             'Offshore Wind Port Location', 
-                                             #             tags$i(
-                                             #                 class = "glyphicon glyphicon-info-sign", 
-                                             #                 style = "color:#0072B2;",
-                                             #                 title = "Specialized wind ports will be the ")
-                                             #         ),
-                                             #     choices = c('Hueneme', 'San Luis Obispo', 'No Central Coast Port'),
-                                             #     selected = NULL,
-                                             #     multiple = FALSE,
-                                             #     options = pickerOptions(actionsBox = TRUE)
-                                             # ), 
                                              
-                                             id = "osw_inputs_box"  # for tutorial
-                                         ), # END input box
+                                             # Inputs
+                                             box(
+                                                 width = 12,
+                                                 title = "Enter your own scenario",
+                                                 
+                                                 shinyjs::useShinyjs(),
+                                                 
+                                                 sliderInput(
+                                                     inputId = 'year_range_input',
+                                                     label = tags$span(
+                                                         "Year Construction Starts - Year to Meet Target",
+                                                         tags$i(
+                                                             class = "glyphicon glyphicon-info-sign",
+                                                             style = "color:#0072B2;",
+                                                             title = "Construction requires, on average, 5 years. Time to reach capacity goals must be greater than 5 years."
+                                                         )
+                                                     ),
+                                                     min = 2025,
+                                                     max = 2045,
+                                                     value = c(2030, 2045),
+                                                     step = 1,
+                                                     ticks = FALSE,
+                                                     sep = ""
+                                                 ),
+                                                 
+                                                 tags$script(
+                                                     HTML("
+                        $(document).on('shiny:connected', function() {
+                            var minRange = 6;
+                            var slider = $('#year_range_input').data('ionRangeSlider');
+                            if (slider) {
+                                slider.update({
+                                    onChange: function(data) {
+                                        var from = data.from;
+                                        var to = data.to;
+                                        if ((to - from) < minRange) {
+                                            var newTo = from + minRange;
+                                            if (newTo > data.max) {
+                                                newTo = data.max;
+                                                from = newTo - minRange;
+                                            }
+                                            slider.update({ from: from, to: newTo });
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    ")
+                                                 ),
+                                                 
+                                                 numericInput(
+                                                     inputId = 'initial_capacity_input',
+                                                     label = tags$span(
+                                                         'Capacity (GW) of Initial Construction Project',
+                                                         tags$i(
+                                                             class = "glyphicon glyphicon-info-sign",
+                                                             style = "color:#0072B2;",
+                                                             title = "Capacity (GW) for initial construction project, to go online 5 years following start year. Value must not be 0."
+                                                         )
+                                                     ),
+                                                     value = 0.5,
+                                                     min = 0
+                                                 ),
+                                                 
+                                                 numericInput(
+                                                     inputId = 'final_capacity_input',
+                                                     label = tags$span(
+                                                         'Target Capacity (GW)',
+                                                         tags$i(
+                                                             class = "glyphicon glyphicon-info-sign",
+                                                             style = "color:#0072B2;",
+                                                             title = "Enter total capacity to be up-and-running in the final year."
+                                                         )
+                                                     ),
+                                                     value = 15,
+                                                     min = 0
+                                                 ),
+                                                 
+                                                 pickerInput(
+                                                     inputId = 'job_type_input',
+                                                     label = tags$span(
+                                                         'Direct, Indirect, or Induced Jobs',
+                                                         tags$i(
+                                                             class = "glyphicon glyphicon-info-sign",
+                                                             style = "color:#0072B2;",
+                                                             title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs."
+                                                         )
+                                                     ),
+                                                     choices = c('Direct', 'Indirect', 'Induced', 'Total'),
+                                                     multiple = FALSE,
+                                                     options = pickerOptions(actionsBox = TRUE)
+                                                 ),
+                                                 
+                                                 id = "osw_inputs_box"
+                                             )
+                                         ), # END left column
                                          
-                                         ###### map output  ######
-                                         box(
+                                         # Right column
+                                         column(
                                              width = 8,
-                                             
-                                             leafletOutput(outputId = 'osw_map_output') |>
-                                                 withSpinner(type = 1, color = '#09847A'),
-                                             
-                                             id = "osw_map_box"  # for tutorial
-                                             
-                                         ) # END leaflet box
-                                         
-                               ), # END  1st fluidRow
-                               
+                                             div(
+                                                 style = "height: 100%; min-height: 500px;",
+                                                 box(
+                                                     width = 12,
+                                                     leafletOutput(outputId = 'osw_map_output',
+                                                                   height = "500px") |>
+                                                         withSpinner(type = 1, color = '#09847A'),
+                                                     id = "osw_map_box"
+                                                 )
+                                             )
+                                         ) # END right column
+                               ), # END first fluidRow
                                
                                fluidRow( ##### Second fluidRow (plotly outputs) #####
-                                         
-                                         box( ###### jobs projections plot ######
-                                              width = 7,
-                                              
-                                              plotly::plotlyOutput(outputId = 'model_jobs_output') |>
-                                                  withSpinner(type = 1, color = '#09847A'),
-                                              
-                                              id = "osw_jobs_plot_box" # for tutorial
-                                         ), 
-                                         
-                                         box( ###### capacity projections plot ######
-                                              width = 5,
-                                              
-                                              plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
-                                                  withSpinner(type = 1, color = '#09847A'),
-                                              
-                                              id = "osw_capacity_plot_box" # for tutorial
+                                         box(
+                                             width = 7,
+                                             plotly::plotlyOutput(outputId = 'model_jobs_output') |>
+                                                 withSpinner(type = 1, color = '#09847A'),
+                                             id = "osw_jobs_plot_box"
+                                         ),
+                                         box(
+                                             width = 5,
+                                             plotly::plotlyOutput(outputId = 'osw_cap_projections_output') |>
+                                                 withSpinner(type = 1, color = '#09847A'),
+                                             id = "osw_capacity_plot_box"
                                          )
-                                         
-                                         
-                               ) # END 2nd fluidRow),
-                               
-                           ), # END floating offshore wind tabITEM
+                               ) # END second fluidRow
+                           ), # END tabItem
+                           
                            
                            # UTILITY SOLAR TAB ----
                            tabItem(
