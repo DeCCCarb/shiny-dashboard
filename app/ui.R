@@ -163,14 +163,7 @@ body <- dashboardBody( introjsUI(),
       }
       
     ")), # END larger popup box styling
-                       # Color selected scenario buttons
-                       tags$style(HTML("
-    .scenario-btn.selected {
-      background-color: #0072B2 !important;
-      color: white !important;
-      border-color: #005f8a !important;
-    }
-  ")),
+
                        
                        tabItems(
                            # WELCOME TAB ----

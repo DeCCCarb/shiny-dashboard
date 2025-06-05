@@ -496,55 +496,44 @@ server <- function(input, output, session) {
         tidygeocoder::geocode(address = address, method = "osm")
     
     # Default button scenarios ----
-    # Scenario 1
+    # Automatically select Scenario 1 button on tab load
+    observe({
+        shinyjs::addClass("load_scenario1", "active")
+    })
+    
+    # Scenario 1 button click
     observeEvent(input$load_scenario1, {
+        shinyjs::addClass("load_scenario1", "active")
+        shinyjs::removeClass("load_scenario2", "active")
+        
+        # Update inputs with Scenario 1 values
         updateSliderInput(session, "year_range_input", value = c(2030, 2045))
         updateNumericInput(session, "initial_capacity_input", value = 0.5)
         updateNumericInput(session, "final_capacity_input", value = 15)
         updatePickerInput(session, "job_type_input", selected = "Direct")
     })
     
-    # Scenario 2
+    # Scenario 2 button click
     observeEvent(input$load_scenario2, {
+        shinyjs::addClass("load_scenario2", "active")
+        shinyjs::removeClass("load_scenario1", "active")
+        
+        # Update inputs with Scenario 2 values
         updateSliderInput(session, "year_range_input", value = c(2030, 2045))
         updateNumericInput(session, "initial_capacity_input", value = 0.5)
         updateNumericInput(session, "final_capacity_input", value = 6)
         updatePickerInput(session, "job_type_input", selected = "Direct")
     })
     
-    # Swap which button is colored 
-    observeEvent(input$load_scenario1, {
-        shinyjs::addClass("load_scenario1", "selected")
-        shinyjs::removeClass("load_scenario2", "selected")
-        # your logic to load Scenario 1
-    })
-    
-    observeEvent(input$load_scenario2, {
-        shinyjs::addClass("load_scenario2", "selected")
-        shinyjs::removeClass("load_scenario1", "selected")
-        # your logic to load Scenario 2
-    })
-    
-    # Automatically select Scenario 1 when page loads
-    observe({
-        shinyjs::addClass("load_scenario1", "selected")
-        # Optional: auto trigger it
-        # shinyjs::runjs("$('#load_scenario1').click();")
-    })
-    
-    # Deselect button when other input is changed
-    observeEvent(
-        {
-            input$year_range_input
-            input$initial_capacity_input
-            input$final_capacity_input
-        },
-        {
-            shinyjs::removeClass("load_scenario1", "selected")
-            shinyjs::removeClass("load_scenario2", "selected")
-        },
-        ignoreInit = TRUE  # prevent it from firing on initial page load
-    )
+    # When any input changes, remove active from both buttons
+    observeEvent({
+        input$year_range_input
+        input$initial_capacity_input
+        input$final_capacity_input
+    }, {
+        shinyjs::removeClass("load_scenario1", "active")
+        shinyjs::removeClass("load_scenario2", "active")
+    }, ignoreInit = TRUE)
     
     
     ##### OSW Map #####
