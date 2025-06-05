@@ -496,6 +496,7 @@ server <- function(input, output, session) {
         tidygeocoder::geocode(address = address, method = "osm")
     
     # Default button scenarios ----
+    # Scenario 1
     observeEvent(input$load_scenario1, {
         updateSliderInput(session, "year_range_input", value = c(2030, 2045))
         updateNumericInput(session, "initial_capacity_input", value = 0.5)
@@ -503,6 +504,7 @@ server <- function(input, output, session) {
         updatePickerInput(session, "job_type_input", selected = "Direct")
     })
     
+    # Scenario 2
     observeEvent(input$load_scenario2, {
         updateSliderInput(session, "year_range_input", value = c(2030, 2045))
         updateNumericInput(session, "initial_capacity_input", value = 0.5)
@@ -510,6 +512,7 @@ server <- function(input, output, session) {
         updatePickerInput(session, "job_type_input", selected = "Direct")
     })
     
+    # Swap which button is colored 
     observeEvent(input$load_scenario1, {
         shinyjs::addClass("load_scenario1", "selected")
         shinyjs::removeClass("load_scenario2", "selected")
@@ -528,6 +531,20 @@ server <- function(input, output, session) {
         # Optional: auto trigger it
         # shinyjs::runjs("$('#load_scenario1').click();")
     })
+    
+    # Deselect button when other input is changed
+    observeEvent(
+        {
+            input$year_range_input
+            input$initial_capacity_input
+            input$final_capacity_input
+        },
+        {
+            shinyjs::removeClass("load_scenario1", "selected")
+            shinyjs::removeClass("load_scenario2", "selected")
+        },
+        ignoreInit = TRUE  # prevent it from firing on initial page load
+    )
     
     
     ##### OSW Map #####

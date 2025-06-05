@@ -282,7 +282,7 @@ body <- dashboardBody( introjsUI(),
                                              # Inputs
                                              box(
                                                  width = 12,
-                                                 title = "Enter your own scenario",
+                                                 title = "Enter a custom scenario",
                                                  
                                                  shinyjs::useShinyjs(),
                                                  
