@@ -825,7 +825,7 @@ server <- function(input, output, session) {
     
     ########## UTILITY SOLAR TAB ##########
     
-    # Define scenario presets
+    # Define scenario presets - UPDATE WITH REAL VALUES
     scenario_presets <- list(
         "Ventura" = list(
             scenario1 = list(initial = 100, final = 800, years = c(2025, 2040)),
@@ -841,34 +841,84 @@ server <- function(input, output, session) {
         )
     )
     
+    # Track which scenario (if any) is selected
+    selected_scenario <- reactiveVal(NULL)
+    
     # buttons will update defaults
-    # Scenario 1 button
+    # Automatically apply Scenario 1 when county changes - NOT WORKING!!!!
+    observeEvent(input$county_input, {
+        req(input$county_input)
+        county <- input$county_input
+        
+        if (county %in% names(scenario_presets)) {
+            preset <- scenario_presets[[county]]$scenario1
+            
+            # Update inputs to Scenario 1 values
+            updateNumericInput(session, "initial_mw_utility_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_utility_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_utility", value = preset$years)
+            
+            # Mark as scenario 1 selected
+            selected_scenario("scenario1")
+            
+            # Set active class
+            shinyjs::addClass("load_scenario1", "active")
+            shinyjs::removeClass("load_scenario2", "active")
+        }
+    })
+    
+    # Scenario 1 button click - working
     observeEvent(input$load_scenario1, {
         req(input$county_input)
-        
         county <- input$county_input
+        
         if (county %in% names(scenario_presets)) {
             preset <- scenario_presets[[county]]$scenario1
             
             updateNumericInput(session, "initial_mw_utility_input", value = preset$initial)
             updateNumericInput(session, "final_mw_utility_input", value = preset$final)
             updateSliderInput(session, "year_range_input_utility", value = preset$years)
+            
+            selected_scenario("scenario1")
+            
+            shinyjs::addClass("load_scenario1", "active")
+            shinyjs::removeClass("load_scenario2", "active")
         }
     })
     
-    # Scenario 2 button
+    # Scenario 2 button click - working
     observeEvent(input$load_scenario2, {
         req(input$county_input)
-        
         county <- input$county_input
+        
         if (county %in% names(scenario_presets)) {
             preset <- scenario_presets[[county]]$scenario2
             
             updateNumericInput(session, "initial_mw_utility_input", value = preset$initial)
             updateNumericInput(session, "final_mw_utility_input", value = preset$final)
             updateSliderInput(session, "year_range_input_utility", value = preset$years)
+            
+            selected_scenario("scenario2")
+            
+            shinyjs::addClass("load_scenario2", "active")
+            shinyjs::removeClass("load_scenario1", "active")
         }
     })
+    
+    # Remove active class if inputs change manually - working
+    observeEvent({
+        input$initial_mw_utility_input
+        input$final_mw_utility_input
+        input$year_range_input_utility
+    }, {
+        if (!is.null(selected_scenario())) {
+            selected_scenario(NULL)
+            
+            shinyjs::removeClass("load_scenario1", "active")
+            shinyjs::removeClass("load_scenario2", "active")
+        }
+    }, ignoreInit = TRUE)
+    
     
     # Update label on scenario button to reflect scenario NOT WORKING
     observeEvent(input$county_input, {
