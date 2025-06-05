@@ -1,12 +1,17 @@
 ## How did we get our default capacity values?
+When you enter our technology tabs, you will see a couple of default capacity scenarios to choose from. But... how did we get these?
 
 ### Floating Offshore Wind
 
 The California Energy Commission’s Strategic Plan for Offshore Wind has established a statewide goal of 25 GW of floating offshore wind capacity by 2045. This capacity will be split between two regions slated for offshore wind development, two projects in Humboldt Bay and three in the Central Coast. In this analysis, the 25 GW capacity is split between these two sites based on the proposed projects, estimating that 60%, or 15 GW capacity by 2045, would be the Central Coast’s contribution to this goal. 
 
+However, we know that this is quite an ambitious scenario, dependent on quick development backed by investment, infrastructure, and policy. Therefore, we calculated a second scenario: 6 GW, which is 40% of the original 15 GW goal. We gave these scenarios so that all users could have a place to start with our tool, based on the current statewide conversation around Floating Offshore Wind Development. However, we know that this conversation is changing rapidly. Therefore, users are also encouraged to enter in their own specific capacity goals. The scenario buttons are simply a jumping off point. 
+
 ### Rooftop & Utility-scale Solar
 
 The California Air Resource's Board 2022 Scoping Plan sets forth statewide targets for rooftop and utility-scale solar, but it doesn't specify how these targets should be distributed among the counties. Therefore, to scale these estimates down the county level, our first step was to gather each county's current installed solar capacity from state energy data. Next, we calculated the percent increase needed statewide to meet California's 2045 goals. Finally, we applied that same percent increase to each county's current installed capacity, assuming that the counties would grow at a similar pace to the state as a whole. 
+
+These tabs also have scenario buttons. These scenarios are the full goal for each county, calculated in the analysis above, and then 50% of that goal. 
 
 ## How did we calculate oil decline?
 
