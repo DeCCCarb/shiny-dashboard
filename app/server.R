@@ -825,6 +825,73 @@ server <- function(input, output, session) {
     
     ########## UTILITY SOLAR TAB ##########
     
+    # Define scenario presets
+    scenario_presets <- list(
+        "Ventura" = list(
+            scenario1 = list(initial = 100, final = 800, years = c(2025, 2040)),
+            scenario2 = list(initial = 100, final = 1200, years = c(2025, 2045))
+        ),
+        "Santa Barbara" = list(
+            scenario1 = list(initial = 80, final = 600, years = c(2025, 2040)),
+            scenario2 = list(initial = 80, final = 1000, years = c(2025, 2045))
+        ),
+        "San Luis Obispo" = list(
+            scenario1 = list(initial = 120, final = 900, years = c(2025, 2040)),
+            scenario2 = list(initial = 120, final = 1500, years = c(2025, 2045))
+        )
+    )
+    
+    # buttons will update defaults
+    # Scenario 1 button
+    observeEvent(input$load_scenario1, {
+        req(input$county_input)
+        
+        county <- input$county_input
+        if (county %in% names(scenario_presets)) {
+            preset <- scenario_presets[[county]]$scenario1
+            
+            updateNumericInput(session, "initial_mw_utility_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_utility_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_utility", value = preset$years)
+        }
+    })
+    
+    # Scenario 2 button
+    observeEvent(input$load_scenario2, {
+        req(input$county_input)
+        
+        county <- input$county_input
+        if (county %in% names(scenario_presets)) {
+            preset <- scenario_presets[[county]]$scenario2
+            
+            updateNumericInput(session, "initial_mw_utility_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_utility_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_utility", value = preset$years)
+        }
+    })
+    
+    # Update label on scenario button to reflect scenario NOT WORKING
+    observeEvent(input$county_input, {
+        county <- input$county_input
+        
+        if (county %in% names(scenario_presets)) {
+            preset1 <- scenario_presets[[county]]$scenario1
+            preset2 <- scenario_presets[[county]]$scenario2
+            
+            label1 <- sprintf("Scenario 1 - %.1f GW by %d", preset1$final / 1000, preset1$years[2])
+            label2 <- sprintf("Scenario 2 - %.1f GW by %d", preset2$final / 1000, preset2$years[2])
+            
+            updateActionButton(session, "load_scenario1", label = label1)
+            updateActionButton(session, "load_scenario2", label = label2)
+        } else {
+            updateActionButton(session, "load_scenario1", label = "Scenario 1 - XX GW by 2045")
+            updateActionButton(session, "load_scenario2", label = "Scenario 2 - XX GW by 2045")
+        }
+    })
+    
+    
+    
+    
     # Utility defaults by county ----
     observeEvent(input$county_input, {
         # Requires a county input
@@ -866,13 +933,6 @@ server <- function(input, output, session) {
     })
     
     ##### Utility map #####
-    
-    ####################### HELP WHAT IS THIS FOR!?!?! NOTHING BREAKS WHEN COMMENTED OUT #############
-    # Add county shapes by user input ---- 
-    # counties_input <- reactive({
-    #     counties |>
-    #         filter(County == input$county_input)
-    # })
     
     counties_input_utility <- reactive({
         if (!is.null(input$county_input)) {
@@ -1052,7 +1112,7 @@ server <- function(input, output, session) {
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
             addProviderTiles("CartoDB.Voyager") |>
-            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            setView(lng = -120.498189, lat = 34.820830, zoom = 8) |>
             addPolygons(
                 color = "darkgreen",
                 opacity = 0.7

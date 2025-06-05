@@ -163,7 +163,7 @@ body <- dashboardBody( introjsUI(),
       }
       
     ")), # END larger popup box styling
-
+                       
                        
                        tabItems(
                            # WELCOME TAB ----
@@ -407,98 +407,119 @@ body <- dashboardBody( introjsUI(),
                                
                                tabName = 'utility',
                                
-                               fluidRow( ##### First fluidRow (picker inputs) #####
-                                         
-                                         box(
+                               fluidRow( ##### First fluidRow (picker inputs and map) #####
+                                         column( # left hand column
                                              width = 4,
-                                             
-                                             pickerInput( ###### county input ######
-                                                          inputId = 'county_input',
-                                                          label = tags$span(
-                                                              'County',
-                                                              tags$i(
-                                                                  class = "glyphicon glyphicon-info-sign", 
-                                                                  style = "color:#0072B2;",
-                                                                  title = "Choose a county to analyze."
-                                                              )),
-                                                          choices = c(unique(counties$County), "All Counties"),
-                                                          selected = c('Ventura'),
-                                                          multiple = FALSE,
-                                                          options = pickerOptions(actionsBox = TRUE)
-                                             ), 
-                                             
-                                             sliderInput( ###### year range slider input ######
-                                                          inputId = 'year_range_input_utility',
-                                                          label = tags$span(
-                                                              'Year Construction Starts - Year To Meet Target',
-                                                              tags$i(
-                                                                  class = "glyphicon glyphicon-info-sign", 
-                                                                  style = "color:#0072B2;",
-                                                                  title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
-                                                              )),
-                                                          min = 2025,
-                                                          max = 2045,
-                                                          value = c(2025, 2045),
-                                                          step = 1,
-                                                          ticks = F,
-                                                          sep = ""
-                                             ), 
-                                             
-                                             numericInput( ###### initial capacity input  ######
-                                                           inputId = 'initial_mw_utility_input',
-                                                           label = tags$span(
-                                                               'Current Capacity (MW)',
-                                                               tags$i(
-                                                                   class = "glyphicon glyphicon-info-sign", 
-                                                                   style = "color:#0072B2;",
-                                                                   title = "Currently installed capacity in your county in megawatts. Value must not be 0."
-                                                               )),
-                                                           value = 0,
-                                                           min = 0
-                                             ), 
-                                             
-                                             numericInput( ###### final capacity input  ######
-                                                           inputId = 'final_mw_utility_input',
-                                                           label = tags$span(
-                                                               'Target Capacity (MW)',
-                                                               tags$i(
-                                                                   class = "glyphicon glyphicon-info-sign", 
-                                                                   style = "color:#0072B2;",
-                                                                   title = "Target capacity to reach by final input year in megawatts."
-                                                               )),
-                                                           value = 0,
-                                                           min = 0
-                                             ),
-                                             
-                                             pickerInput( ###### job type input ######
-                                                          inputId = 'utility_job_type_input',
-                                                          label =
-                                                              tags$span(
-                                                                  'Direct, Indirect, or Induced Jobs', 
+                                             box( # county input box
+                                                 width = 12,
+                                                 
+                                                 pickerInput( ###### county input ######
+                                                              inputId = 'county_input',
+                                                              label = tags$span(
+                                                                  'County',
                                                                   tags$i(
                                                                       class = "glyphicon glyphicon-info-sign", 
                                                                       style = "color:#0072B2;",
-                                                                      title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs.")), 
-                                                          choices = c('Direct', 'Indirect', 'Induced', 'Total'),
-                                                          multiple = FALSE,
-                                                          options = pickerOptions(actionsBox = TRUE)
-                                             ), 
+                                                                      title = "Choose a county to analyze."
+                                                                  )),
+                                                              choices = c(unique(counties$County)),
+                                                              selected = c('Ventura'),
+                                                              multiple = FALSE,
+                                                              options = pickerOptions(actionsBox = TRUE)
+                                                 )
+                                             ), # end county input box
                                              
-                                             id = "util_inputs_box" # for tutorial
+                                             box( # scenario buttons box
+                                                 width = 12,
+                                                 title = "Choose a predefined scenario",
+                                                 div(style = "display: flex; flex-direction: column; gap: 10px;",
+                                                     actionButton("load_scenario1", "Scenario 1 - XX GW by 2045", icon = icon("bolt"), class = "scenario-btn"),
+                                                     actionButton("load_scenario2", "Scenario 2 - XX GW by 2045", icon = icon("bolt"), class = "scenario-btn")
+                                                 ),
+                                                 id = "util_scenario_buttons_box"
+                                             ), # end scenario buttons box
                                              
-                                         ), # END input box
+                                             box( # other inputs box
+                                                 width = 12,
+                                                 sliderInput( ###### year range slider input ######
+                                                              inputId = 'year_range_input_utility',
+                                                              label = tags$span(
+                                                                  'Year Construction Starts - Year To Meet Target',
+                                                                  tags$i(
+                                                                      class = "glyphicon glyphicon-info-sign", 
+                                                                      style = "color:#0072B2;",
+                                                                      title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
+                                                                  )),
+                                                              min = 2025,
+                                                              max = 2045,
+                                                              value = c(2025, 2045),
+                                                              step = 1,
+                                                              ticks = F,
+                                                              sep = ""
+                                                 ), 
+                                                 
+                                                 numericInput( ###### initial capacity input  ######
+                                                               inputId = 'initial_mw_utility_input',
+                                                               label = tags$span(
+                                                                   'Current Capacity (MW)',
+                                                                   tags$i(
+                                                                       class = "glyphicon glyphicon-info-sign", 
+                                                                       style = "color:#0072B2;",
+                                                                       title = "Currently installed capacity in your county in megawatts. Value must not be 0."
+                                                                   )),
+                                                               value = 0,
+                                                               min = 0
+                                                 ), 
+                                                 
+                                                 numericInput( ###### final capacity input  ######
+                                                               inputId = 'final_mw_utility_input',
+                                                               label = tags$span(
+                                                                   'Target Capacity (MW)',
+                                                                   tags$i(
+                                                                       class = "glyphicon glyphicon-info-sign", 
+                                                                       style = "color:#0072B2;",
+                                                                       title = "Target capacity to reach by final input year in megawatts."
+                                                                   )),
+                                                               value = 0,
+                                                               min = 0
+                                                 ),
+                                                 
+                                                 pickerInput( ###### job type input ######
+                                                              inputId = 'utility_job_type_input',
+                                                              label =
+                                                                  tags$span(
+                                                                      'Direct, Indirect, or Induced Jobs', 
+                                                                      tags$i(
+                                                                          class = "glyphicon glyphicon-info-sign", 
+                                                                          style = "color:#0072B2;",
+                                                                          title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs.")), 
+                                                              choices = c('Direct', 'Indirect', 'Induced', 'Total'),
+                                                              multiple = FALSE,
+                                                              options = pickerOptions(actionsBox = TRUE)
+                                                 ), 
+                                                 
+                                                 id = "util_inputs_box" # for tutorial
+                                                 
+                                             ) # END input box
+                                         ), # end left column
                                          
-                                         box( ###### map output  ######
-                                              width = 8,
-                                              
-                                              leafletOutput(outputId = 'utility_map_output') |>
-                                                  withSpinner(type = 1, color = '#09847A'),
-                                              
-                                              id = "util_map_box"  # for tutorial
-                                              
-                                         )
+                                         column(
+                                             width = 8,
+                                             
+                                             box( ###### map output  ######
+                                                  width = 12,
+                                                  
+                                                  leafletOutput(outputId = 'utility_map_output',
+                                                                height = "580px") |>
+                                                      withSpinner(type = 1, color = '#09847A'),
+                                                  
+                                                  id = "util_map_box"  # for tutorial
+                                                  
+                                             )  # END leaflet box
+                                         ) # end right column
                                          
-                                         # END leaflet box
+                                         
+                                         
                                          
                                ),
                                
