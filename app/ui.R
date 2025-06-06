@@ -412,32 +412,40 @@ body <- dashboardBody( introjsUI(),
                                              width = 4,
                                              box( # county input box
                                                  width = 12,
-                                                 
+                                                 title = "Select a County",
                                                  pickerInput( ###### county input ######
                                                               inputId = 'county_input',
-                                                              label = tags$span(
-                                                                  'County',
-                                                                  tags$i(
-                                                                      class = "glyphicon glyphicon-info-sign", 
-                                                                      style = "color:#0072B2;",
-                                                                      title = "Choose a county to analyze."
-                                                                  )),
+                                                              # label = tags$span(
+                                                              #     'County',
+                                                              #     tags$i(
+                                                              #         class = "glyphicon glyphicon-info-sign", 
+                                                              #         style = "color:#0072B2;",
+                                                              #         title = "Choose a county to analyze."
+                                                              #     )),
                                                               choices = c(unique(counties$County)),
                                                               selected = c('Ventura'),
                                                               multiple = FALSE,
                                                               options = pickerOptions(actionsBox = TRUE)
-                                                 )
+                                                 ),
+                                                 id = "util_county_box"
                                              ), # end county input box
                                              
                                              box( # scenario buttons box
                                                  width = 12,
-                                                 title = "Choose a predefined scenario",
+                                                 title = tags$span(
+                                                                   'Choose a Predefined Scenario',
+                                                                   tags$i(
+                                                                       class = "glyphicon glyphicon-info-sign", 
+                                                                       style = "color:#0072B2; font-size: 14px;",
+                                                              title = "Some text about this."
+                                                          )),
                                                  uiOutput("scenario_buttons_ui"),
                                                  id = "util_scenario_buttons_box"
                                              ), # end scenario buttons box
                                              
                                              box( # other inputs box
                                                  width = 12,
+                                                 title = "Enter a Custom Scenario",
                                                  sliderInput( ###### year range slider input ######
                                                               inputId = 'year_range_input_utility',
                                                               label = tags$span(
