@@ -97,14 +97,16 @@ server <- function(input, output, session) {
                 list(intro = "<b>👋 Welcome to the Utility Solar Development tab!</b><br><br>Use this tool to explore 
                      potential job creation under different deployment scenarios of utility-scale solar development.",
                      tooltipClass = "introjs-large"),  # Custom class
-                list(element = "#util_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
-                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     Default capacity values are scaled to each county from the statewide goals outlined in 
-                     California Air Resources Board's 2022 Scoping Plan.",
+                list(element = "#util_county_box", intro = "Start by choosing your county.",
                      position = "right"),
-                list(element = "#util_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                list(element = "#util_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                     position = "right"),
+                list(element = "#util_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
+                and target capacity goals. Then, choose the type of jobs you would like to see.",
+                     position = "right"),
+                list(element = "#util_map_box", intro = "This map shows the total job-years created
                 from your scenario for utility solar development. <br><br> 
-                         You can think of each FTE job as one full-time job that lasts for one year.",
+                         One job-year is a full-time equivalent (FTE) job that lasts for one year.",
                      position = "left"),
                 list(element = "#util_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
                 <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
@@ -312,15 +314,19 @@ server <- function(input, output, session) {
             # Utility ----
         } else if (input$tabs == "utility") {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Utility Solar Development tab!</b><br><br>Use this tool to explore potential job creation under different deployment scenarios of utility-scale solar development.",
+                list(intro = "<b>👋 Welcome to the Utility Solar Development tab!</b><br><br>Use this tool to explore 
+                     potential job creation under different deployment scenarios of utility-scale solar development.",
                      tooltipClass = "introjs-large"),  # Custom class
-                list(element = "#util_inputs_box", intro = "Start by choosing your county, and then adjust assumptions for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     Default capacity values are scaled to each county from the statewide goals outlined in 
-                     California Air Resources Board's 2022 Scoping Plan.",
+                list(element = "#util_county_box", intro = "Start by choosing your county.",
                      position = "right"),
-                list(element = "#util_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                list(element = "#util_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                     position = "right"),
+                list(element = "#util_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
+                and target capacity goals. Then, choose the type of jobs you would like to see.",
+                     position = "right"),
+                list(element = "#util_map_box", intro = "This map shows the total job-years created
                 from your scenario for utility solar development. <br><br> 
-                         You can think of each FTE job as one full-time job that lasts for one year.",
+                         One job-year is a full-time equivalent (FTE) job that lasts for one year.",
                      position = "left"),
                 list(element = "#util_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
                 <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
@@ -1095,8 +1101,8 @@ server <- function(input, output, session) {
         
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
-        counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
-                                             "<b> <br>", counties_with_labels$name, " County </b><br>",
+        counties_with_labels$label <- paste0("<b> Total job-years in </b>",
+                                             "<b> <br>", counties_with_labels$name, " County <br> from ", input$year_range_input_utility[1], "-", input$year_range_input_utility[2], "</b><br>",
                                              "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
                                              "O&M: ", scales::comma(counties_with_labels$`O&M`)
         )
@@ -1151,7 +1157,7 @@ server <- function(input, output, session) {
                 labelOptions = labelOptions(
                     noHide = TRUE,
                     direction = 'left',
-                    textsize = "12px",
+                    textsize = "14px",
                     opacity = 0.9
                 )
             )
@@ -1561,8 +1567,8 @@ server <- function(input, output, session) {
         
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
-        counties_with_labels$label <- paste0("<b> Total FTE jobs in </b>",
-                                             "<b> <br>", counties_with_labels$name, " County </b><br>",
+        counties_with_labels$label <- paste0("<b> Total job-years in </b>",
+                                             "<b> <br>", counties_with_labels$name, " County <br> from ", input$year_range_input_roof[1], "-", input$year_range_input_roof[2], "</b><br>",
                                              "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
                                              "O&M: ", scales::comma(counties_with_labels$`O&M`)
         )
