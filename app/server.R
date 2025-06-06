@@ -844,28 +844,6 @@ server <- function(input, output, session) {
     # Track which scenario (if any) is selected
     selected_scenario <- reactiveVal(NULL)
     
-    # buttons will update defaults
-    # Automatically apply Scenario 1 when county changes - NOT WORKING!!!!
-    observeEvent(input$county_input, {
-        req(input$county_input)
-        county <- input$county_input
-        
-        if (county %in% names(scenario_presets)) {
-            preset <- scenario_presets[[county]]$scenario1
-            
-            # Update inputs to Scenario 1 values
-            updateNumericInput(session, "initial_mw_utility_input", value = preset$initial)
-            updateNumericInput(session, "final_mw_utility_input", value = preset$final)
-            updateSliderInput(session, "year_range_input_utility", value = preset$years)
-            
-            # Mark as scenario 1 selected
-            selected_scenario("scenario1")
-            
-            # Set active class
-            shinyjs::addClass("load_scenario1", "active")
-            shinyjs::removeClass("load_scenario2", "active")
-        }
-    })
     
     # Scenario 1 button click - working
     observeEvent(input$load_scenario1, {
@@ -919,27 +897,27 @@ server <- function(input, output, session) {
         }
     }, ignoreInit = TRUE)
     
-    
-    # Update label on scenario button to reflect scenario NOT WORKING
-    observeEvent(input$county_input, {
+    # Update label on scenario button to reflect scenario - working --> it wasn't working because the updateActionButton() assumes that the UI has already run and created the buttons, but that's not always the case. i think. 
+    output$scenario_buttons_ui <- renderUI({
+        req(input$county_input)
         county <- input$county_input
         
         if (county %in% names(scenario_presets)) {
             preset1 <- scenario_presets[[county]]$scenario1
             preset2 <- scenario_presets[[county]]$scenario2
             
-            label1 <- sprintf("Scenario 1 - %.1f GW by %d", preset1$final / 1000, preset1$years[2])
-            label2 <- sprintf("Scenario 2 - %.1f GW by %d", preset2$final / 1000, preset2$years[2])
-            
-            updateActionButton(session, "load_scenario1", label = label1)
-            updateActionButton(session, "load_scenario2", label = label2)
+            label1 <- sprintf("Scenario 1 - %d MW by %d", preset1$final, preset1$years[2])
+            label2 <- sprintf("Scenario 2 - %d MW by %d", preset2$final, preset2$years[2])
         } else {
-            updateActionButton(session, "load_scenario1", label = "Scenario 1 - XX GW by 2045")
-            updateActionButton(session, "load_scenario2", label = "Scenario 2 - XX GW by 2045")
+            label1 <- "Scenario 1 - XX MW by 2045"
+            label2 <- "Scenario 2 - XX MW by 2045"
         }
+        
+        div(style = "display: flex; flex-direction: column; gap: 10px;",
+            actionButton("load_scenario1", label1, icon = icon("bolt"), class = "scenario-btn"),
+            actionButton("load_scenario2", label2, icon = icon("bolt"), class = "scenario-btn")
+        )
     })
-    
-    
     
     
     # Utility defaults by county ----

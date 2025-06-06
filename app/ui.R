@@ -432,10 +432,7 @@ body <- dashboardBody( introjsUI(),
                                              box( # scenario buttons box
                                                  width = 12,
                                                  title = "Choose a predefined scenario",
-                                                 div(style = "display: flex; flex-direction: column; gap: 10px;",
-                                                     actionButton("load_scenario1", "Scenario 1 - XX GW by 2045", icon = icon("bolt"), class = "scenario-btn"),
-                                                     actionButton("load_scenario2", "Scenario 2 - XX GW by 2045", icon = icon("bolt"), class = "scenario-btn")
-                                                 ),
+                                                 uiOutput("scenario_buttons_ui"),
                                                  id = "util_scenario_buttons_box"
                                              ), # end scenario buttons box
                                              
