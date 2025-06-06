@@ -786,7 +786,13 @@ body <- dashboardBody( introjsUI(),
                            tabItem(tabName = 'well_cap', 
                                    
                                    fluidRow(
-                                       box(width = 4,
+                                       # box(
+                                       #     width = NULL,
+                                       #     column(1),
+                                       #     column(10, includeMarkdown('text/oil-capping.md')),
+                                       #     column(1)
+                                       # ),
+                                       box(width = 6,
                                            # County picker input
                                            pickerInput(
                                                inputId = 'county_wells_input',
@@ -796,14 +802,14 @@ body <- dashboardBody( introjsUI(),
                                                                      style = "color:#0072B2;",
                                                                      title = "Choose a county"
                                                                  )),
-                                               choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
-                                               multiple = FALSE
+                                               choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), multiple = FALSE
                                            ), # End pickerInput
+                                           column(12, includeMarkdown('text/oil-capping.md')),
                                            id = "cap_inputs_box" # For tutorial
                                        ), # End input box
                                        
                                        box(
-                                           width = 8,
+                                           width = 6,
                                            leafletOutput(outputId = 'capping_map_output', height = "500px") |>
                                                withSpinner(type = 1, color = '#09847A'),
                                            id = "cap_map_box" # For tutorial
