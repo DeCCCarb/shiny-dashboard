@@ -2276,7 +2276,7 @@ server <- function(input, output, session) {
                 label_text = paste0("<b><u><font size = '2.5'>", name, " County </b></u></font><br>Total Oil & Gas Wells: ", scales::comma(well_count),
                                     "<br> Total FTE Jobs: ", scales::comma(n_jobs),
                                     "<br>",
-                                    "<br> Capping all idle & active wells from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
+                                    "<br> Capping all idle & active wells linearly from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
                 )
                 
             )

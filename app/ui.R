@@ -54,7 +54,7 @@ sidebar <- dashboardSidebar(
         menuItem(
             text = 'Project Overview',
             tabName = 'overview',
-            icon = icon('bookmark')
+            icon = icon('diagram-project')
         ),
         menuItem(
             text = 'Floating Offshore Wind',
@@ -801,6 +801,8 @@ body <- dashboardBody( introjsUI(),
                                        #     column(1)
                                        # ),
                                        box(width = 6,
+                                           column(12, includeMarkdown('text/oil-capping.md')), # background text goes before user picks county
+                                           id = "cap_inputs_box", # For tutorial
                                            # County picker input
                                            pickerInput(
                                                inputId = 'county_wells_input',
@@ -811,9 +813,7 @@ body <- dashboardBody( introjsUI(),
                                                                      title = "Choose a county"
                                                                  )),
                                                choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), multiple = FALSE
-                                           ), # End pickerInput
-                                           column(12, includeMarkdown('text/oil-capping.md')),
-                                           id = "cap_inputs_box" # For tutorial
+                                           ) # End pickerInput
                                        ), # End input box
                                        
                                        box(
