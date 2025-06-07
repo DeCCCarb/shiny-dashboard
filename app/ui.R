@@ -969,15 +969,15 @@ body <- dashboardBody( introjsUI(),
                                            width = NULL,
                                            #title = tagList(icon('sourcetree'), tags$strong('Economic Modeling Tools')),
                                            column(1),
-                                           column(10, includeMarkdown('text/tool-documentation.md')),
+                                           column(10, includeMarkdown('text/tool-doc2.md')),
                                            column(1)
                                        )
                                    )),
-                                   fluidRow(
-                                       column(width = 12, align = "center",
-                                              p("For a detailed look at the technical documentation please visit here.")
-                                       )
-                                   ), # End documentation fluidRow
+                                   # fluidRow(
+                                   #     column(width = 12, align = "center",
+                                   # #            p("For a detailed look at the technical documentation please visit here.")
+                                   # #     )
+                                   # # ), # End documentation fluidRow
                                    
                                    div(style = "text-align: center; margin-bottom: 30px;",
                                        h3("The Team")
