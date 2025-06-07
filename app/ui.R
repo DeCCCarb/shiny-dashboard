@@ -54,7 +54,7 @@ sidebar <- dashboardSidebar(
         menuItem(
             text = 'Project Overview',
             tabName = 'overview',
-            icon = icon('bookmark')
+            icon = icon('diagram-project')
         ),
         menuItem(
             text = 'Floating Offshore Wind',
@@ -794,7 +794,15 @@ body <- dashboardBody( introjsUI(),
                            tabItem(tabName = 'well_cap', 
                                    
                                    fluidRow(
-                                       box(width = 4,
+                                       # box(
+                                       #     width = NULL,
+                                       #     column(1),
+                                       #     column(10, includeMarkdown('text/oil-capping.md')),
+                                       #     column(1)
+                                       # ),
+                                       box(width = 6,
+                                           column(12, includeMarkdown('text/oil-capping.md')), # background text goes before user picks county
+                                           id = "cap_inputs_box", # For tutorial
                                            # County picker input
                                            pickerInput(
                                                inputId = 'county_wells_input',
@@ -804,14 +812,12 @@ body <- dashboardBody( introjsUI(),
                                                                      style = "color:#0072B2;",
                                                                      title = "Choose a county"
                                                                  )),
-                                               choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
-                                               multiple = FALSE
-                                           ), # End pickerInput
-                                           id = "cap_inputs_box" # For tutorial
+                                               choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), multiple = FALSE
+                                           ) # End pickerInput
                                        ), # End input box
                                        
                                        box(
-                                           width = 8,
+                                           width = 6,
                                            leafletOutput(outputId = 'capping_map_output', height = "500px") |>
                                                withSpinner(type = 1, color = '#09847A'),
                                            id = "cap_map_box" # For tutorial
