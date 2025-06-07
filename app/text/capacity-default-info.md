@@ -1,33 +1,76 @@
-## How did we get our default capacity values?
-When you enter our technology tabs, you will see a couple of default capacity scenarios to choose from. But... how did we get these?
+## Understanding our Default Capacity Values
+
+This tool is meant to help users explore possible futures for clean energy and oil transition on California’s Central Coast. In each technology tab, you'll find a couple of **default capacity scenarios** to choose from. These scenarios are not predictions - they’re starting points, based on current state-level goals, local data, and planning documents.
+
+We included these to give users a baseline to begin exploring trade-offs, impacts, and opportunities. But the future is uncertain, and local realities will continue to evolve - so you are encouraged to modify these values and input your own.
+
+Here’s how we arrived at the default scenarios you’ll see in each section:
+
+---
 
 ### Floating Offshore Wind
 
-The California Energy Commission’s Strategic Plan for Offshore Wind has established a statewide goal of 25 GW of floating offshore wind capacity by 2045. This capacity will be split between two regions slated for offshore wind development, two projects in Humboldt Bay and three in the Central Coast. In this analysis, the 25 GW capacity is split between these two sites based on the proposed projects, estimating that 60%, or 15 GW capacity by 2045, would be the Central Coast’s contribution to this goal. 
+The California Energy Commission’s Strategic Plan for Offshore Wind has established a statewide goal of 25 GW of floating offshore wind capacity by 2045. This capacity is split between two regions slated for development: two projects in Humboldt Bay and three in the Central Coast.
 
-However, we know that this is quite an ambitious scenario, dependent on quick development backed by investment, infrastructure, and policy. Therefore, we calculated a second scenario: 6 GW, which is 40% of the original 15 GW goal. We gave these scenarios so that all users could have a place to start with our tool, based on the current statewide conversation around Floating Offshore Wind Development. However, we know that this conversation is changing rapidly. Therefore, users are also encouraged to enter in their own specific capacity goals. The scenario buttons are simply a jumping off point. 
+In this analysis, the 25 GW goal is divided based on these projects, estimating that 60%, or 15 GW, would come from the Central Coast by 2045.
 
-### Rooftop & Utility-scale Solar
+However, since this is a highly ambitious target - relying on rapid development, investment, infrastructure, and policy - we also calculated a second scenario: 6 GW, which is 40% of the 15 GW goal.
 
-The California Air Resource's Board 2022 Scoping Plan sets forth statewide targets for rooftop and utility-scale solar, but it doesn't specify how these targets should be distributed among the counties. Therefore, to scale these estimates down the county level, our first step was to gather each county's current installed solar capacity from state energy data. Next, we calculated the percent increase needed statewide to meet California's 2045 goals. Finally, we applied that same percent increase to each county's current installed capacity, assuming that the counties would grow at a similar pace to the state as a whole. 
+These scenarios are meant to give users a place to start, based on the current statewide conversation around floating offshore wind. But that conversation is evolving, and users are encouraged to enter their own capacity goals. The scenario buttons are just a jumping off point.
 
-These tabs also have scenario buttons. These scenarios are the full goal for each county, calculated in the analysis above, and then 50% of that goal. 
+---
+
+### Rooftop & Utility-Scale Solar
+
+The California Air Resources Board’s 2022 Scoping Plan sets statewide targets for rooftop and utility-scale solar, but it doesn’t specify how to divide these goals among counties.
+
+To estimate county-level targets, we:
+1. Collected current installed solar capacity by county using state energy data.
+2. Calculated the percent increase needed statewide to meet the 2045 target.
+3. Applied that increase to each county’s current capacity, assuming they grow at a similar pace as the state.
+
+Each solar tab includes two default scenarios: the full 2045 goal for each county, and 50% of that goal.
+
+#### Rooftop Scenarios
+
+| County           | Full Goal (MW by 2045)     | 50% Scenario (MW)       |
+|------------------|-----------------------------|--------------------------|
+| Santa Barbara    | 1,294                       | 647                      |
+| San Luis Obispo  | 1,844                       | 922                      |
+| Ventura          | 3,026                       | 1,513                    |
+
+#### Utility-Scale Scenarios
+
+| County           | Full Goal (MW by 2045)     | 50% Scenario (MW)       |
+|------------------|-----------------------------|--------------------------|
+| Santa Barbara    | 722                         | 371                      |
+| San Luis Obispo  | 10,525                      | 5,262                    |
+| Ventura          | 44                          | 22                       |
+
+---
 
 ## How did we calculate oil decline?
 
-### Job Loss from Phasing out Crude Oil
+### Job loss from phasing out crude oil
 
-To project job losses by county in California under various decarbonization policy scenarios, we used an empirical model developed by the Environmental Markets Lab at UCSB. This analysis incorporates these projections, along with additional estimates from the previous MEDS capstone project, Investigating the Social and Environmental Impacts of Supply Side Oil and Gas Policies in California, to model job loss as California transitions away from fossil fuels. The model's 2025 employment projections were validated against current Bureau of Labor Statistics data to ensure continued accuracy and relevance.
+To project job losses by county under different decarbonization policies, we used a model developed by the Environmental Markets Lab at UCSB. This model was supplemented by estimates from a previous MEDS capstone project: *Investigating the Social and Environmental Impacts of Supply Side Oil and Gas Policies in California*.
 
-We visualized the employment projections under 5 setback policy scenarios, with the default being set to the current state policy, 3200-feet setback applied to only new wells. Including these other options provides context for the broader implications of California’s decarbonization transition under different possible scenarios.
+The model’s 2025 employment projections were validated against Bureau of Labor Statistics data to help ensure accuracy.
 
+We show job loss projections under five different setback policies. The default is California’s current policy: a 3,200-foot setback applied only to new wells. Including alternative scenarios helps illustrate how job losses could vary based on policy choices.
 
-### Jobs Created from Onshore Oil Well Capping
+---
 
-To project potential job creation from onshore oil well capping between 2025 and 2045, we multiplied the average number of jobs created per well by the total number of idle and active wells in California’s Central Coast. We gathered this number from a dataset created by Deshmukh et. al. that catalogs all wells in California, the number of idle and active oil and gas wells in Ventura, Santa Barbara, and San Luis Obispo Counties. 
+### Jobs created from onshore oil well capping
 
-According to Raimi et. al., capping a single oil well generates an average of 0.25 FTE jobs. By multiplying the total number of wells in each county by this factor, we estimate the total number of potential jobs created. To determine annual job creation, this total is divided by 20 years.
-This model has several assumptions:
-- All active wells will become idle and ready for capping by 2045, consistent with the typical 15–20 year lifespan of an oil well.
-- Well capping will occur at an exponential rate, similar to other technologies.
-- The number of new wells drilled in the Central Coast between 2025 and 2045 will be negligible.
+To estimate jobs from onshore oil well capping between 2025 and 2045, we used data on idle and active wells in Ventura, Santa Barbara, and San Luis Obispo counties from a dataset by Deshmukh et al.
+
+Based on Raimi et al., capping one well generates an average of 0.25 full-time equivalent (FTE) jobs. To estimate total jobs:
+
+- Total wells × 0.25 = total FTE jobs  
+- Total jobs ÷ 20 years = estimated annual job creation
+
+Key assumptions in this model:
+- All active wells will become idle and be ready for capping by 2045, consistent with their 15–20 year lifespan.
+- Well capping will proceed at an exponential rate.
+- The number of new wells drilled from 2025 to 2045 will be negligible.
