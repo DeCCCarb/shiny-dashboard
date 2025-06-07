@@ -11,7 +11,8 @@ server <- function(input, output, session) {
                              "well_cap"  = "Onshore Oil Well Capping",
                              "phaseout"  = "Crude Oil Phaseout",
                              "overview" = "Project Overview",
-                             "welcome" = "Welcome"
+                             "welcome" = "Welcome",
+                             "documentation" = "Documentation"    
                              
         )
         
@@ -104,9 +105,9 @@ server <- function(input, output, session) {
                 list(element = "#util_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
-                list(element = "#util_map_box", intro = "This map shows the total job-years created
+                list(element = "#util_map_box", intro = "This map shows the total full-time equivalent (FTE) jobs created
                 from your scenario for utility solar development. <br><br> 
-                         One job-year is a full-time equivalent (FTE) job that lasts for one year.",
+                         One full-time equivalent (FTE) job is a full-time job that lasts for one year.",
                      position = "left"),
                 list(element = "#util_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
                 <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
@@ -134,10 +135,12 @@ server <- function(input, output, session) {
                 list(intro = "<b>👋 Welcome to the Rooftop Solar Development tab!</b><br><br>Use this tool to explore 
                      potential job creation under different deployment scenarios of rooftop solar development.",
                      tooltipClass = "introjs-large"),  # Custom class
-                list(element = "#roof_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
-                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     Default capacity values are scaled to each county from the statewide goals outlined in 
-                     California Air Resources Board's 2022 Scoping Plan.",
+                list(element = "#roof_county_box", intro = "Start by choosing your county.",
+                     position = "right"),
+                list(element = "#roof_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                     position = "right"),
+                list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
+                and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#roof_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
                 from your scenario for rooftop solar development. <br><br> 
@@ -210,7 +213,8 @@ server <- function(input, output, session) {
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
                 it remains an essential component of the region’s transition.",
                      tooltipClass = "introjs-large"),
-                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize."),
+                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize.",
+                     position = "right"),
                 list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
                      created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
                      position = "left"),
@@ -351,10 +355,12 @@ server <- function(input, output, session) {
                 list(intro = "<b>👋 Welcome to the Rooftop Solar Development tab!</b><br><br>Use this tool to explore 
                      potential job creation under different deployment scenarios of rooftop solar development.",
                      tooltipClass = "introjs-large"),  # Custom class
-                list(element = "#roof_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
-                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     Default capacity values are scaled to each county from the statewide goals outlined in 
-                     California Air Resources Board's 2022 Scoping Plan.",
+                list(element = "#roof_county_box", intro = "Start by choosing your county.",
+                     position = "right"),
+                list(element = "#roof_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                     position = "right"),
+                list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
+                and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#roof_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
                 from your scenario for rooftop solar development. <br><br> 
@@ -420,7 +426,8 @@ server <- function(input, output, session) {
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
                 it remains an essential component of the region’s transition.",
                      tooltipClass = "introjs-large"),
-                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize."),
+                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize.",
+                     position = "right"),
                 list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
                      created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
                      position = "left"),
@@ -653,7 +660,7 @@ server <- function(input, output, session) {
                         labelOptions = labelOptions(
                             noHide = TRUE,
                             direction = 'left',
-                            textsize = "12px",
+                            textsize = "14px",
                             opacity = 1
                         )
                     )
@@ -696,6 +703,15 @@ server <- function(input, output, session) {
         # Join O&M and Construction
         osw_all <- rbind(osw_construction, osw_om) |>
             filter(type %in% input$job_type_input) # Filter to inputted job type
+        
+        # Update O&M to Operations and Maintenance for plot
+        osw_all <- osw_all |>
+            mutate(
+                occupation = recode(
+                    occupation,
+                    "O&M" = "Operations & Maintenance"
+                )
+            )
         
         # Job ggplot ----
         osw_plot <- ggplot(osw_all,
@@ -744,7 +760,7 @@ server <- function(input, output, session) {
                        scale = 15
                    )) |>
             layout(hovermode = "x unified",
-                   legend = list(x = 0.7, 
+                   legend = list(x = 0.4, 
                                  xanchor = 'left',
                                  yanchor = 'top',
                                  orientation = 'h',
@@ -831,28 +847,27 @@ server <- function(input, output, session) {
     
     ########## UTILITY SOLAR TAB ##########
     
-    # Define scenario presets - UPDATE WITH REAL VALUES
+    ##### Scenario buttons #####
+    selected_scenario <- reactiveVal(NULL)
+    
+    # Define scenario presets
     scenario_presets <- list(
         "Ventura" = list(
-            scenario1 = list(initial = 100, final = 800, years = c(2025, 2040)),
-            scenario2 = list(initial = 100, final = 1200, years = c(2025, 2045))
+            scenario1 = list(initial = 7, final = 44, years = c(2025, 2045)),
+            scenario2 = list(initial = 7, final = 44/2, years = c(2025, 2045))
         ),
         "Santa Barbara" = list(
-            scenario1 = list(initial = 80, final = 600, years = c(2025, 2040)),
-            scenario2 = list(initial = 80, final = 1000, years = c(2025, 2045))
+            scenario1 = list(initial = 111, final = 722, years = c(2025, 2045)),
+            scenario2 = list(initial = 111, final = 722/2, years = c(2025, 2045))
         ),
         "San Luis Obispo" = list(
-            scenario1 = list(initial = 120, final = 900, years = c(2025, 2040)),
-            scenario2 = list(initial = 120, final = 1500, years = c(2025, 2045))
+            scenario1 = list(initial = 1616, final = 10525, years = c(2025, 2045)),
+            scenario2 = list(initial = 1616, final = 10524/2, years = c(2025, 2045))
         )
     )
     
-    # Track which scenario (if any) is selected
-    selected_scenario <- reactiveVal(NULL)
-    
-    
     # Scenario 1 button click - working
-    observeEvent(input$load_scenario1, {
+    observeEvent(input$load_util_scenario1, {
         req(input$county_input)
         county <- input$county_input
         
@@ -865,13 +880,13 @@ server <- function(input, output, session) {
             
             selected_scenario("scenario1")
             
-            shinyjs::addClass("load_scenario1", "active")
-            shinyjs::removeClass("load_scenario2", "active")
+            shinyjs::addClass("load_util_scenario1", "active")
+            shinyjs::removeClass("load_util_scenario2", "active")
         }
     })
     
     # Scenario 2 button click - working
-    observeEvent(input$load_scenario2, {
+    observeEvent(input$load_util_scenario2, {
         req(input$county_input)
         county <- input$county_input
         
@@ -884,8 +899,8 @@ server <- function(input, output, session) {
             
             selected_scenario("scenario2")
             
-            shinyjs::addClass("load_scenario2", "active")
-            shinyjs::removeClass("load_scenario1", "active")
+            shinyjs::addClass("load_util_scenario2", "active")
+            shinyjs::removeClass("load_util_scenario1", "active")
         }
     })
     
@@ -898,8 +913,8 @@ server <- function(input, output, session) {
         if (!is.null(selected_scenario())) {
             selected_scenario(NULL)
             
-            shinyjs::removeClass("load_scenario1", "active")
-            shinyjs::removeClass("load_scenario2", "active")
+            shinyjs::removeClass("load_util_scenario1", "active")
+            shinyjs::removeClass("load_util_scenario2", "active")
         }
     }, ignoreInit = TRUE)
     
@@ -912,59 +927,78 @@ server <- function(input, output, session) {
             preset1 <- scenario_presets[[county]]$scenario1
             preset2 <- scenario_presets[[county]]$scenario2
             
-            label1 <- sprintf("Scenario 1 - %d MW by %d", preset1$final, preset1$years[2])
-            label2 <- sprintf("Scenario 2 - %d MW by %d", preset2$final, preset2$years[2])
+            label1 <- sprintf("Scenario 1 - %s MW by %d", scales::comma(preset1$final), preset1$years[2])
+            label2 <- sprintf("Scenario 2 - %s MW by %d", scales::comma(preset2$final), preset2$years[2])
         } else {
             label1 <- "Scenario 1 - XX MW by 2045"
             label2 <- "Scenario 2 - XX MW by 2045"
         }
         
         div(style = "display: flex; flex-direction: column; gap: 10px;",
-            actionButton("load_scenario1", label1, icon = icon("bolt"), class = "scenario-btn"),
-            actionButton("load_scenario2", label2, icon = icon("bolt"), class = "scenario-btn")
+            actionButton("load_util_scenario1", label1, icon = icon("bolt"), class = "scenario-btn"),
+            actionButton("load_util_scenario2", label2, icon = icon("bolt"), class = "scenario-btn")
         )
     })
     
-    
-    # Utility defaults by county ----
+    # Auto-load scenario 1 when county changes - working BUT button does not appear selected
     observeEvent(input$county_input, {
-        # Requires a county input
-        req(input$county_input)
+        county <- input$county_input
+        req(county)
         
-        selected_county <- input$county_input
-        
-        if (selected_county == "All Counties") {
-            # Use sum across selected counties for defaults
-            initial_val <- utility_targets %>%
-                filter(values == "initial") %>%
-                select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
-                unlist() %>%
-                sum(na.rm = TRUE)
+        if (county %in% names(scenario_presets)) {
+            preset <- scenario_presets[[county]]$scenario1
             
-            final_val <- utility_targets %>%
-                filter(values == "final") %>%
-                select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
-                unlist() %>%
-                sum(na.rm = TRUE)
-        } else {
-            # Assign selected county
-            selected_county <- as.character(input$county_input)[1]  # make sure it's a string
+            updateNumericInput(session, "initial_mw_utility_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_utility_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_utility", value = preset$years)
             
-            # Placeholder for default initial capacity that changes based on county selection
-            initial_val <- utility_targets %>%
-                filter(values == "initial") %>%
-                pull(!!sym(selected_county))
+            selected_scenario("scenario1")
             
-            # Placeholder for default final capacity that changes based on county selection
-            final_val <- utility_targets %>%
-                filter(values == 'final') %>%
-                pull(!!sym(selected_county))
+            shinyjs::addClass("load_util_scenario1", "active")
+            shinyjs::removeClass("load_util_scenario2", "active")
         }
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = "initial_mw_utility_input", value = round(initial_val))
-        updateNumericInput(session, inputId = 'final_mw_utility_input', value = round(final_val))
     })
+
+    
+    # Utility defaults by county COMMENTED OUT because defaults now come from scenario button----
+    # observeEvent(input$county_input, {
+    #     # Requires a county input
+    #     req(input$county_input)
+    # 
+    #     selected_county <- input$county_input
+    # 
+    #     if (selected_county == "All Counties") {
+    #         # Use sum across selected counties for defaults
+    #         initial_val <- utility_targets %>%
+    #             filter(values == "initial") %>%
+    #             select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
+    #             unlist() %>%
+    #             sum(na.rm = TRUE)
+    # 
+    #         final_val <- utility_targets %>%
+    #             filter(values == "final") %>%
+    #             select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
+    #             unlist() %>%
+    #             sum(na.rm = TRUE)
+    #     } else {
+    #         # Assign selected county
+    #         selected_county <- as.character(input$county_input)[1]  # make sure it's a string
+    # 
+    #         # Placeholder for default initial capacity that changes based on county selection
+    #         initial_val <- utility_targets %>%
+    #             filter(values == "initial") %>%
+    #             pull(!!sym(selected_county))
+    # 
+    #         # Placeholder for default final capacity that changes based on county selection
+    #         final_val <- utility_targets %>%
+    #             filter(values == 'final') %>%
+    #             pull(!!sym(selected_county))
+    #     }
+    # 
+    #     # Update the UI defaults based on county
+    #     updateNumericInput(session, inputId = "initial_mw_utility_input", value = round(initial_val))
+    #     updateNumericInput(session, inputId = 'final_mw_utility_input', value = round(final_val))
+    # })
     
     ##### Utility map #####
     
@@ -1101,7 +1135,7 @@ server <- function(input, output, session) {
         
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
-        counties_with_labels$label <- paste0("<b> Total job-years in </b>",
+        counties_with_labels$label <- paste0("<b> Total FTE Jobs in </b>",
                                              "<b> <br>", counties_with_labels$name, " County <br> from ", input$year_range_input_utility[1], "-", input$year_range_input_utility[2], "</b><br>",
                                              "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
                                              "O&M: ", scales::comma(counties_with_labels$`O&M`)
@@ -1146,7 +1180,7 @@ server <- function(input, output, session) {
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
             addProviderTiles("CartoDB.Voyager") |>
-            setView(lng = -120.498189, lat = 34.820830, zoom = 8) |>
+            setView(lng = -120.298189, lat = 34.820830, zoom = 8) |>
             addPolygons(
                 color = "darkgreen",
                 opacity = 0.7
@@ -1254,24 +1288,15 @@ server <- function(input, output, session) {
                              slo_utility_pv_const, slo_utility_pv_om,
                              ventura_utility_pv_const, ventura_utility_pv_om)
         
-        # Sum jobs and capacity across Central Coast 
-        cc_utility <- utility_all |>
-            group_by(year, occupation, type) |>
-            summarise(n_jobs = sum(n_jobs),
-                      total_capacity_mw = sum(total_capacity_mw),
-                      new_capacity_mw = sum(new_capacity_mw),
-                      total_capacity_gw = sum(total_capacity_gw),
-                      new_capacity_gw = sum(new_capacity_gw)) |>
-            ungroup() |>
-            mutate(county = "All Counties",
-                   technology = "Utility PV",
-                   ambition = "High") 
+        # Update O&M to Operations and Maintenance for plot
+        utility_all <- utility_all |>
+            mutate(
+                occupation = recode(
+                    occupation,
+                    "O&M" = "Operations & Maintenance"
+                )
+            )
         
-        # Order columns to match
-        cc_utility <- cc_utility[names(utility_all)]
-        
-        # Add CC back into utility df
-        utility_all <- rbind(utility_all, cc_utility)
         
         # Filter based on user input
         utility_all <- utility_all |>
@@ -1341,7 +1366,7 @@ server <- function(input, output, session) {
                        scale = 15
                    )) |>
             layout(hovermode = "x unified",
-                   legend = list(x = 0.7, 
+                   legend = list(x = 0.4, 
                                  xanchor = 'left',
                                  yanchor = 'top',
                                  orientation = 'h',
@@ -1429,30 +1454,142 @@ server <- function(input, output, session) {
     
 ########## ROOFTOP SOLAR TAB ##########
     
-    # Rooftop defaults by county ----
-    observeEvent(input$roof_counties_input, {
-        # Requires a county input
+    ##### Scenario buttons #####
+    roof_selected_scenario <- reactiveVal(NULL)
+    
+    # Define scenario presets - UPDATE WITH REAL VALUES
+    roof_scenario_presets <- list(
+        "Ventura" = list(
+            scenario1 = list(initial = 424, final = 3026, years = c(2025, 2045)),
+            scenario2 = list(initial = 424, final = 3026/2, years = c(2025, 2045))
+        ),
+        "Santa Barbara" = list(
+            scenario1 = list(initial = 242, final = 1294, years = c(2025, 2045)),
+            scenario2 = list(initial = 242, final = 1294/2, years = c(2025, 2045))
+        ),
+        "San Luis Obispo" = list(
+            scenario1 = list(initial = 344, final = 1844, years = c(2025, 2045)),
+            scenario2 = list(initial = 344, final = 1844/2, years = c(2025, 2045))
+        )
+    )
+    
+    # Scenario 1 button click - working
+    observeEvent(input$load_roof_scenario1, {
         req(input$roof_counties_input)
+        county <- input$roof_counties_input
         
-        # Assign selected county
-        selected_county <- as.character(input$roof_counties_input)[1]  # make sure it's a string
-        
-        # Placeholder for default initial capacity that changes based on county selection
-        initial_val <- rooftop_targets %>% # Find targets in global.R
-            filter(values == "initial") %>%
-            pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
-        
-        # Placeholder for default final capacity that changes based on county selection
-        final_val <- rooftop_targets |>
-            filter(values == 'final') |>
-            pull(!!sym(selected_county))
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = "initial_mw_roof_input", value = initial_val)
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = 'final_mw_roof_input', value = final_val)
+        if (county %in% names(roof_scenario_presets)) {
+            preset <- roof_scenario_presets[[county]]$scenario1
+            
+            updateNumericInput(session, "initial_mw_roof_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_roof_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_roof", value = preset$years)
+            
+            roof_selected_scenario("scenario1")
+            
+            shinyjs::addClass("load_roof_scenario1", "active")
+            shinyjs::removeClass("load_roof_scenario2", "active")
+        }
     })
+    
+    # Scenario 2 button click - working
+    observeEvent(input$load_roof_scenario2, {
+        req(input$roof_counties_input)
+        county <- input$roof_counties_input
+        
+        if (county %in% names(roof_scenario_presets)) {
+            preset <- roof_scenario_presets[[county]]$scenario2
+            
+            updateNumericInput(session, "initial_mw_roof_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_roof_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_roof", value = preset$years)
+            
+            roof_selected_scenario("scenario2")
+            
+            shinyjs::addClass("load_roof_scenario2", "active")
+            shinyjs::removeClass("load_roof_scenario1", "active")
+        }
+    })
+    
+    # Remove active class if inputs change manually - working
+    observeEvent({
+        input$initial_mw_roof_input
+        input$final_mw_roof_input
+        input$year_range_input_roof
+    }, {
+        if (!is.null(roof_selected_scenario())) {
+            roof_selected_scenario(NULL)
+            
+            shinyjs::removeClass("load_roof_scenario1", "active")
+            shinyjs::removeClass("load_roof_scenario2", "active")
+        }
+    }, ignoreInit = TRUE)
+    
+    # Update label on scenario button to reflect scenario - working --> it wasn't working because the updateActionButton() assumes that the UI has already run and created the buttons, but that's not always the case. i think. 
+    output$roof_scenario_buttons_ui <- renderUI({
+        req(input$roof_counties_input)
+        county <- input$roof_counties_input
+        
+        if (county %in% names(roof_scenario_presets)) {
+            preset1 <- roof_scenario_presets[[county]]$scenario1
+            preset2 <- roof_scenario_presets[[county]]$scenario2
+            
+            label1 <- sprintf("Scenario 1 - %s MW by %d", scales::comma(preset1$final), preset1$years[2])
+            label2 <- sprintf("Scenario 2 - %s MW by %d", scales::comma(preset2$final), preset2$years[2])
+        } else {
+            label1 <- "Scenario 1 - XX MW by 2045"
+            label2 <- "Scenario 2 - XX MW by 2045"
+        }
+        
+        div(style = "display: flex; flex-direction: column; gap: 10px;",
+            actionButton("load_roof_scenario1", label1, icon = icon("bolt"), class = "scenario-btn"),
+            actionButton("load_roof_scenario2", label2, icon = icon("bolt"), class = "scenario-btn")
+        )
+    })
+    
+    # Auto-load scenario 1 when county changes - working BUT button does not appear selected
+    observeEvent(input$roof_counties_input, {
+        county <- input$roof_counties_input
+        req(county)
+        
+        if (county %in% names(roof_scenario_presets)) {
+            preset <- roof_scenario_presets[[county]]$scenario1
+            
+            updateNumericInput(session, "initial_mw_roof_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_roof_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_roof", value = preset$years)
+            
+            roof_selected_scenario("scenario1")
+            
+            shinyjs::addClass("load_roof_scenario1", "active")
+            shinyjs::removeClass("load_roof_scenario2", "active")
+        }
+    })
+    
+    # Rooftop defaults by county ----
+    # observeEvent(input$roof_counties_input, {
+    #     # Requires a county input
+    #     req(input$roof_counties_input)
+    #     
+    #     # Assign selected county
+    #     selected_county <- as.character(input$roof_counties_input)[1]  # make sure it's a string
+    #     
+    #     # Placeholder for default initial capacity that changes based on county selection
+    #     initial_val <- rooftop_targets %>% # Find targets in global.R
+    #         filter(values == "initial") %>%
+    #         pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
+    #     
+    #     # Placeholder for default final capacity that changes based on county selection
+    #     final_val <- rooftop_targets |>
+    #         filter(values == 'final') |>
+    #         pull(!!sym(selected_county))
+    #     
+    #     # Update the UI defaults based on county
+    #     updateNumericInput(session, inputId = "initial_mw_roof_input", value = initial_val)
+    #     
+    #     # Update the UI defaults based on county
+    #     updateNumericInput(session, inputId = 'final_mw_roof_input', value = final_val)
+    # })
     
     ##### Rooftop Map #####
     
@@ -1567,7 +1704,7 @@ server <- function(input, output, session) {
         
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
-        counties_with_labels$label <- paste0("<b> Total job-years in </b>",
+        counties_with_labels$label <- paste0("<b> Total FTE Jobs in </b>",
                                              "<b> <br>", counties_with_labels$name, " County <br> from ", input$year_range_input_roof[1], "-", input$year_range_input_roof[2], "</b><br>",
                                              "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
                                              "O&M: ", scales::comma(counties_with_labels$`O&M`)
@@ -1612,7 +1749,7 @@ server <- function(input, output, session) {
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
             addProviderTiles("CartoDB.Voyager") |>
-            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            setView(lng = -120.298189, lat = 34.820830, zoom = 8) |>
             addPolygons(
                 color = "darkgreen",
                 opacity = 0.7
@@ -1623,7 +1760,7 @@ server <- function(input, output, session) {
                 labelOptions = labelOptions(
                     noHide = TRUE,
                     direction = 'left',
-                    textsize = "12px",
+                    textsize = "14px",
                     opacity = 0.9
                 )
             )
@@ -1717,6 +1854,13 @@ server <- function(input, output, session) {
             filter(county %in% input$roof_counties_input)
         
         roof_all <- roof_all |>
+            # Update O&M to Operations and Maintenance for plot
+            mutate(
+                occupation = recode(
+                    occupation,
+                    "O&M" = "Operations & Maintenance"
+                )
+            ) |>
             mutate(
                 n_jobs_rounded = if_else(
                     n_jobs < 1,
@@ -1777,7 +1921,7 @@ server <- function(input, output, session) {
                        scale = 15
                    )) |>
             layout(hovermode = "x unified",
-                   legend = list(x = 0.7, 
+                   legend = list(x = 0.4, 
                                  xanchor = 'left',
                                  yanchor = 'top',
                                  orientation = 'h',
@@ -2276,7 +2420,7 @@ server <- function(input, output, session) {
                 label_text = paste0("<b><u><font size = '2.5'>", name, " County </b></u></font><br>Total Oil & Gas Wells: ", scales::comma(well_count),
                                     "<br> Total FTE Jobs: ", scales::comma(n_jobs),
                                     "<br>",
-                                    "<br> Capping all idle & active wells linearly from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
+                                    "<br> Capping all idle & active wells from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
                 )
                 
             )
@@ -2290,7 +2434,7 @@ server <- function(input, output, session) {
         # Set up the map
         leaflet_map <- leaflet() |>
             addProviderTiles("CartoDB.Voyager") |>
-            setView(lng = -120.40189, lat = 34.920030, zoom = 8)
+            setView(lng = -121.2, lat = 34.920030, zoom = 7)
         
         # Add county shapes by user input ----
         leaflet_map <- leaflet_map |>
@@ -2310,7 +2454,7 @@ server <- function(input, output, session) {
                     labelOptions = labelOptions(
                         noHide = TRUE,
                         direction = 'left',
-                        textsize = "12px",
+                        textsize = "14px",
                         opacity = 0.9
                     )
                 )

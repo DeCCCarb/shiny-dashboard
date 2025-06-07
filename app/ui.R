@@ -430,7 +430,7 @@ body <- dashboardBody( introjsUI(),
                                                  id = "util_county_box"
                                              ), # end county input box
                                              
-                                             box( # scenario buttons box
+                                             box( # scenario buttons box ----
                                                  width = 12,
                                                  title = tags$span(
                                                                    'Choose a Predefined Scenario',
@@ -515,7 +515,7 @@ body <- dashboardBody( introjsUI(),
                                                   width = 12,
                                                   
                                                   leafletOutput(outputId = 'utility_map_output',
-                                                                height = "580px") |>
+                                                                height = "635px") |>
                                                       withSpinner(type = 1, color = '#09847A'),
                                                   
                                                   id = "util_map_box"  # for tutorial
@@ -551,121 +551,133 @@ body <- dashboardBody( introjsUI(),
                            
                            # ROOFTOP SOLAR TAB ----                          
                            tabItem(
+                               
                                tabName = 'rooftop',
                                
-                               fluidRow( ##### First fluidRow (picker inputs) #####
-                                         
-                                         box(
+                               fluidRow( ##### First fluidRow (picker inputs and map) #####
+                                         column( # left hand column
                                              width = 4,
                                              
-                                             pickerInput( ###### county input ######
-                                                          inputId = 'roof_counties_input',
-                                                          label = tags$span(
-                                                              'County',
-                                                              tags$i(
-                                                                  class = "glyphicon glyphicon-info-sign", 
-                                                                  style = "color:#0072B2;",
-                                                                  title = "Choose a county to analyze."
-                                                              )),
-                                                          choices = unique(counties$County),
-                                                          selected = c('Ventura'),
-                                                          multiple = FALSE,
-                                                          options = pickerOptions(actionsBox = TRUE)
-                                             ),
+                                             box( # county input box
+                                                 width = 12,
+                                                 title = "Select a County",
+                                                 pickerInput( ###### county input ######
+                                                              inputId = 'roof_counties_input',
+                                                              choices = unique(counties$County),
+                                                              selected = c('Ventura'),
+                                                              multiple = FALSE,
+                                                              options = pickerOptions(actionsBox = TRUE)
+                                                 ),
+                                                 id = "roof_county_box"
+                                             ), # end county input box
                                              
-                                             sliderInput( ###### year range slider input ######
-                                                          inputId = 'year_range_input_roof',
-                                                          label = tags$span(
-                                                              'Year Construction Starts - Year to Meet Target',
-                                                              tags$i(
-                                                                  class = "glyphicon glyphicon-info-sign", 
-                                                                  style = "color:#0072B2;",
-                                                                  title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
-                                                              )),
-                                                          
-                                                          min = 2025,
-                                                          max = 2045,
-                                                          value = c(2025, 2045),
-                                                          step = 1,
-                                                          ticks = F,
-                                                          sep = ""
-                                             ),
+                                             box( # scenario buttons box ----
+                                                  width = 12,
+                                                  title = tags$span(
+                                                      'Choose a Predefined Scenario',
+                                                      tags$i(
+                                                          class = "glyphicon glyphicon-info-sign", 
+                                                          style = "color:#0072B2; font-size: 14px;",
+                                                          title = "Some text about this."
+                                                      )),
+                                                  uiOutput("roof_scenario_buttons_ui"),
+                                                  id = "roof_scenario_buttons_box"
+                                             ), # end scenario buttons box
                                              
-                                             numericInput( ###### initial capacity input ######
-                                                           inputId = 'initial_mw_roof_input',
-                                                           label = tags$span('Current Capacity (MW)',
-                                                                             tags$i(
-                                                                                 class = "glyphicon glyphicon-info-sign", 
-                                                                                 style = "color:#0072B2;",
-                                                                                 title = "Currently installed capacity in your county in megawatts. Value must not be 0."
-                                                                             )),
-                                                           value = 0,
-                                                           # placeholder — will be updated
-                                                           min = 0
-                                             ),
-                                             
-                                             numericInput( ###### final capacity input ######
-                                                           inputId = 'final_mw_roof_input',
-                                                           label = tags$span('Target Capacity (MW)',
-                                                                             tags$i(
-                                                                                 class = "glyphicon glyphicon-info-sign", 
-                                                                                 style = "color:#0072B2;",
-                                                                                 title = "Target capacity to reach by final input year in megawatts."
-                                                                             )),
-                                                           value = 0,
-                                                           min = 0
-                                             ),
-                                             
-                                             pickerInput( ###### job type input ######
-                                                          inputId = 'roof_job_type_input',
-                                                          label = tags$span('Direct, Indirect, or Induced Jobs',
-                                                                            tags$i(
-                                                                                class = "glyphicon glyphicon-info-sign", 
-                                                                                style = "color:#0072B2;",
-                                                                                title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs."
-                                                                            )),
-                                                          choices = c('Direct', 'Indirect', 'Induced', 'Total'),
-                                                          multiple = FALSE,
-                                                          options = pickerOptions(actionsBox = TRUE)
-                                             ),
-                                             
-                                             id = "roof_inputs_box"  # for tutorial
-                                         ), 
+                                             box( # other inputs box
+                                                 width = 12,
+                                                 title = "Enter a Custom Scenario",
+                                                 
+                                                 sliderInput( ###### year range slider input ######
+                                                              inputId = 'year_range_input_roof',
+                                                              label = tags$span(
+                                                                  'Year Construction Starts - Year to Meet Target',
+                                                                  tags$i(
+                                                                      class = "glyphicon glyphicon-info-sign", 
+                                                                      style = "color:#0072B2;",
+                                                                      title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
+                                                                  )),
+                                                              min = 2025,
+                                                              max = 2045,
+                                                              value = c(2025, 2045),
+                                                              step = 1,
+                                                              ticks = F,
+                                                              sep = ""
+                                                 ),
+                                                 
+                                                 numericInput( ###### initial capacity input ######
+                                                               inputId = 'initial_mw_roof_input',
+                                                               label = tags$span('Current Capacity (MW)',
+                                                                                 tags$i(
+                                                                                     class = "glyphicon glyphicon-info-sign", 
+                                                                                     style = "color:#0072B2;",
+                                                                                     title = "Currently installed capacity in your county in megawatts. Value must not be 0."
+                                                                                 )),
+                                                               value = 0,
+                                                               min = 0
+                                                 ),
+                                                 
+                                                 numericInput( ###### final capacity input ######
+                                                               inputId = 'final_mw_roof_input',
+                                                               label = tags$span('Target Capacity (MW)',
+                                                                                 tags$i(
+                                                                                     class = "glyphicon glyphicon-info-sign", 
+                                                                                     style = "color:#0072B2;",
+                                                                                     title = "Target capacity to reach by final input year in megawatts."
+                                                                                 )),
+                                                               value = 0,
+                                                               min = 0
+                                                 ),
+                                                 
+                                                 pickerInput( ###### job type input ######
+                                                              inputId = 'roof_job_type_input',
+                                                              label = tags$span('Direct, Indirect, or Induced Jobs',
+                                                                                tags$i(
+                                                                                    class = "glyphicon glyphicon-info-sign", 
+                                                                                    style = "color:#0072B2;",
+                                                                                    title = "Direct: Jobs on-site (e.g. welders, technicians). Indirect: Supply chain jobs (e.g. steel makers). Induced: Local jobs from worker spending (e.g. retail, healthcare). Total: Sum of Direct, Indirect, and Induced jobs."
+                                                                                )),
+                                                              choices = c('Direct', 'Indirect', 'Induced', 'Total'),
+                                                              multiple = FALSE,
+                                                              options = pickerOptions(actionsBox = TRUE)
+                                                 ),
+                                                 
+                                                 id = "roof_inputs_box"  # for tutorial
+                                             ) # end input box
+                                         ), # end left column
                                          
-                                         # END input box
-                                         
-                                         
-                                         box( ###### map output ######
-                                              
-                                              width = 8,
-                                              
-                                              leafletOutput(outputId = 'roof_map_output') |>
-                                                  withSpinner(type = 1, color = '#09847A'),
-                                              
-                                              id = "roof_map_box"  # for tutorial
-                                              
-                                         ) # END leaflet box
-                                         
-                               ), # End first fluidRow  
+                                         column(
+                                             width = 8,
+                                             
+                                             box( ###### map output ######
+                                                  width = 12,
+                                                  
+                                                  leafletOutput(outputId = 'roof_map_output',
+                                                                height = "635px") |>
+                                                      withSpinner(type = 1, color = '#09847A'),
+                                                  
+                                                  id = "roof_map_box"  # for tutorial
+                                             ) # END leaflet box
+                                         ) # end right column
+                               ), # End first fluidRow
                                
-                               fluidRow( ##### Second fluidRow (outputs) #####
+                               fluidRow( ##### Second fluidRow (plotly outputs) #####
                                          
-                                         box( ###### Rooftop plotly output #####
+                                         box( ###### Rooftop Job Plot ######
                                               width = 7,
                                               plotlyOutput(outputId = 'roof_jobs_output') |> 
                                                   withSpinner(type = 1, color = '#09847A'),
                                               id = "roof_jobs_plot_box"  # for tutorial
                                          ), 
-                                         box( ###### capacity projections plot ######
+                                         
+                                         box( ###### Rooftop capacity plot ######
                                               width = 5,
                                               plotly::plotlyOutput(outputId = 'roof_cap_projections_output') |>
                                                   withSpinner(type = 1, color = '#09847A'),
                                               id = "roof_capacity_plot_box"  # for tutorial
                                          )
-                                         
-                               ) # END  2nd fluidRow)
-                               
-                           ),  # End Rooftop Solar tabItem
+                               ) # END 2nd fluidRow
+                           ), # End Rooftop Solar tabItem
                            
                            # LAND WIND TAB (REMOVED) ----
                            # tabItem(
@@ -793,38 +805,50 @@ body <- dashboardBody( introjsUI(),
                            # OIL WELL CAPPING TAB ----
                            tabItem(tabName = 'well_cap', 
                                    
+                                   # FIRST fluid row (top row with text + input on left, map on right)
                                    fluidRow(
-                                       # box(
-                                       #     width = NULL,
-                                       #     column(1),
-                                       #     column(10, includeMarkdown('text/oil-capping.md')),
-                                       #     column(1)
-                                       # ),
-                                       box(width = 6,
-                                           column(12, includeMarkdown('text/oil-capping.md')), # background text goes before user picks county
-                                           id = "cap_inputs_box", # For tutorial
-                                           # County picker input
-                                           pickerInput(
-                                               inputId = 'county_wells_input',
-                                               label = tags$span("County",
-                                                                 tags$i(
-                                                                     class = "glyphicon glyphicon-info-sign", 
-                                                                     style = "color:#0072B2;",
-                                                                     title = "Choose a county"
-                                                                 )),
-                                               choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), multiple = FALSE
-                                           ) # End pickerInput
-                                       ), # End input box
                                        
-                                       box(
-                                           width = 6,
-                                           leafletOutput(outputId = 'capping_map_output', height = "500px") |>
-                                               withSpinner(type = 1, color = '#09847A'),
-                                           id = "cap_map_box" # For tutorial
-                                       )
-                                   ), # end first fluid row
+                                       # LEFT column: text + county picker stacked
+                                       column(width = 6,
+                                              
+                                              # Box for background text before user picks county
+                                              box(
+                                                  width = 12,
+                                                  includeMarkdown('text/oil-capping.md'),
+                                                  id = "cap_text_box" # For tutorial
+                                              ),
+                                              
+                                              # County picker input
+                                              box(
+                                                  width = 12,
+                                                  pickerInput(
+                                                      inputId = 'county_wells_input',
+                                                      label = tags$span("County",
+                                                                        tags$i(
+                                                                            class = "glyphicon glyphicon-info-sign", 
+                                                                            style = "color:#0072B2;",
+                                                                            title = "Choose a county"
+                                                                        )),
+                                                      choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
+                                                      multiple = FALSE
+                                                  ), # End pickerInput
+                                                  id = "cap_inputs_box" # For tutorial
+                                              ) # End input box
+                                              
+                                       ), # End LEFT column
+                                       
+                                       # RIGHT column: map
+                                       column(width = 6,
+                                              box(
+                                                  width = 12,
+                                                  leafletOutput(outputId = 'capping_map_output', height = "590px") |>
+                                                      withSpinner(type = 1, color = '#09847A'),
+                                                  id = "cap_map_box" # For tutorial
+                                              )
+                                       ) # End RIGHT column
+                                   ), # END first fluidRow
                                    
-                                   # second fluid row
+                                   # SECOND fluid row (bottom row with two side-by-side plots)
                                    fluidRow(
                                        box(
                                            width = 6,
@@ -839,9 +863,8 @@ body <- dashboardBody( introjsUI(),
                                                withSpinner(type = 1, color = '#09847A'),
                                            id = "cap_plot_box" # For tutorial
                                        ) # END total wells capped box
-                                   ) # END second fluid row
-                                   
-                           ),
+                                   ) # END second fluidRow
+                           ), # END tabItem
                            
                            # FOSSIL FUEL PHASEOUT TAB ----
                            tabItem(tabName = 'phaseout', 
