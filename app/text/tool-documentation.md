@@ -11,7 +11,6 @@ Depending on the technology, there are different assumptions for each of the def
 
 - *Rooftop Solar* defaults were made using the [California Air Resources Board Scoping Plan](https://ww2.arb.ca.gov/sites/default/files/2023-04/2022-sp.pdf). Using the current [county level customer solar capacity](https://www.californiadgstats.ca.gov/charts/), the default values assume that 60% of customer solar is rooftop. This proportion of renewable capacity is based on historical data from the Solar Industries Association.
 
-- *Land Based Wind* No job projections were calculated for land-based wind, as no regional capacity goals are defined in the Central Coast. Currently, there is only 1 land-based wind project in the Central Coast, the Strauss Wind Project. As the Central Coast continues to decarbonize, land-based wind has the potential to grow, and therefore this model is included in the analysis. Should there be interest in projecting job creation from land-based wind development, this analysis can be used to explore many target scenarios within the dashboard. 
 
 ---
 
