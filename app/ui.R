@@ -793,38 +793,50 @@ body <- dashboardBody( introjsUI(),
                            # OIL WELL CAPPING TAB ----
                            tabItem(tabName = 'well_cap', 
                                    
+                                   # FIRST fluid row (top row with text + input on left, map on right)
                                    fluidRow(
-                                       # box(
-                                       #     width = NULL,
-                                       #     column(1),
-                                       #     column(10, includeMarkdown('text/oil-capping.md')),
-                                       #     column(1)
-                                       # ),
-                                       box(width = 6,
-                                           column(12, includeMarkdown('text/oil-capping.md')), # background text goes before user picks county
-                                           id = "cap_inputs_box", # For tutorial
-                                           # County picker input
-                                           pickerInput(
-                                               inputId = 'county_wells_input',
-                                               label = tags$span("County",
-                                                                 tags$i(
-                                                                     class = "glyphicon glyphicon-info-sign", 
-                                                                     style = "color:#0072B2;",
-                                                                     title = "Choose a county"
-                                                                 )),
-                                               choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), multiple = FALSE
-                                           ) # End pickerInput
-                                       ), # End input box
                                        
-                                       box(
-                                           width = 6,
-                                           leafletOutput(outputId = 'capping_map_output', height = "500px") |>
-                                               withSpinner(type = 1, color = '#09847A'),
-                                           id = "cap_map_box" # For tutorial
-                                       )
-                                   ), # end first fluid row
+                                       # LEFT column: text + county picker stacked
+                                       column(width = 6,
+                                              
+                                              # Box for background text before user picks county
+                                              box(
+                                                  width = 12,
+                                                  includeMarkdown('text/oil-capping.md'),
+                                                  id = "cap_text_box" # For tutorial
+                                              ),
+                                              
+                                              # County picker input
+                                              box(
+                                                  width = 12,
+                                                  pickerInput(
+                                                      inputId = 'county_wells_input',
+                                                      label = tags$span("County",
+                                                                        tags$i(
+                                                                            class = "glyphicon glyphicon-info-sign", 
+                                                                            style = "color:#0072B2;",
+                                                                            title = "Choose a county"
+                                                                        )),
+                                                      choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
+                                                      multiple = FALSE
+                                                  ), # End pickerInput
+                                                  id = "cap_inputs_box" # For tutorial
+                                              ) # End input box
+                                              
+                                       ), # End LEFT column
+                                       
+                                       # RIGHT column: map
+                                       column(width = 6,
+                                              box(
+                                                  width = 12,
+                                                  leafletOutput(outputId = 'capping_map_output', height = "590px") |>
+                                                      withSpinner(type = 1, color = '#09847A'),
+                                                  id = "cap_map_box" # For tutorial
+                                              )
+                                       ) # End RIGHT column
+                                   ), # END first fluidRow
                                    
-                                   # second fluid row
+                                   # SECOND fluid row (bottom row with two side-by-side plots)
                                    fluidRow(
                                        box(
                                            width = 6,
@@ -839,9 +851,8 @@ body <- dashboardBody( introjsUI(),
                                                withSpinner(type = 1, color = '#09847A'),
                                            id = "cap_plot_box" # For tutorial
                                        ) # END total wells capped box
-                                   ) # END second fluid row
-                                   
-                           ),
+                                   ) # END second fluidRow
+                           ), # END tabItem
                            
                            # FOSSIL FUEL PHASEOUT TAB ----
                            tabItem(tabName = 'phaseout', 

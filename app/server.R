@@ -11,7 +11,8 @@ server <- function(input, output, session) {
                              "well_cap"  = "Onshore Oil Well Capping",
                              "phaseout"  = "Crude Oil Phaseout",
                              "overview" = "Project Overview",
-                             "welcome" = "Welcome"
+                             "welcome" = "Welcome",
+                             "documentation" = "Documentation"    
                              
         )
         
@@ -210,7 +211,8 @@ server <- function(input, output, session) {
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
                 it remains an essential component of the region’s transition.",
                      tooltipClass = "introjs-large"),
-                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize."),
+                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize.",
+                     position = "right"),
                 list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
                      created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
                      position = "left"),
@@ -420,7 +422,8 @@ server <- function(input, output, session) {
                 in each Central Coast county. While job creation from well capping is more modest compared to other technologies, 
                 it remains an essential component of the region’s transition.",
                      tooltipClass = "introjs-large"),
-                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize."),
+                list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize.",
+                     position = "right"),
                 list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
                      created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
                      position = "left"),
@@ -2276,7 +2279,7 @@ server <- function(input, output, session) {
                 label_text = paste0("<b><u><font size = '2.5'>", name, " County </b></u></font><br>Total Oil & Gas Wells: ", scales::comma(well_count),
                                     "<br> Total FTE Jobs: ", scales::comma(n_jobs),
                                     "<br>",
-                                    "<br> Capping all idle & active wells linearly from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
+                                    "<br> Capping all idle & active wells from <br> 2025-2045 will create ", annual_jobs, " jobs/year "
                 )
                 
             )
@@ -2290,7 +2293,7 @@ server <- function(input, output, session) {
         # Set up the map
         leaflet_map <- leaflet() |>
             addProviderTiles("CartoDB.Voyager") |>
-            setView(lng = -120.40189, lat = 34.920030, zoom = 8)
+            setView(lng = -121.2, lat = 34.920030, zoom = 7)
         
         # Add county shapes by user input ----
         leaflet_map <- leaflet_map |>
@@ -2310,7 +2313,7 @@ server <- function(input, output, session) {
                     labelOptions = labelOptions(
                         noHide = TRUE,
                         direction = 'left',
-                        textsize = "12px",
+                        textsize = "14px",
                         opacity = 0.9
                     )
                 )
