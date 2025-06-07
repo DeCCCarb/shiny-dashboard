@@ -850,19 +850,19 @@ server <- function(input, output, session) {
     ##### Scenario buttons #####
     selected_scenario <- reactiveVal(NULL)
     
-    # Define scenario presets - UPDATE WITH REAL VALUES
+    # Define scenario presets
     scenario_presets <- list(
         "Ventura" = list(
-            scenario1 = list(initial = 100, final = 800, years = c(2025, 2040)),
-            scenario2 = list(initial = 100, final = 1200, years = c(2025, 2045))
+            scenario1 = list(initial = 7, final = 44, years = c(2025, 2045)),
+            scenario2 = list(initial = 7, final = 44/2, years = c(2025, 2045))
         ),
         "Santa Barbara" = list(
-            scenario1 = list(initial = 80, final = 600, years = c(2025, 2040)),
-            scenario2 = list(initial = 80, final = 1000, years = c(2025, 2045))
+            scenario1 = list(initial = 111, final = 722, years = c(2025, 2045)),
+            scenario2 = list(initial = 111, final = 722/2, years = c(2025, 2045))
         ),
         "San Luis Obispo" = list(
-            scenario1 = list(initial = 120, final = 900, years = c(2025, 2040)),
-            scenario2 = list(initial = 120, final = 1500, years = c(2025, 2045))
+            scenario1 = list(initial = 1616, final = 10525, years = c(2025, 2045)),
+            scenario2 = list(initial = 1616, final = 10524/2, years = c(2025, 2045))
         )
     )
     
@@ -927,8 +927,8 @@ server <- function(input, output, session) {
             preset1 <- scenario_presets[[county]]$scenario1
             preset2 <- scenario_presets[[county]]$scenario2
             
-            label1 <- sprintf("Scenario 1 - %d MW by %d", preset1$final, preset1$years[2])
-            label2 <- sprintf("Scenario 2 - %d MW by %d", preset2$final, preset2$years[2])
+            label1 <- sprintf("Scenario 1 - %s MW by %d", scales::comma(preset1$final), preset1$years[2])
+            label2 <- sprintf("Scenario 2 - %s MW by %d", scales::comma(preset2$final), preset2$years[2])
         } else {
             label1 <- "Scenario 1 - XX MW by 2045"
             label2 <- "Scenario 2 - XX MW by 2045"
@@ -1460,16 +1460,16 @@ server <- function(input, output, session) {
     # Define scenario presets - UPDATE WITH REAL VALUES
     roof_scenario_presets <- list(
         "Ventura" = list(
-            scenario1 = list(initial = 100, final = 800, years = c(2025, 2040)),
-            scenario2 = list(initial = 100, final = 1200, years = c(2025, 2045))
+            scenario1 = list(initial = 424, final = 3026, years = c(2025, 2045)),
+            scenario2 = list(initial = 424, final = 3026/2, years = c(2025, 2045))
         ),
         "Santa Barbara" = list(
-            scenario1 = list(initial = 80, final = 600, years = c(2025, 2040)),
-            scenario2 = list(initial = 80, final = 1000, years = c(2025, 2045))
+            scenario1 = list(initial = 242, final = 1294, years = c(2025, 2045)),
+            scenario2 = list(initial = 242, final = 1294/2, years = c(2025, 2045))
         ),
         "San Luis Obispo" = list(
-            scenario1 = list(initial = 120, final = 900, years = c(2025, 2040)),
-            scenario2 = list(initial = 120, final = 1500, years = c(2025, 2045))
+            scenario1 = list(initial = 344, final = 1844, years = c(2025, 2045)),
+            scenario2 = list(initial = 344, final = 1844/2, years = c(2025, 2045))
         )
     )
     
@@ -1534,8 +1534,8 @@ server <- function(input, output, session) {
             preset1 <- roof_scenario_presets[[county]]$scenario1
             preset2 <- roof_scenario_presets[[county]]$scenario2
             
-            label1 <- sprintf("Scenario 1 - %d MW by %d", preset1$final, preset1$years[2])
-            label2 <- sprintf("Scenario 2 - %d MW by %d", preset2$final, preset2$years[2])
+            label1 <- sprintf("Scenario 1 - %s MW by %d", scales::comma(preset1$final), preset1$years[2])
+            label2 <- sprintf("Scenario 2 - %s MW by %d", scales::comma(preset2$final), preset2$years[2])
         } else {
             label1 <- "Scenario 1 - XX MW by 2045"
             label2 <- "Scenario 2 - XX MW by 2045"
