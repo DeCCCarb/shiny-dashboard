@@ -656,7 +656,7 @@ server <- function(input, output, session) {
                         labelOptions = labelOptions(
                             noHide = TRUE,
                             direction = 'left',
-                            textsize = "12px",
+                            textsize = "14px",
                             opacity = 1
                         )
                     )
@@ -834,6 +834,8 @@ server <- function(input, output, session) {
     
     ########## UTILITY SOLAR TAB ##########
     
+    selected_scenario <- reactiveVal(NULL)
+    
     # Define scenario presets - UPDATE WITH REAL VALUES
     scenario_presets <- list(
         "Ventura" = list(
@@ -850,12 +852,8 @@ server <- function(input, output, session) {
         )
     )
     
-    # Track which scenario (if any) is selected
-    selected_scenario <- reactiveVal(NULL)
-    
-    
     # Scenario 1 button click - working
-    observeEvent(input$load_scenario1, {
+    observeEvent(input$load_util_scenario1, {
         req(input$county_input)
         county <- input$county_input
         
@@ -868,13 +866,13 @@ server <- function(input, output, session) {
             
             selected_scenario("scenario1")
             
-            shinyjs::addClass("load_scenario1", "active")
-            shinyjs::removeClass("load_scenario2", "active")
+            shinyjs::addClass("load_util_scenario1", "active")
+            shinyjs::removeClass("load_util_scenario2", "active")
         }
     })
     
     # Scenario 2 button click - working
-    observeEvent(input$load_scenario2, {
+    observeEvent(input$load_util_scenario2, {
         req(input$county_input)
         county <- input$county_input
         
@@ -887,8 +885,8 @@ server <- function(input, output, session) {
             
             selected_scenario("scenario2")
             
-            shinyjs::addClass("load_scenario2", "active")
-            shinyjs::removeClass("load_scenario1", "active")
+            shinyjs::addClass("load_util_scenario2", "active")
+            shinyjs::removeClass("load_util_scenario1", "active")
         }
     })
     
@@ -901,8 +899,8 @@ server <- function(input, output, session) {
         if (!is.null(selected_scenario())) {
             selected_scenario(NULL)
             
-            shinyjs::removeClass("load_scenario1", "active")
-            shinyjs::removeClass("load_scenario2", "active")
+            shinyjs::removeClass("load_util_scenario1", "active")
+            shinyjs::removeClass("load_util_scenario2", "active")
         }
     }, ignoreInit = TRUE)
     
@@ -923,51 +921,70 @@ server <- function(input, output, session) {
         }
         
         div(style = "display: flex; flex-direction: column; gap: 10px;",
-            actionButton("load_scenario1", label1, icon = icon("bolt"), class = "scenario-btn"),
-            actionButton("load_scenario2", label2, icon = icon("bolt"), class = "scenario-btn")
+            actionButton("load_util_scenario1", label1, icon = icon("bolt"), class = "scenario-btn"),
+            actionButton("load_util_scenario2", label2, icon = icon("bolt"), class = "scenario-btn")
         )
     })
     
-    
-    # Utility defaults by county ----
+    # Auto-load scenario 1 when county changes - working BUT button does not appear selected
     observeEvent(input$county_input, {
-        # Requires a county input
-        req(input$county_input)
+        county <- input$county_input
+        req(county)
         
-        selected_county <- input$county_input
-        
-        if (selected_county == "All Counties") {
-            # Use sum across selected counties for defaults
-            initial_val <- utility_targets %>%
-                filter(values == "initial") %>%
-                select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
-                unlist() %>%
-                sum(na.rm = TRUE)
+        if (county %in% names(scenario_presets)) {
+            preset <- scenario_presets[[county]]$scenario1
             
-            final_val <- utility_targets %>%
-                filter(values == "final") %>%
-                select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
-                unlist() %>%
-                sum(na.rm = TRUE)
-        } else {
-            # Assign selected county
-            selected_county <- as.character(input$county_input)[1]  # make sure it's a string
+            updateNumericInput(session, "initial_mw_utility_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_utility_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_utility", value = preset$years)
             
-            # Placeholder for default initial capacity that changes based on county selection
-            initial_val <- utility_targets %>%
-                filter(values == "initial") %>%
-                pull(!!sym(selected_county))
+            selected_scenario("scenario1")
             
-            # Placeholder for default final capacity that changes based on county selection
-            final_val <- utility_targets %>%
-                filter(values == 'final') %>%
-                pull(!!sym(selected_county))
+            shinyjs::addClass("load_util_scenario1", "active")
+            shinyjs::removeClass("load_util_scenario2", "active")
         }
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = "initial_mw_utility_input", value = round(initial_val))
-        updateNumericInput(session, inputId = 'final_mw_utility_input', value = round(final_val))
     })
+
+    
+    # Utility defaults by county COMMENTED OUT because defaults now come from scenario button----
+    # observeEvent(input$county_input, {
+    #     # Requires a county input
+    #     req(input$county_input)
+    # 
+    #     selected_county <- input$county_input
+    # 
+    #     if (selected_county == "All Counties") {
+    #         # Use sum across selected counties for defaults
+    #         initial_val <- utility_targets %>%
+    #             filter(values == "initial") %>%
+    #             select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
+    #             unlist() %>%
+    #             sum(na.rm = TRUE)
+    # 
+    #         final_val <- utility_targets %>%
+    #             filter(values == "final") %>%
+    #             select(`Santa Barbara`, `San Luis Obispo`, `Ventura`) %>%
+    #             unlist() %>%
+    #             sum(na.rm = TRUE)
+    #     } else {
+    #         # Assign selected county
+    #         selected_county <- as.character(input$county_input)[1]  # make sure it's a string
+    # 
+    #         # Placeholder for default initial capacity that changes based on county selection
+    #         initial_val <- utility_targets %>%
+    #             filter(values == "initial") %>%
+    #             pull(!!sym(selected_county))
+    # 
+    #         # Placeholder for default final capacity that changes based on county selection
+    #         final_val <- utility_targets %>%
+    #             filter(values == 'final') %>%
+    #             pull(!!sym(selected_county))
+    #     }
+    # 
+    #     # Update the UI defaults based on county
+    #     updateNumericInput(session, inputId = "initial_mw_utility_input", value = round(initial_val))
+    #     updateNumericInput(session, inputId = 'final_mw_utility_input', value = round(final_val))
+    # })
     
     ##### Utility map #####
     
