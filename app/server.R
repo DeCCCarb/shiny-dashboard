@@ -704,6 +704,15 @@ server <- function(input, output, session) {
         osw_all <- rbind(osw_construction, osw_om) |>
             filter(type %in% input$job_type_input) # Filter to inputted job type
         
+        # Update O&M to Operations and Maintenance for plot
+        osw_all <- osw_all |>
+            mutate(
+                occupation = recode(
+                    occupation,
+                    "O&M" = "Operations & Maintenance"
+                )
+            )
+        
         # Job ggplot ----
         osw_plot <- ggplot(osw_all,
                            aes(
@@ -751,7 +760,7 @@ server <- function(input, output, session) {
                        scale = 15
                    )) |>
             layout(hovermode = "x unified",
-                   legend = list(x = 0.7, 
+                   legend = list(x = 0.4, 
                                  xanchor = 'left',
                                  yanchor = 'top',
                                  orientation = 'h',
@@ -1279,24 +1288,15 @@ server <- function(input, output, session) {
                              slo_utility_pv_const, slo_utility_pv_om,
                              ventura_utility_pv_const, ventura_utility_pv_om)
         
-        # Sum jobs and capacity across Central Coast 
-        cc_utility <- utility_all |>
-            group_by(year, occupation, type) |>
-            summarise(n_jobs = sum(n_jobs),
-                      total_capacity_mw = sum(total_capacity_mw),
-                      new_capacity_mw = sum(new_capacity_mw),
-                      total_capacity_gw = sum(total_capacity_gw),
-                      new_capacity_gw = sum(new_capacity_gw)) |>
-            ungroup() |>
-            mutate(county = "All Counties",
-                   technology = "Utility PV",
-                   ambition = "High") 
+        # Update O&M to Operations and Maintenance for plot
+        utility_all <- utility_all |>
+            mutate(
+                occupation = recode(
+                    occupation,
+                    "O&M" = "Operations & Maintenance"
+                )
+            )
         
-        # Order columns to match
-        cc_utility <- cc_utility[names(utility_all)]
-        
-        # Add CC back into utility df
-        utility_all <- rbind(utility_all, cc_utility)
         
         # Filter based on user input
         utility_all <- utility_all |>
@@ -1366,7 +1366,7 @@ server <- function(input, output, session) {
                        scale = 15
                    )) |>
             layout(hovermode = "x unified",
-                   legend = list(x = 0.7, 
+                   legend = list(x = 0.4, 
                                  xanchor = 'left',
                                  yanchor = 'top',
                                  orientation = 'h',
@@ -1854,6 +1854,13 @@ server <- function(input, output, session) {
             filter(county %in% input$roof_counties_input)
         
         roof_all <- roof_all |>
+            # Update O&M to Operations and Maintenance for plot
+            mutate(
+                occupation = recode(
+                    occupation,
+                    "O&M" = "Operations & Maintenance"
+                )
+            ) |>
             mutate(
                 n_jobs_rounded = if_else(
                     n_jobs < 1,
@@ -1914,7 +1921,7 @@ server <- function(input, output, session) {
                        scale = 15
                    )) |>
             layout(hovermode = "x unified",
-                   legend = list(x = 0.7, 
+                   legend = list(x = 0.4, 
                                  xanchor = 'left',
                                  yanchor = 'top',
                                  orientation = 'h',
