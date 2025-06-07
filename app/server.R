@@ -135,10 +135,12 @@ server <- function(input, output, session) {
                 list(intro = "<b>👋 Welcome to the Rooftop Solar Development tab!</b><br><br>Use this tool to explore 
                      potential job creation under different deployment scenarios of rooftop solar development.",
                      tooltipClass = "introjs-large"),  # Custom class
-                list(element = "#roof_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
-                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     Default capacity values are scaled to each county from the statewide goals outlined in 
-                     California Air Resources Board's 2022 Scoping Plan.",
+                list(element = "#roof_county_box", intro = "Start by choosing your county.",
+                     position = "right"),
+                list(element = "#roof_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                     position = "right"),
+                list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
+                and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#roof_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
                 from your scenario for rooftop solar development. <br><br> 
@@ -353,10 +355,12 @@ server <- function(input, output, session) {
                 list(intro = "<b>👋 Welcome to the Rooftop Solar Development tab!</b><br><br>Use this tool to explore 
                      potential job creation under different deployment scenarios of rooftop solar development.",
                      tooltipClass = "introjs-large"),  # Custom class
-                list(element = "#roof_inputs_box", intro = "Start by choosing your county, and then adjust assumptions 
-                for construction years and target capacity goals. Then, choose the type of jobs you would like to see. <br><br>
-                     Default capacity values are scaled to each county from the statewide goals outlined in 
-                     California Air Resources Board's 2022 Scoping Plan.",
+                list(element = "#roof_county_box", intro = "Start by choosing your county.",
+                     position = "right"),
+                list(element = "#roof_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                     position = "right"),
+                list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
+                and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#roof_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
                 from your scenario for rooftop solar development. <br><br> 
