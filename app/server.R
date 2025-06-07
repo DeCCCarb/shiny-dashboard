@@ -49,7 +49,7 @@ server <- function(input, output, session) {
                 list(intro = "<div style='text-align:center'><b>
                 👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
                 
-                A new froniter for clean energy in California's Central Coast, 
+                A new frontier for clean energy in California's Central Coast, 
                 floating offshore wind is projected to power up to 3.5 million homes<sup><a href='https://reachcentralcoast.org/offshore-wind/' target='_blank'>1</a></sup>, 
                 marking a significant step towards California’s carbon neutrality goals and catalyzing a new economy
                 around clean energy in the region. <br><br>
@@ -60,9 +60,9 @@ server <- function(input, output, session) {
                      tooltipClass = "introjs-large"  # Custom class
                 ),
                 list(element = "#scenario_buttons_box", intro = "Select from predefined scenarios here. <br><br>
-                     15 GW by 2045 is an ambitious goal, scaled to 60% of the statewide goal of 25 GW by 2045 
-                     (defined by the California Energy Commission), to a regional goal of 15 GW in the Central Coast. <br><br>
-                     6 GW by 2045 is less ambitious, at about a quarter of the state goal.",
+                     15 GW by 2045 is an ambitious goal, reaching 60% of the statewide goal of 25 GW by 2045 
+                     (defined by the California Energy Commission). <br><br>
+                     6 GW by 2045 is less ambitious, reaching about a quarter of the state goal.",
                      position = "right"),
                 list(element = "#osw_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting assumptions for construction years 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
@@ -278,7 +278,7 @@ server <- function(input, output, session) {
                 list(intro = "<div style='text-align:center'><b>
                 👋 Welcome to the Floating Offshore Wind Development tab!</b></div><br> 
                 
-                A new froniter for clean energy in California's Central Coast, 
+                A new frontier for clean energy in California's Central Coast, 
                 floating offshore wind is projected to power up to 3.5 million homes<sup><a href='https://reachcentralcoast.org/offshore-wind/' target='_blank'>1</a></sup>, 
                 marking a significant step towards California’s carbon neutrality goals and catalyzing a new economy
                 around clean energy in the region. <br><br>
