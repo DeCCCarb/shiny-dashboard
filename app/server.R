@@ -500,10 +500,10 @@ server <- function(input, output, session) {
             "699 Embarcadero, Morro Bay, CA 93442"
         ),
         popup = c(
-            "<center><b>Port of Hueneme - Proposed wind port location</b><br><br>Construction of specialized wind ports is <i>cruicial</i> to job creation in the Central Coast. <br><br>
+            "<center><b>Port of Hueneme - Proposed wind port location</b><br><br>Construction of specialized wind ports is <i>cruicial</i> to job creation in the Central Coast. Offshore wind jobs are likely to be centeralized at these potential port locations.<br><br>
             Without specialized port infrastructure, many of these high-skill jobs projected could be lost to other parts of the state. If the Central Coast invests in these facilities, it has the opportunity to become a national hub for floating offshore wind.
 ",
-            "<center><b>Port in San Luis Obispo - Three wind port locations under consideration in the county</b><br><br>Construction of specialized wind ports is <i>cruicial</i> to job creation in the Central Coast. <br><br>
+            "<center><b>Port in San Luis Obispo - Three wind port locations under consideration in the county</b><br><br>Construction of specialized wind ports is <i>cruicial</i> to job creation in the Central Coast. Offshore wind jobs are likely to be centeralized at these potential port locations.<br><br>
             Without specialized port infrastructure, many of these high-skill jobs projected could be lost to other parts of the state. If the Central Coast invests in these facilities, it has the opportunity to become a national hub for floating offshore wind."
         )) |>
         tidygeocoder::geocode(address = address, method = "osm")
@@ -605,8 +605,11 @@ server <- function(input, output, session) {
             # Generate and format label
             osw_map_label <- HTML(
                 paste(
-                    "<b>Total FTE Jobs in Central Coast</b>",
-                    "<br>",
+                    "<b>",
+                    input$job_type_input, 
+                    "FTE Job-years in Central <br> Coast",
+                    "from",
+                    input$year_range_input[1], "-", input$year_range_input[2], "</b><br>",
                     "Construction:",
                     scales::comma(const_njobs_label),
                     "<br>",
@@ -1135,7 +1138,9 @@ server <- function(input, output, session) {
         
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
-        counties_with_labels$label <- paste0("<b> Total FTE Jobs in </b>",
+        counties_with_labels$label <- paste0("<b>", 
+                                             input$utility_job_type_input,
+                                             " FTE Job-years in </b>",
                                              "<b> <br>", counties_with_labels$name, " County <br> from ", input$year_range_input_utility[1], "-", input$year_range_input_utility[2], "</b><br>",
                                              "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
                                              "O&M: ", scales::comma(counties_with_labels$`O&M`)
@@ -1704,7 +1709,9 @@ server <- function(input, output, session) {
         
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
-        counties_with_labels$label <- paste0("<b> Total FTE Jobs in </b>",
+        counties_with_labels$label <- paste0("<b>",
+                                             input$roof_job_type_input,
+                                             " FTE Job-years in </b>",
                                              "<b> <br>", counties_with_labels$name, " County <br> from ", input$year_range_input_roof[1], "-", input$year_range_input_roof[2], "</b><br>",
                                              "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
                                              "O&M: ", scales::comma(counties_with_labels$`O&M`)
