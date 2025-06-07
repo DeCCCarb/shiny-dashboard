@@ -104,9 +104,9 @@ server <- function(input, output, session) {
                 list(element = "#util_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
-                list(element = "#util_map_box", intro = "This map shows the total job-years created
+                list(element = "#util_map_box", intro = "This map shows the total full-time equivalent (FTE) jobs created
                 from your scenario for utility solar development. <br><br> 
-                         One job-year is a full-time equivalent (FTE) job that lasts for one year.",
+                         One full-time equivalent (FTE) job is a full-time job that lasts for one year.",
                      position = "left"),
                 list(element = "#util_jobs_plot_box", intro = "This plot is the total projected jobs over time for your scenario. 
                 <br><br> Hover over this plot with your mouse to see the numbers divided into construction and operations & 
@@ -1101,7 +1101,7 @@ server <- function(input, output, session) {
         
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
-        counties_with_labels$label <- paste0("<b> Total job-years in </b>",
+        counties_with_labels$label <- paste0("<b> Total FTE Jobs in </b>",
                                              "<b> <br>", counties_with_labels$name, " County <br> from ", input$year_range_input_utility[1], "-", input$year_range_input_utility[2], "</b><br>",
                                              "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
                                              "O&M: ", scales::comma(counties_with_labels$`O&M`)
@@ -1146,7 +1146,7 @@ server <- function(input, output, session) {
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
             addProviderTiles("CartoDB.Voyager") |>
-            setView(lng = -120.498189, lat = 34.820830, zoom = 8) |>
+            setView(lng = -120.298189, lat = 34.820830, zoom = 8) |>
             addPolygons(
                 color = "darkgreen",
                 opacity = 0.7

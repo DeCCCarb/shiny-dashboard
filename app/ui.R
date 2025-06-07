@@ -515,7 +515,7 @@ body <- dashboardBody( introjsUI(),
                                                   width = 12,
                                                   
                                                   leafletOutput(outputId = 'utility_map_output',
-                                                                height = "580px") |>
+                                                                height = "635px") |>
                                                       withSpinner(type = 1, color = '#09847A'),
                                                   
                                                   id = "util_map_box"  # for tutorial
