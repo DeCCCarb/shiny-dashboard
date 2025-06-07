@@ -834,6 +834,7 @@ server <- function(input, output, session) {
     
     ########## UTILITY SOLAR TAB ##########
     
+    ##### Scenario buttons #####
     selected_scenario <- reactiveVal(NULL)
     
     # Define scenario presets - UPDATE WITH REAL VALUES
@@ -1449,30 +1450,142 @@ server <- function(input, output, session) {
     
 ########## ROOFTOP SOLAR TAB ##########
     
-    # Rooftop defaults by county ----
-    observeEvent(input$roof_counties_input, {
-        # Requires a county input
+    ##### Scenario buttons #####
+    roof_selected_scenario <- reactiveVal(NULL)
+    
+    # Define scenario presets - UPDATE WITH REAL VALUES
+    roof_scenario_presets <- list(
+        "Ventura" = list(
+            scenario1 = list(initial = 100, final = 800, years = c(2025, 2040)),
+            scenario2 = list(initial = 100, final = 1200, years = c(2025, 2045))
+        ),
+        "Santa Barbara" = list(
+            scenario1 = list(initial = 80, final = 600, years = c(2025, 2040)),
+            scenario2 = list(initial = 80, final = 1000, years = c(2025, 2045))
+        ),
+        "San Luis Obispo" = list(
+            scenario1 = list(initial = 120, final = 900, years = c(2025, 2040)),
+            scenario2 = list(initial = 120, final = 1500, years = c(2025, 2045))
+        )
+    )
+    
+    # Scenario 1 button click - working
+    observeEvent(input$load_roof_scenario1, {
         req(input$roof_counties_input)
+        county <- input$roof_counties_input
         
-        # Assign selected county
-        selected_county <- as.character(input$roof_counties_input)[1]  # make sure it's a string
-        
-        # Placeholder for default initial capacity that changes based on county selection
-        initial_val <- rooftop_targets %>% # Find targets in global.R
-            filter(values == "initial") %>%
-            pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
-        
-        # Placeholder for default final capacity that changes based on county selection
-        final_val <- rooftop_targets |>
-            filter(values == 'final') |>
-            pull(!!sym(selected_county))
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = "initial_mw_roof_input", value = initial_val)
-        
-        # Update the UI defaults based on county
-        updateNumericInput(session, inputId = 'final_mw_roof_input', value = final_val)
+        if (county %in% names(roof_scenario_presets)) {
+            preset <- roof_scenario_presets[[county]]$scenario1
+            
+            updateNumericInput(session, "initial_mw_roof_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_roof_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_roof", value = preset$years)
+            
+            roof_selected_scenario("scenario1")
+            
+            shinyjs::addClass("load_roof_scenario1", "active")
+            shinyjs::removeClass("load_roof_scenario2", "active")
+        }
     })
+    
+    # Scenario 2 button click - working
+    observeEvent(input$load_roof_scenario2, {
+        req(input$roof_counties_input)
+        county <- input$roof_counties_input
+        
+        if (county %in% names(roof_scenario_presets)) {
+            preset <- roof_scenario_presets[[county]]$scenario2
+            
+            updateNumericInput(session, "initial_mw_roof_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_roof_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_roof", value = preset$years)
+            
+            roof_selected_scenario("scenario2")
+            
+            shinyjs::addClass("load_roof_scenario2", "active")
+            shinyjs::removeClass("load_roof_scenario1", "active")
+        }
+    })
+    
+    # Remove active class if inputs change manually - working
+    observeEvent({
+        input$initial_mw_roof_input
+        input$final_mw_roof_input
+        input$year_range_input_roof
+    }, {
+        if (!is.null(roof_selected_scenario())) {
+            roof_selected_scenario(NULL)
+            
+            shinyjs::removeClass("load_roof_scenario1", "active")
+            shinyjs::removeClass("load_roof_scenario2", "active")
+        }
+    }, ignoreInit = TRUE)
+    
+    # Update label on scenario button to reflect scenario - working --> it wasn't working because the updateActionButton() assumes that the UI has already run and created the buttons, but that's not always the case. i think. 
+    output$roof_scenario_buttons_ui <- renderUI({
+        req(input$roof_counties_input)
+        county <- input$roof_counties_input
+        
+        if (county %in% names(roof_scenario_presets)) {
+            preset1 <- roof_scenario_presets[[county]]$scenario1
+            preset2 <- roof_scenario_presets[[county]]$scenario2
+            
+            label1 <- sprintf("Scenario 1 - %d MW by %d", preset1$final, preset1$years[2])
+            label2 <- sprintf("Scenario 2 - %d MW by %d", preset2$final, preset2$years[2])
+        } else {
+            label1 <- "Scenario 1 - XX MW by 2045"
+            label2 <- "Scenario 2 - XX MW by 2045"
+        }
+        
+        div(style = "display: flex; flex-direction: column; gap: 10px;",
+            actionButton("load_roof_scenario1", label1, icon = icon("bolt"), class = "scenario-btn"),
+            actionButton("load_roof_scenario2", label2, icon = icon("bolt"), class = "scenario-btn")
+        )
+    })
+    
+    # Auto-load scenario 1 when county changes - working BUT button does not appear selected
+    observeEvent(input$roof_counties_input, {
+        county <- input$roof_counties_input
+        req(county)
+        
+        if (county %in% names(roof_scenario_presets)) {
+            preset <- roof_scenario_presets[[county]]$scenario1
+            
+            updateNumericInput(session, "initial_mw_roof_input", value = preset$initial)
+            updateNumericInput(session, "final_mw_roof_input", value = preset$final)
+            updateSliderInput(session, "year_range_input_roof", value = preset$years)
+            
+            roof_selected_scenario("scenario1")
+            
+            shinyjs::addClass("load_roof_scenario1", "active")
+            shinyjs::removeClass("load_roof_scenario2", "active")
+        }
+    })
+    
+    # Rooftop defaults by county ----
+    # observeEvent(input$roof_counties_input, {
+    #     # Requires a county input
+    #     req(input$roof_counties_input)
+    #     
+    #     # Assign selected county
+    #     selected_county <- as.character(input$roof_counties_input)[1]  # make sure it's a string
+    #     
+    #     # Placeholder for default initial capacity that changes based on county selection
+    #     initial_val <- rooftop_targets %>% # Find targets in global.R
+    #         filter(values == "initial") %>%
+    #         pull(!!sym(selected_county)) # pull the inital value form the selected county dataframe so that its one value
+    #     
+    #     # Placeholder for default final capacity that changes based on county selection
+    #     final_val <- rooftop_targets |>
+    #         filter(values == 'final') |>
+    #         pull(!!sym(selected_county))
+    #     
+    #     # Update the UI defaults based on county
+    #     updateNumericInput(session, inputId = "initial_mw_roof_input", value = initial_val)
+    #     
+    #     # Update the UI defaults based on county
+    #     updateNumericInput(session, inputId = 'final_mw_roof_input', value = final_val)
+    # })
     
     ##### Rooftop Map #####
     
@@ -1587,7 +1700,7 @@ server <- function(input, output, session) {
         
         counties_with_labels <- dplyr::left_join(counties_sf, job_summaries, by = c("name" = "county"))
         
-        counties_with_labels$label <- paste0("<b> Total job-years in </b>",
+        counties_with_labels$label <- paste0("<b> Total FTE Jobs in </b>",
                                              "<b> <br>", counties_with_labels$name, " County <br> from ", input$year_range_input_roof[1], "-", input$year_range_input_roof[2], "</b><br>",
                                              "Construction: ", scales::comma(counties_with_labels$Construction), "<br>",
                                              "O&M: ", scales::comma(counties_with_labels$`O&M`)
@@ -1632,7 +1745,7 @@ server <- function(input, output, session) {
         # Generate the leaflet map with labels at the adjusted centroids
         leaflet(counties_sf) |>
             addProviderTiles("CartoDB.Voyager") |>
-            setView(lng = -119.698189, lat = 34.420830, zoom = 7) |>
+            setView(lng = -120.298189, lat = 34.820830, zoom = 8) |>
             addPolygons(
                 color = "darkgreen",
                 opacity = 0.7
@@ -1643,7 +1756,7 @@ server <- function(input, output, session) {
                 labelOptions = labelOptions(
                     noHide = TRUE,
                     direction = 'left',
-                    textsize = "12px",
+                    textsize = "14px",
                     opacity = 0.9
                 )
             )
