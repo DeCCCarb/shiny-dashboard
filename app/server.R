@@ -106,7 +106,7 @@ server <- function(input, output, session) {
 Each county expands solar capacity proportionally to meet California's 2045 clean energy targets.<br><br>
                 
                 Scenario 2:<br>
-Each county reaches 60% of the full target.<br><br>
+Each county reaches 50% of the full target.<br><br>
                      
                      Feel free to modify each county to explore how these scenarios change!",
                      position = "right"),
@@ -151,7 +151,7 @@ Each county reaches 60% of the full target.<br><br>
 Each county expands rooftop solar capacity proportionally to meet California's 2045 clean energy targets.<br><br>
                          
                          Scenario 2:<br>
-                         Each county reaches 60% of the full target.<br><br>
+                         Each county reaches 50% of the full target.<br><br>
                          
                          Feel free to modify each county to explore how these scenarios change!",
                      position = "right"),
@@ -345,7 +345,7 @@ Each county expands rooftop solar capacity proportionally to meet California's 2
 Each county expands utility solar capacity proportionally to meet California's 2045 clean energy targets.<br><br>
                 
                 Scenario 2:<br>
-Each county reaches 60% of the full target.<br><br>
+Each county reaches 50% of the full target.<br><br>
                      
                      Feel free to modify each county to explore how these scenarios change!",
                      position = "right"),
@@ -387,7 +387,7 @@ Each county reaches 60% of the full target.<br><br>
 Each county expands rooftop solar capacity proportionally to meet California's 2045 clean energy targets.<br><br>
                 
                 Scenario 2:<br>
-Each county reaches 60% of the full target.<br><br>
+Each county reaches 50% of the full target.<br><br>
                      
                      Feel free to modify each county to explore how these scenarios change!",
                      position = "right"),
