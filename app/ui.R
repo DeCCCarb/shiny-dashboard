@@ -870,10 +870,15 @@ body <- dashboardBody( introjsUI(),
                            tabItem(tabName = 'phaseout', 
                                    
                                    fluidRow(  ##### First fluid row (picker inputs) #####
+                                              # Box for background text before user picks county
+                                              # box(
+                                              #     width = 12,
+                                              #     includeMarkdown('text/phaseout.md'),
+                                              # ),
                                               
                                               box( 
                                                   width = 4,
-                                                  
+                                                  includeMarkdown('text/phaseout.md'),
                                                   pickerInput( ###### county input ######
                                                                inputId = 'phaseout_counties_input',
                                                                label = tags$span('County',
