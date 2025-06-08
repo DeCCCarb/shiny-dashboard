@@ -568,9 +568,9 @@ server <- function(input, output, session) {
                 ambition = "High",
                 initial_capacity = input$initial_capacity_input,
                 target_capacity = input$final_capacity_input,
-                direct_jobs = 127,
-                indirect_jobs = 126,
-                induced_jobs = 131
+                direct_jobs = osw_om_direct,
+                indirect_jobs = osw_om_indirect,
+                induced_jobs = osw_om_induced
             )
             
             # Calculate OSW Construction
@@ -581,9 +581,9 @@ server <- function(input, output, session) {
                 ambition = "High",
                 initial_capacity = input$initial_capacity_input,
                 target_capacity = input$final_capacity_input,
-                direct_jobs = 82,
-                indirect_jobs = 2571,
-                induced_jobs = 781
+                direct_jobs = osw_c_direct,
+                indirect_jobs = osw_c_indirect,
+                induced_jobs = osw_c_induced
             )
             
             # Bind together
@@ -685,9 +685,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_capacity_input,
             target_capacity = input$final_capacity_input,
-            direct_jobs = 127,
-            indirect_jobs = 126,
-            induced_jobs = 131
+            direct_jobs = osw_om_direct,
+            indirect_jobs = osw_om_indirect,
+            induced_jobs = osw_om_induced
         )
         
         # Calculate construction based on user input
@@ -698,9 +698,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_capacity_input,
             target_capacity = input$final_capacity_input,
-            direct_jobs = 82,
-            indirect_jobs = 2571,
-            induced_jobs = 781
+            direct_jobs = osw_c_direct,
+            indirect_jobs = osw_c_indirect,
+            induced_jobs = osw_c_induced
         )
         
         # Join O&M and Construction
@@ -783,9 +783,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_capacity_input,
             target_capacity = input$final_capacity_input,
-            direct_jobs = 127,
-            indirect_jobs = 126,
-            induced_jobs = 131
+            direct_jobs = osw_om_direct,
+            indirect_jobs = osw_om_indirect,
+            induced_jobs = osw_om_induced
         )
         
         # Capacity ggplot ----
@@ -1029,9 +1029,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 0.18,
-            indirect_jobs = 0.02,
-            induced_jobs = 0.01
+            direct_jobs = util_sb_om_direct,
+            indirect_jobs = util_sb_om_indirect,
+            induced_jobs = util_sb_om_induced
         )
         
         # SB Utility PV construction
@@ -1043,9 +1043,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 2.69,
-            indirect_jobs = 0.93,
-            induced_jobs = 0.5
+            direct_jobs = util_sb_c_direct,
+            indirect_jobs = util_sb_c_indirect,
+            induced_jobs = util_sb_c_induced
         )
         
         # SLO Utility PV O&M
@@ -1057,9 +1057,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 0.18,
-            indirect_jobs = 0.02,
-            induced_jobs = 0.01
+            direct_jobs = util_slo_om_direct,
+            indirect_jobs = util_slo_om_indirect,
+            induced_jobs = util_slo_om_induced
         )
         
         # SLO Utility PV construction
@@ -1071,9 +1071,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 2.76,
-            indirect_jobs = 1.09,
-            induced_jobs = 0.51
+            direct_jobs = util_slo_c_direct,
+            indirect_jobs = util_slo_c_indirect,
+            induced_jobs = util_slo_c_induced
         )
         
         # Ventura Utility PV O&M
@@ -1085,9 +1085,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 0.18,
-            indirect_jobs = 0.02,
-            induced_jobs = 0.01
+            direct_jobs = util_v_om_direct,
+            indirect_jobs = util_v_om_indirect,
+            induced_jobs = util_v_om_induced
         )
         
         # Ventura Utility PV Construction 
@@ -1099,9 +1099,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 2.73,
-            indirect_jobs = 0.91,
-            induced_jobs = 0.5
+            direct_jobs = util_v_c_direct,
+            indirect_jobs = util_v_c_indirect,
+            induced_jobs = util_v_c_induced
         )
         
         # Combine all counties' job data
@@ -1216,9 +1216,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 0.18,
-            indirect_jobs = 0.02,
-            induced_jobs = 0.01
+            direct_jobs = util_sb_om_direct,
+            indirect_jobs = util_sb_om_indirect,
+            induced_jobs = util_sb_om_induced
         )
         
         sb_utility_pv_const <- calculate_pv_construction_jobs(
@@ -1229,9 +1229,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 2.69,
-            indirect_jobs = 0.93,
-            induced_jobs = 0.5
+            direct_jobs = util_sb_c_direct,
+            indirect_jobs = util_sb_c_indirect,
+            induced_jobs = util_sb_c_induced
         )
         
         # SLO Utility PV
@@ -1243,9 +1243,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 0.18,
-            indirect_jobs = 0.02,
-            induced_jobs = 0.01
+            direct_jobs = util_slo_om_direct,
+            indirect_jobs = util_slo_om_indirect,
+            induced_jobs = util_slo_om_induced
         )
         
         slo_utility_pv_const <- calculate_pv_construction_jobs(
@@ -1256,9 +1256,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 2.76,
-            indirect_jobs = 1.09,
-            induced_jobs = 0.51
+            direct_jobs = util_slo_c_direct,
+            indirect_jobs = util_slo_c_indirect,
+            induced_jobs = util_slo_c_induced
         )
         
         # Ventura Utility PV
@@ -1270,9 +1270,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 0.18,
-            indirect_jobs = 0.02,
-            induced_jobs = 0.01
+            direct_jobs = util_v_om_direct,
+            indirect_jobs = util_v_om_indirect,
+            induced_jobs = util_v_om_induced
         )
         
         ventura_utility_pv_const <- calculate_pv_construction_jobs(
@@ -1283,9 +1283,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 2.73,
-            indirect_jobs = 0.91,
-            induced_jobs = 0.5
+            direct_jobs = util_v_c_direct,
+            indirect_jobs = util_v_c_indirect,
+            induced_jobs = util_v_c_induced
         )
         
         # Join and filter job data
@@ -1390,9 +1390,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_utility[2],
             initial_capacity = input$initial_mw_utility_input,
             final_capacity = input$final_mw_utility_input,
-            direct_jobs = 0.2,
-            indirect_jobs = 0,
-            induced_jobs = 0
+            direct_jobs = util_v_om_direct,
+            indirect_jobs = util_v_om_indirect,
+            induced_jobs = util_v_om_induced
         )
         
         # Capacity ggplot ----

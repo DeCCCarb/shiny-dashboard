@@ -33,6 +33,47 @@ counties <- read_csv(('data/ccc-coords.csv'))
 job_projections <- read_csv('data/subset_county_results.csv') %>% 
     filter(county %in% c('Santa Barbara','San Luis Obispo','Ventura'))
 
+########## JEDI Results - Jobs / Unit Energy ##########
+
+# OSW ----
+# Construction
+osw_c_direct <- 82 
+osw_c_indirect <- 2571
+osw_c_induced <- 781
+# Operations & Maintenance
+osw_om_direct <- 127
+osw_om_indirect <- 126
+osw_om_induced <- 131
+
+# Utility Ventura----
+# Construction
+util_v_c_direct <- 2.73 
+util_v_c_indirect <- 0.91
+util_v_c_induced <- 0.5
+# Operations & Maintenance
+util_v_om_direct <- 0.18
+util_v_om_indirect <- 0.02
+util_v_om_induced <- 0.01
+
+# Utility SLO----
+# Construction
+util_slo_c_direct <- 2.76 
+util_slo_c_indirect <- 1.09
+util_slo_c_induced <- 0.51
+# Operations & Maintenance
+util_slo_om_direct <- 0.18
+util_slo_om_indirect <- 0.02
+util_slo_om_induced <- 0.01
+
+# Utility SB----
+# Construction
+util_sb_c_direct <- 2.69 
+util_sb_c_indirect <- 0.93
+util_sb_c_induced <- 0.5
+# Operations & Maintenance
+util_sb_om_direct <- 0.18
+util_sb_om_indirect <- 0.02
+util_sb_om_induced <- 0.01
 
 
 ########### Shapefile for leaflet map in server ####################
