@@ -255,7 +255,7 @@ Each county expands rooftop solar capacity proportionally to meet California's 2
         } else if (input$tabs == "phaseout" && !shown_tutorials$phaseout) {
             introjs(session, options = list(steps = list(
                 list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b><br><br>
-                     In this tab, we report reusults from an emperical model built by Deshmukh et al. 
+                     In this tab, we report results from an emperical model built by Deshmukh et al. 
                      to allow you to compare direct job loss by county under varying setback policies. <br><br>
                      A setback policy is the required minimum distance between oil and gas drilling activities and certain
                      sensitive areas, such as homes, schools, hospitals, and other public spaces.
@@ -483,7 +483,7 @@ Each county reaches 50% of the full target.<br><br>
         } else if (input$tabs == "phaseout") {
             introjs(session, options = list(steps = list(
                 list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b><br><br>
-                     In this tab, we report reusults from an emperical model built by Deshmukh et al. 
+                     In this tab, we report results from an emperical model built by Deshmukh et al. 
                      to allow you to compare direct job loss by county under varying setback policies. <br><br>
                      What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
                      sensitive areas, such as homes, schools, hospitals, and other public spaces.
