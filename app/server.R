@@ -100,7 +100,15 @@ server <- function(input, output, session) {
                      tooltipClass = "introjs-large"),  # Custom class
                 list(element = "#util_county_box", intro = "Start by choosing your county.",
                      position = "right"),
-                list(element = "#util_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                list(element = "#util_scenario_buttons_box", intro = "Select from predefined scenarios here. Each scenario differs by county, based on the county's currently installed utility solar capacity. <br><br>
+                
+                 Scenario 1:<br>
+Each county expands solar capacity proportionally to meet California's 2045 clean energy targets.<br><br>
+                
+                Scenario 2:<br>
+Each county reaches 60% of the full target.<br><br>
+                     
+                     Feel free to modify each county to explore how these scenarios change!",
                      position = "right"),
                 list(element = "#util_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
@@ -137,7 +145,15 @@ server <- function(input, output, session) {
                      tooltipClass = "introjs-large"),  # Custom class
                 list(element = "#roof_county_box", intro = "Start by choosing your county.",
                      position = "right"),
-                list(element = "#roof_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                list(element = "#roof_scenario_buttons_box", intro = "Select from predefined scenarios here. Each scenario differs by county, based on the county's currently installed rooftop solar capacity. <br><br>
+                
+                 Scenario 1:<br>
+Each county expands rooftop solar capacity proportionally to meet California's 2045 clean energy targets.<br><br>
+                         
+                         Scenario 2:<br>
+                         Each county reaches 60% of the full target.<br><br>
+                         
+                         Feel free to modify each county to explore how these scenarios change!",
                      position = "right"),
                 list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
@@ -323,7 +339,15 @@ server <- function(input, output, session) {
                      tooltipClass = "introjs-large"),  # Custom class
                 list(element = "#util_county_box", intro = "Start by choosing your county.",
                      position = "right"),
-                list(element = "#util_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                list(element = "#util_scenario_buttons_box", intro = "Select from predefined scenarios here. Each scenario differs by county, based on the county's currently installed utility solar capacity. <br><br>
+                
+                 Scenario 1:<br>
+Each county expands utility solar capacity proportionally to meet California's 2045 clean energy targets.<br><br>
+                
+                Scenario 2:<br>
+Each county reaches 60% of the full target.<br><br>
+                     
+                     Feel free to modify each county to explore how these scenarios change!",
                      position = "right"),
                 list(element = "#util_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
@@ -357,7 +381,15 @@ server <- function(input, output, session) {
                      tooltipClass = "introjs-large"),  # Custom class
                 list(element = "#roof_county_box", intro = "Start by choosing your county.",
                      position = "right"),
-                list(element = "#roof_scenario_buttons_box", intro = "Select from predefined scenarios here. SAY SOME THINGS ABOUT HOW THESE WERE CALCULATED AND HOW THEY CHANGE FOR EACH COUNTY.",
+                list(element = "#roof_scenario_buttons_box", intro ="Select from predefined scenarios here. Each scenario differs by county, based on the county's currently installed rooftop solar capacity. <br><br>
+                
+                 Scenario 1:<br>
+Each county expands rooftop solar capacity proportionally to meet California's 2045 clean energy targets.<br><br>
+                
+                Scenario 2:<br>
+Each county reaches 60% of the full target.<br><br>
+                     
+                     Feel free to modify each county to explore how these scenarios change!",
                      position = "right"),
                 list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
