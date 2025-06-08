@@ -36,72 +36,72 @@ job_projections <- read_csv('data/subset_county_results.csv') %>%
 ########## JEDI Results - Jobs / Unit Energy ##########
 
 # OSW ----
-# Construction
+# Construction jobs/GW
 osw_c_direct <- 82 
 osw_c_indirect <- 2571
 osw_c_induced <- 781
-# Operations & Maintenance
+# Operations & Maintenance jobs/GW
 osw_om_direct <- 127
 osw_om_indirect <- 126
 osw_om_induced <- 131
 
 # Utility Ventura----
-# Construction
+# Construction jobs/MW
 util_v_c_direct <- 2.73 
 util_v_c_indirect <- 0.91
 util_v_c_induced <- 0.5
-# Operations & Maintenance
+# Operations & Maintenance jobs/MW
 util_v_om_direct <- 0.18
 util_v_om_indirect <- 0.02
 util_v_om_induced <- 0.01
 
 # Utility SLO----
-# Construction
+# Construction jobs/MW
 util_slo_c_direct <- 2.76 
 util_slo_c_indirect <- 1.09
 util_slo_c_induced <- 0.51
-# Operations & Maintenance
+# Operations & Maintenance jobs/MW
 util_slo_om_direct <- 0.18
 util_slo_om_indirect <- 0.02
 util_slo_om_induced <- 0.01
 
 # Utility SB----
-# Construction
+# Construction jobs/MW
 util_sb_c_direct <- 2.69 
 util_sb_c_indirect <- 0.93
 util_sb_c_induced <- 0.5
-# Operations & Maintenance
+# Operations & Maintenance jobs/MW
 util_sb_om_direct <- 0.18
 util_sb_om_indirect <- 0.02
 util_sb_om_induced <- 0.01
 
 # Rooftop Ventura----
-# Construction
+# Construction jobs/MW
 roof_v_c_direct <- 5.906 
 roof_v_c_indirect <- 3.964
 roof_v_c_induced <- 2.026
-# Operations & Maintenance
+# Operations & Maintenance jobs/MW
 roof_v_om_direct <- 0.22
 roof_v_om_indirect <- 0.028
 roof_v_om_induced <- 0.014
 
 # Rooftop SLO----
-# Construction
+# Construction jobs/MW
 roof_slo_c_direct <- 6.042 
 roof_slo_c_indirect <- 4.564
 roof_slo_c_induced <- 1.91
-# Operations & Maintenance
+# Operations & Maintenance jobs/MW
 roof_slo_om_direct <- 0.22
 roof_slo_om_indirect <- 0.028
 roof_slo_om_induced <- 0.014
 
 
 # Rooftop SB----
-# Construction
+# Construction jobs/MW
 roof_sb_c_direct <- 5.688
 roof_sb_c_indirect <- 4.028
 roof_sb_c_induced <- 2.05
-# Operations & Maintenance
+# Operations & Maintenance jobs/MW
 roof_sb_om_direct <- 0.22
 roof_sb_om_indirect <- 0.028
 roof_sb_om_induced <- 0.014

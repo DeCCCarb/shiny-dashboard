@@ -869,7 +869,7 @@ server <- function(input, output, session) {
         )
     )
     
-    # Scenario 1 button click - working
+    # Scenario 1 button click
     observeEvent(input$load_util_scenario1, {
         req(input$county_input)
         county <- input$county_input
@@ -888,7 +888,7 @@ server <- function(input, output, session) {
         }
     })
     
-    # Scenario 2 button click - working
+    # Scenario 2 button click
     observeEvent(input$load_util_scenario2, {
         req(input$county_input)
         county <- input$county_input
@@ -907,7 +907,7 @@ server <- function(input, output, session) {
         }
     })
     
-    # Remove active class if inputs change manually - working
+    # Remove active class if inputs change manually
     observeEvent({
         input$initial_mw_utility_input
         input$final_mw_utility_input
@@ -921,7 +921,7 @@ server <- function(input, output, session) {
         }
     }, ignoreInit = TRUE)
     
-    # Update label on scenario button to reflect scenario - working --> it wasn't working because the updateActionButton() assumes that the UI has already run and created the buttons, but that's not always the case. i think. 
+    # Update label on scenario button to reflect scenario
     output$scenario_buttons_ui <- renderUI({
         req(input$county_input)
         county <- input$county_input
@@ -943,7 +943,7 @@ server <- function(input, output, session) {
         )
     })
     
-    # Auto-load scenario 1 when county changes - working BUT button does not appear selected
+    # Auto-load scenario 1 when county changes
     observeEvent(input$county_input, {
         county <- input$county_input
         req(county)
@@ -2693,7 +2693,7 @@ server <- function(input, output, session) {
                     labelOptions = labelOptions(
                         noHide = TRUE,
                         direction = 'left',
-                        textsize = "12px",
+                        textsize = "14px",
                         opacity = 0.9
                     )
                 )
