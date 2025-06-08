@@ -1619,9 +1619,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.22,
-            indirect_jobs = 0.028,
-            induced_jobs = 0.014
+            direct_jobs = roof_sb_om_direct,
+            indirect_jobs = roof_sb_om_indirect,
+            induced_jobs = roof_sb_om_induced
         )
         
         sb_roof_pv_const <- calculate_pv_construction_jobs(
@@ -1632,9 +1632,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 5.688,
-            indirect_jobs = 4.028,
-            induced_jobs = 2.05
+            direct_jobs = roof_sb_c_direct,
+            indirect_jobs = roof_sb_c_indirect,
+            induced_jobs = roof_sb_c_induced
         )
         
         slo_roof_pv_om <- calculate_pv_om_jobs(
@@ -1645,9 +1645,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.22,
-            indirect_jobs = 0.028,
-            induced_jobs = 0.014
+            direct_jobs = roof_slo_om_direct,
+            indirect_jobs = roof_slo_om_indirect,
+            induced_jobs = roof_slo_om_induced
         )
         
         slo_roof_pv_const <- calculate_pv_construction_jobs(
@@ -1658,9 +1658,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 6.042,
-            indirect_jobs = 4.564,
-            induced_jobs = 1.91
+            direct_jobs = roof_slo_c_direct,
+            indirect_jobs = roof_slo_c_indirect,
+            induced_jobs = roof_slo_c_induced
         )
         
         ventura_roof_pv_om <- calculate_pv_om_jobs(
@@ -1671,9 +1671,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.22,
-            indirect_jobs = 0.028,
-            induced_jobs = 0.014
+            direct_jobs = roof_v_om_direct,
+            indirect_jobs = roof_v_om_indirect,
+            induced_jobs = roof_v_om_induced
         )
         
         ventura_roof_pv_const <- calculate_pv_construction_jobs(
@@ -1684,9 +1684,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 5.906,
-            indirect_jobs = 3.964,
-            induced_jobs = 2.026
+            direct_jobs = roof_v_c_direct,
+            indirect_jobs = roof_v_c_indirect,
+            induced_jobs = roof_v_c_induced
         )
         
         # Create joined dataframe
@@ -1784,9 +1784,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.22,
-            indirect_jobs = 0.028,
-            induced_jobs = 0.014
+            direct_jobs = roof_sb_om_direct,
+            indirect_jobs = roof_sb_om_indirect,
+            induced_jobs = roof_sb_om_induced
         )
         
         sb_roof_pv_const <- calculate_pv_construction_jobs(
@@ -1797,9 +1797,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 5.688,
-            indirect_jobs = 4.028,
-            induced_jobs = 2.05
+            direct_jobs = roof_sb_c_direct,
+            indirect_jobs = roof_sb_c_indirect,
+            induced_jobs = roof_sb_c_induced
         )
         
         slo_roof_pv_om <- calculate_pv_om_jobs(
@@ -1810,9 +1810,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.22,
-            indirect_jobs = 0.028,
-            induced_jobs = 0.014
+            direct_jobs = roof_slo_om_direct,
+            indirect_jobs = roof_slo_om_indirect,
+            induced_jobs = roof_slo_om_induced
         )
         
         slo_roof_pv_const <- calculate_pv_construction_jobs(
@@ -1823,9 +1823,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 6.042,
-            indirect_jobs = 4.564,
-            induced_jobs = 1.91
+            direct_jobs = roof_slo_c_direct,
+            indirect_jobs = roof_slo_c_indirect,
+            induced_jobs = roof_slo_c_induced
         )
         
         ventura_roof_pv_om <- calculate_pv_om_jobs(
@@ -1836,9 +1836,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.22,
-            indirect_jobs = 0.028,
-            induced_jobs = 0.014
+            direct_jobs = roof_v_om_direct,
+            indirect_jobs = roof_v_om_indirect,
+            induced_jobs = roof_v_om_induced
         )
         
         ventura_roof_pv_const <- calculate_pv_construction_jobs(
@@ -1849,9 +1849,9 @@ server <- function(input, output, session) {
             ambition = "High",
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 5.906,
-            indirect_jobs = 3.964,
-            induced_jobs = 2.026
+            direct_jobs = roof_v_c_direct,
+            indirect_jobs = roof_v_c_indirect,
+            induced_jobs = roof_v_c_induced
         )
         
         roof_all <- rbind(sb_roof_pv_om, sb_roof_pv_const,
@@ -1947,9 +1947,9 @@ server <- function(input, output, session) {
             end_year = input$year_range_input_roof[2],
             initial_capacity = input$initial_mw_roof_input,
             final_capacity = input$final_mw_roof_input,
-            direct_jobs = 0.2,
-            indirect_jobs = 0,
-            induced_jobs = 0
+            direct_jobs = roof_v_om_direct,
+            indirect_jobs = roof_v_om_indirect,
+            induced_jobs = roof_v_om_induced
         )
 
         # Capacity ggplot ----

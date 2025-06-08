@@ -75,6 +75,37 @@ util_sb_om_direct <- 0.18
 util_sb_om_indirect <- 0.02
 util_sb_om_induced <- 0.01
 
+# Rooftop Ventura----
+# Construction
+roof_v_c_direct <- 5.906 
+roof_v_c_indirect <- 3.964
+roof_v_c_induced <- 2.026
+# Operations & Maintenance
+roof_v_om_direct <- 0.22
+roof_v_om_indirect <- 0.028
+roof_v_om_induced <- 0.014
+
+# Rooftop SLO----
+# Construction
+roof_slo_c_direct <- 6.042 
+roof_slo_c_indirect <- 4.564
+roof_slo_c_induced <- 1.91
+# Operations & Maintenance
+roof_slo_om_direct <- 0.22
+roof_slo_om_indirect <- 0.028
+roof_slo_om_induced <- 0.014
+
+
+# Rooftop SB----
+# Construction
+roof_sb_c_direct <- 5.688
+roof_sb_c_indirect <- 4.028
+roof_sb_c_induced <- 2.05
+# Operations & Maintenance
+roof_sb_om_direct <- 0.22
+roof_sb_om_indirect <- 0.028
+roof_sb_om_induced <- 0.014
+
 
 ########### Shapefile for leaflet map in server ####################
 
