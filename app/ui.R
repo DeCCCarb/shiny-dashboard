@@ -437,7 +437,7 @@ body <- dashboardBody( introjsUI(),
                                                                    tags$i(
                                                                        class = "glyphicon glyphicon-info-sign", 
                                                                        style = "color:#0072B2; font-size: 14px;",
-                                                              title = "Some text about this."
+                                                              title = "Select a scenario. Scenario 1 sets full solar build-out by county to meet 2045 goals; Scenario 2 sets 50%. Values vary by each county’s current capacity."
                                                           )),
                                                  uiOutput("scenario_buttons_ui"),
                                                  id = "util_scenario_buttons_box"
@@ -578,7 +578,7 @@ body <- dashboardBody( introjsUI(),
                                                       tags$i(
                                                           class = "glyphicon glyphicon-info-sign", 
                                                           style = "color:#0072B2; font-size: 14px;",
-                                                          title = "Some text about this."
+                                                          title = "Select a scenario. Scenario 1 assumes full solar build-out by county to meet 2045 goals; Scenario 2 assumes 50%. Values vary by each county’s current capacity."
                                                       )),
                                                   uiOutput("roof_scenario_buttons_ui"),
                                                   id = "roof_scenario_buttons_box"
@@ -877,8 +877,8 @@ body <- dashboardBody( introjsUI(),
                                               # ),
                                               
                                               box( 
-                                                  width = 4,
-                                                  includeMarkdown('text/phaseout.md'),
+                                                   width = 4,
+                                              #     includeMarkdown('text/phaseout.md'),
                                                   pickerInput( ###### county input ######
                                                                inputId = 'phaseout_counties_input',
                                                                label = tags$span('County',
