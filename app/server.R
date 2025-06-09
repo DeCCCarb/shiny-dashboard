@@ -108,7 +108,7 @@ Each county expands solar capacity proportionally to meet California's 2045 clea
                 Scenario 2:<br>
 Each county reaches 50% of the full target.<br><br>
                      
-                     Feel free to modify each county to explore how these scenarios change!",
+                     These scenarios are provided as a jumping-off point for exploring this tool. Modify these values below.",
                      position = "right"),
                 list(element = "#util_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
@@ -153,7 +153,7 @@ Each county expands rooftop solar capacity proportionally to meet California's 2
                          Scenario 2:<br>
                          Each county reaches 50% of the full target.<br><br>
                          
-                         Feel free to modify each county to explore how these scenarios change!",
+                         These scenarios are provided as a jumping-off point for exploring this tool. Modify these values below.",
                      position = "right"),
                 list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
@@ -348,7 +348,7 @@ Each county expands utility solar capacity proportionally to meet California's 2
                 Scenario 2:<br>
 Each county reaches 50% of the full target.<br><br>
                      
-                     Feel free to modify each county to explore how these scenarios change!",
+                     These scenarios are provided as a jumping-off point for exploring this tool. Modify these values below.",
                      position = "right"),
                 list(element = "#util_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
@@ -390,7 +390,7 @@ Each county expands rooftop solar capacity proportionally to meet California's 2
                 Scenario 2:<br>
 Each county reaches 50% of the full target.<br><br>
                      
-                     Feel free to modify each county to explore how these scenarios change!",
+                     These scenarios are provided as a jumping-off point for exploring this tool. Modify these values below.",
                      position = "right"),
                 list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",

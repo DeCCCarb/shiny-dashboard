@@ -841,7 +841,7 @@ body <- dashboardBody( introjsUI(),
                                        column(width = 6,
                                               box(
                                                   width = 12,
-                                                  leafletOutput(outputId = 'capping_map_output', height = "590px") |>
+                                                  leafletOutput(outputId = 'capping_map_output', height = "600px") |>
                                                       withSpinner(type = 1, color = '#09847A'),
                                                   id = "cap_map_box" # For tutorial
                                               )
