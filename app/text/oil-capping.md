@@ -4,13 +4,24 @@ Idle wells pose health risks and environmental hazards, emitting pollutants long
 
 ---
 <div style="text-align: center;">
-
-|         County                    |            # of Active & Idle Oil and Gas Wells                                            |
-|:----------------------------------|-------------------------------------------------------------------------------------------:|
-|   San Luis Obispo                 |        337                                                                                 |
-|   Ventura                         |  3,188                                                                                     |
-|   Santa Barbara                   |  1,977                                                                                     |
-
+  <table border="1" style="margin: 0 auto; border-collapse: collapse;">
+    <tr>
+      <th style="padding: 4px 8px;">County</th>
+      <th style="padding: 4px 8px;"># of Active & Idle Oil and Gas Wells</th>
+    </tr>
+    <tr>
+      <td style="padding: 2px 8px;">San Luis Obispo</td>
+      <td style="padding: 2px 8px;">337</td>
+    </tr>
+    <tr>
+      <td style="padding: 2px 8px;">Ventura</td>
+      <td style="padding: 2px 8px;">3,188</td>
+    </tr>
+    <tr>
+      <td style="padding: 2px 8px;">Santa Barbara</td>
+      <td style="padding: 2px 8px;">1,977</td>
+    </tr>
+  </table>
 </div>
 
 ---

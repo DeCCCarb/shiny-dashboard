@@ -33,19 +33,56 @@ Each solar tab includes two default scenarios: the full 2045 goal for each count
 
 #### Rooftop Scenarios
 
-| County           | Full Goal (MW by 2045)     | 50% Scenario (MW)       |
-|------------------|-----------------------------|--------------------------|
-| Santa Barbara    | 1,294                       | 647                      |
-| San Luis Obispo  | 1,844                       | 922                      |
-| Ventura          | 3,026                       | 1,513                    |
+<table border="1" style="border-collapse: collapse;">
+  <tr>
+    <th style="padding: 8px;">County</th>
+    <th style="padding: 8px;">Full Goal (MW by 2045)</th>
+    <th style="padding: 8px;">50% Scenario (MW)</th>
+  </tr>
+  <tr>
+    <td style="padding: 8px;">Santa Barbara</td>
+    <td style="padding: 8px;">1,294</td>
+    <td style="padding: 8px;">647</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px;">San Luis Obispo</td>
+    <td style="padding: 8px;">1,844</td>
+    <td style="padding: 8px;">922</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px;">Ventura</td>
+    <td style="padding: 8px;">3,026</td>
+    <td style="padding: 8px;">1,513</td>
+  </tr>
+</table>
+
+
 
 #### Utility-Scale Scenarios
 
-| County           | Full Goal (MW by 2045)     | 50% Scenario (MW)       |
-|------------------|-----------------------------|--------------------------|
-| Santa Barbara    | 722                         | 371                      |
-| San Luis Obispo  | 10,525                      | 5,262                    |
-| Ventura          | 44                          | 22                       |
+<table border="1" style="border-collapse: collapse;">
+  <tr>
+    <th style="padding: 8px;">County</th>
+    <th style="padding: 8px;">Full Goal (MW by 2045)</th>
+    <th style="padding: 8px;">50% Scenario (MW)</th>
+  </tr>
+  <tr>
+    <td style="padding: 8px;">Santa Barbara</td>
+    <td style="padding: 8px;">722</td>
+    <td style="padding: 8px;">371</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px;">San Luis Obispo</td>
+    <td style="padding: 8px;">10,525</td>
+    <td style="padding: 8px;">5,262</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px;">Ventura</td>
+    <td style="padding: 8px;">44</td>
+    <td style="padding: 8px;">22</td>
+  </tr>
+</table>
+
 
 ---
 
