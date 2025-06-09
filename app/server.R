@@ -68,7 +68,7 @@ server <- function(input, output, session) {
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#osw_map_box", 
-                     intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created from your 
+                     intro = "This map shows the total full-time equivalent (FTE) jobs created from your 
                      scenario for offshore wind development. <br><br> 
                      You can think of each FTE job as one full-time job that lasts for one year.",
                      position = "left"),
@@ -158,7 +158,7 @@ Each county expands rooftop solar capacity proportionally to meet California's 2
                 list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
-                list(element = "#roof_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                list(element = "#roof_map_box", intro = "This map shows the total full-time equivalent (FTE) jobs created
                 from your scenario for rooftop solar development. <br><br> 
                          You can think of each FTE job as one full-time job that lasts for one year.",
                      position = "left"),
@@ -231,7 +231,7 @@ Each county expands rooftop solar capacity proportionally to meet California's 2
                      tooltipClass = "introjs-large"),
                 list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize.",
                      position = "right"),
-                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
+                list(element = "#cap_map_box", intro = "This map shows the total full-time equivalent (FTE) direct jobs created
                      created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
                      position = "left"),
                 list(element = "#cap_jobs_plot_box", intro = "This plot is the cumulative projected direct jobs over time in your county. That is, the the total number of direct jobs that have been created each year since 2025.
@@ -314,7 +314,7 @@ This tab presents results from an empirical model by Deshmukh et al. that estima
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#osw_map_box", 
-                     intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created from your scenario for offshore wind development. <br><br> 
+                     intro = "This map shows the total full-time equivalent (FTE) jobs created from your scenario for offshore wind development. <br><br> 
                      You can think of each FTE job as one full-time job that lasts for one year.",
                      position = "left"),
                 list(element = "#osw_jobs_plot_box", 
@@ -353,7 +353,7 @@ Each county reaches 50% of the full target.<br><br>
                 list(element = "#util_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
-                list(element = "#util_map_box", intro = "This map shows the total job-years created
+                list(element = "#util_map_box", intro = "This map shows the total full-time equivalent (FTE) jobs created
                 from your scenario for utility solar development. <br><br> 
                          One job-year is a full-time equivalent (FTE) job that lasts for one year.",
                      position = "left"),
@@ -395,7 +395,7 @@ Each county reaches 50% of the full target.<br><br>
                 list(element = "#roof_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting the year range 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
-                list(element = "#roof_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) jobs</i> created
+                list(element = "#roof_map_box", intro = "This map shows the total full-time equivalent (FTE) jobs created
                 from your scenario for rooftop solar development. <br><br> 
                          You can think of each FTE job as one full-time job that lasts for one year.",
                      position = "left"),
@@ -461,7 +461,7 @@ Each county reaches 50% of the full target.<br><br>
                      tooltipClass = "introjs-large"),
                 list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize.",
                      position = "right"),
-                list(element = "#cap_map_box", intro = "This map shows the total <i>FTE (full-time equivalent) direct jobs</i> created
+                list(element = "#cap_map_box", intro = "This map shows the total full-time equivalent (FTE) direct jobs created
                      created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
                      position = "left"),
                 list(element = "#cap_jobs_plot_box", intro = "This plot is the cumulative projected direct jobs over time in your county. That is, the the total number of direct jobs that have been created each year since 2025.
