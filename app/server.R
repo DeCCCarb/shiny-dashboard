@@ -64,7 +64,7 @@ server <- function(input, output, session) {
                      (defined by the California Energy Commission). <br><br>
                      6 GW by 2045 is less ambitious, reaching about a quarter of the state goal.",
                      position = "right"),
-                list(element = "#osw_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting assumptions for construction years 
+                list(element = "#osw_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting inputs for construction years 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#osw_map_box", 
@@ -265,7 +265,7 @@ This tab presents results from an empirical model by UCSB Environmental Markets 
                 a 3,200 foot setback distance applied to only new wells, which matches the state’s 
                 current setback policy distance.",
                      position = "right"),
-                list(element = "#phaseout_map_box", intro = "This map shows the number of direct jobs lossed from 
+                list(element = "#phaseout_map_box", intro = "This map shows the number of direct jobs lost from 
                      2025-2045 based on your scenario.", 
                      position = "left"),
                 list(element = "#phaseout_jobs_plot_box", intro = "This plot is the total projected direct jobs over time for your 
@@ -310,7 +310,7 @@ This tab presents results from an empirical model by UCSB Environmental Markets 
                      (defined by the California Energy Commission), to a regional goal of 15 GW in the Central Coast. <br><br>
                      6 GW by 2045 is less ambitious, at about a quarter of the state goal.",
                      position = "right"),
-                list(element = "#osw_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting assumptions for construction years 
+                list(element = "#osw_inputs_box", intro = "Define a custom scenario here. <br><br> Start by adjusting inputs for construction years 
                 and target capacity goals. Then, choose the type of jobs you would like to see.",
                      position = "right"),
                 list(element = "#osw_map_box", 
@@ -485,7 +485,7 @@ Each county reaches 50% of the full target.<br><br>
             introjs(session, options = list(steps = list(
                 list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b>
 </br></br>
-This tab presents results from an empirical model by Deshmukh et al. that estimates direct job loss by county under different setback policies—minimum distance rules between oil wells and sensitive sites like homes or schools.
+This tab presents results from an empirical model by UCSB Environmental Markets Lab that estimates direct job loss by county under different setback policies—minimum distance rules between oil wells and sensitive sites like homes or schools.
 </br></br>
 <b>The Challenge:</b> Phasing out fossil fuels will inevitably lead to job losses.
 </br>
@@ -495,7 +495,7 @@ This tab presents results from an empirical model by Deshmukh et al. that estima
                 a 3,200 foot setback distance applied to only new wells, which matches the state’s 
                 current setback policy distance.",
                      position = "right"),
-                list(element = "#phaseout_map_box", intro = "This map shows the number of direct jobs lossed from 
+                list(element = "#phaseout_map_box", intro = "This map shows the number of direct jobs lost from 
                      2025-2045 based on your scenario.", 
                      position = "left"),
                 list(element = "#phaseout_jobs_plot_box", intro = "This plot is the total projected direct jobs over time for your 

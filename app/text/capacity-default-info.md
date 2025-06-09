@@ -1,6 +1,6 @@
 ## Understanding our Default Capacity Values
 
-This tool is meant to help users explore possible futures for clean energy and oil transition on California’s Central Coast. In each technology tab, you'll find a couple of **default capacity scenarios** to choose from. These scenarios are not predictions - they’re starting points, based on current state-level goals, local data, and planning documents.
+This tool is meant to help users explore possible futures for clean energy and oil transition in California’s Central Coast. In each technology tab, you'll find a couple of **default capacity scenarios** to choose from. These scenarios are not predictions - they’re starting points, based on current state-level goals, local data, and planning documents.
 
 We included these to give users a baseline to begin exploring trade-offs, impacts, and opportunities. But the future is uncertain, and local realities will continue to evolve - so you are encouraged to modify these values and input your own.
 
@@ -37,7 +37,7 @@ Each solar tab includes two default scenarios: the full 2045 goal for each count
   <tr>
     <th style="padding: 8px;">County</th>
     <th style="padding: 8px;">Full Goal (MW by 2045)</th>
-    <th style="padding: 8px;">50% Scenario (MW)</th>
+    <th style="padding: 8px;">50% Scenario (MW by 2045)</th>
   </tr>
   <tr>
     <td style="padding: 8px;">Santa Barbara</td>
@@ -64,7 +64,7 @@ Each solar tab includes two default scenarios: the full 2045 goal for each count
   <tr>
     <th style="padding: 8px;">County</th>
     <th style="padding: 8px;">Full Goal (MW by 2045)</th>
-    <th style="padding: 8px;">50% Scenario (MW)</th>
+    <th style="padding: 8px;">50% Scenario (MW by 2045)</th>
   </tr>
   <tr>
     <td style="padding: 8px;">Santa Barbara</td>
