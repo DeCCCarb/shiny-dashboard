@@ -264,7 +264,13 @@ body <- dashboardBody( introjsUI(),
                                              # Scenario buttons          
                                              box(
                                                  width = 12,
-                                                 title = "Choose a predefined scenario",
+                                                 title = tags$span(
+                                                     'Choose a Predefined Scenario',
+                                                     tags$i(
+                                                         class = "glyphicon glyphicon-info-sign", 
+                                                         style = "color:#0072B2; font-size: 14px;",
+                                                         title = "Select a scenario. Scenario 1 sets full Central Coast floating offshore wind build-out to meet 2045 state goals; Scenario 2 sets 25%. Scenario 1 selected by default."
+                                                     )),
                                                  div(style = "display: flex; flex-direction: column; gap: 10px;",
                                                      actionButton("load_scenario1", "Scenario 1 - 15GW by 2045", icon = icon("bolt"), class = "scenario-btn"),
                                                      actionButton("load_scenario2", "Scenario 2 - 6GW by 2045", icon = icon("bolt"), class = "scenario-btn")
@@ -437,7 +443,7 @@ body <- dashboardBody( introjsUI(),
                                                                    tags$i(
                                                                        class = "glyphicon glyphicon-info-sign", 
                                                                        style = "color:#0072B2; font-size: 14px;",
-                                                              title = "Select a scenario. Scenario 1 sets full solar build-out by county to meet 2045 goals; Scenario 2 sets 50%. Values vary by each county’s current capacity."
+                                                              title = "Select a scenario. Scenario 1 sets full solar build-out by county to meet 2045 goals; Scenario 2 sets 50%. Values vary by each county’s current capacity. Scenario 1 selected by default."
                                                           )),
                                                  uiOutput("scenario_buttons_ui"),
                                                  id = "util_scenario_buttons_box"
@@ -453,7 +459,7 @@ body <- dashboardBody( introjsUI(),
                                                                   tags$i(
                                                                       class = "glyphicon glyphicon-info-sign", 
                                                                       style = "color:#0072B2;",
-                                                                      title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
+                                                                      title = "Input the year range, starting with the first year of construction and ending with the year to meet target capacity."
                                                                   )),
                                                               min = 2025,
                                                               max = 2045,
@@ -578,7 +584,7 @@ body <- dashboardBody( introjsUI(),
                                                       tags$i(
                                                           class = "glyphicon glyphicon-info-sign", 
                                                           style = "color:#0072B2; font-size: 14px;",
-                                                          title = "Select a scenario. Scenario 1 assumes full solar build-out by county to meet 2045 goals; Scenario 2 assumes 50%. Values vary by each county’s current capacity."
+                                                          title = "Select a scenario. Scenario 1 assumes full solar build-out by county to meet 2045 goals; Scenario 2 assumes 50%. Values vary by each county’s current capacity. Scenario 1 selected by default."
                                                       )),
                                                   uiOutput("roof_scenario_buttons_ui"),
                                                   id = "roof_scenario_buttons_box"
@@ -595,7 +601,7 @@ body <- dashboardBody( introjsUI(),
                                                                   tags$i(
                                                                       class = "glyphicon glyphicon-info-sign", 
                                                                       style = "color:#0072B2;",
-                                                                      title = "Input the range of years to project job growth over, starting with the first year of construction and ending with the year to meet target capacity."
+                                                                      title = "Input the year range, starting with the first year of construction and ending with the year to meet target capacity."
                                                                   )),
                                                               min = 2025,
                                                               max = 2045,
@@ -827,7 +833,7 @@ body <- dashboardBody( introjsUI(),
                                                                         tags$i(
                                                                             class = "glyphicon glyphicon-info-sign", 
                                                                             style = "color:#0072B2;",
-                                                                            title = "Choose a county"
+                                                                            title = "Select a county"
                                                                         )),
                                                       choices = c('San Luis Obispo', 'Ventura', 'Santa Barbara'), 
                                                       multiple = FALSE
@@ -885,7 +891,7 @@ body <- dashboardBody( introjsUI(),
                                                                                  tags$i(
                                                                                      class = "glyphicon glyphicon-info-sign", 
                                                                                      style = "color:#0072B2;",
-                                                                                     title = "Choose a county"
+                                                                                     title = "Select a county"
                                                                                  )),
                                                                choices = c('Santa Barbara', 'San Luis Obispo', 'Ventura'),
                                                                selected = c('Ventura'),

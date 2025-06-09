@@ -40,7 +40,7 @@ Key multiplier types used:
 
 **JEDI Model Assumptions:**
 
-JEDI is a static input-output model that assumes fixed inter-industry relationships and consumption patterns. It does not incorporate future productivity improvements, price changes, or supply chain evolution. Many inputs are required including project size, costs, and local economic shares, all of which shape the output of the model. Detailed JEDI inputs used for this analysis are documented in the full [technical documentation](link here).
+JEDI is a static input-output model that assumes fixed inter-industry relationships and consumption patterns. It does not incorporate future productivity improvements, price changes, or supply chain evolution. Many inputs are required including project size, costs, and local economic shares, all of which shape the output of the model. Detailed JEDI inputs used for this analysis are documented in the full [technical documentation](https://bren.ucsb.edu/projects/modeling-impact-decarbonization-labor-californias-central-coast).
 
 **Capacity Growth:**
 
@@ -64,6 +64,6 @@ All technologies use a compounding growth equation to project capacity expansion
 
 ---
 
-For detailed model inputs, assumptions, and methodology, please refer to the [full Technical Documentation](LINK)
+For detailed model inputs, assumptions, and methodology, please refer to the [full Technical Documentation](https://bren.ucsb.edu/projects/modeling-impact-decarbonization-labor-californias-central-coast)
 
 
