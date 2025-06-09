@@ -256,7 +256,7 @@ Each county expands rooftop solar capacity proportionally to meet California's 2
             introjs(session, options = list(steps = list(
                 list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b>
 </br></br>
-This tab presents results from an empirical model by Deshmukh et al. that estimates direct job loss by county under different setback policies—minimum distance rules between oil wells and sensitive sites like homes or schools.
+This tab presents results from an empirical model by UCSB Environmental Markets Lab that estimates direct job loss by county under different setback policies—minimum distance rules between oil wells and sensitive sites like homes or schools.
 </br></br>
 <b>The Challenge:</b> Phasing out fossil fuels will inevitably lead to job losses.
 </br>
@@ -265,8 +265,8 @@ This tab presents results from an empirical model by Deshmukh et al. that estima
                 a 3,200 foot setback distance applied to only new wells, which matches the state’s 
                 current setback policy distance.",
                      position = "right"),
-                list(element = "#phaseout_map_box", intro = "This map shows the percent reduction in direct job loss from 
-                     2025-2045 based on your input scenario.", 
+                list(element = "#phaseout_map_box", intro = "This map shows the number of direct jobs lossed from 
+                     2025-2045 based on your scenario.", 
                      position = "left"),
                 list(element = "#phaseout_jobs_plot_box", intro = "This plot is the total projected direct jobs over time for your 
                 scenario. 
@@ -495,8 +495,8 @@ This tab presents results from an empirical model by Deshmukh et al. that estima
                 a 3,200 foot setback distance applied to only new wells, which matches the state’s 
                 current setback policy distance.",
                      position = "right"),
-                list(element = "#phaseout_map_box", intro = "This map shows the percent reduction in direct job loss from 
-                     2025-2045 based on your input scenario.", 
+                list(element = "#phaseout_map_box", intro = "This map shows the number of direct jobs lossed from 
+                     2025-2045 based on your scenario.", 
                      position = "left"),
                 list(element = "#phaseout_jobs_plot_box", intro = "This plot is the total projected direct jobs over time for your 
                 scenario. 
