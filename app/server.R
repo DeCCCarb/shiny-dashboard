@@ -231,8 +231,8 @@ Each county expands rooftop solar capacity proportionally to meet California's 2
                      tooltipClass = "introjs-large"),
                 list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize.",
                      position = "right"),
-                list(element = "#cap_map_box", intro = "This map shows the total full-time equivalent (FTE) direct jobs created
-                     created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
+                list(element = "#cap_map_box", intro = "This map shows the total full-time equivalent (FTE) direct jobs 
+                     created in each county from 2025 - 2045.",
                      position = "left"),
                 list(element = "#cap_jobs_plot_box", intro = "This plot is the cumulative projected direct jobs over time in your county. That is, the the total number of direct jobs that have been created each year since 2025.
                 <br><br> Hover your mouse over the points to see the number of direct jobs each year <br><br> 
@@ -461,8 +461,8 @@ Each county reaches 50% of the full target.<br><br>
                      tooltipClass = "introjs-large"),
                 list(element = "#cap_inputs_box", intro = "Here, choose the county you would like to visualize.",
                      position = "right"),
-                list(element = "#cap_map_box", intro = "This map shows the total full-time equivalent (FTE) direct jobs created
-                     created by county, as well as the total annual jobs created by capping all wells from 2025-2045.",
+                list(element = "#cap_map_box", intro = "This map shows the total full-time equivalent (FTE) direct jobs 
+                     created in each county from 2025 - 2045.",
                      position = "left"),
                 list(element = "#cap_jobs_plot_box", intro = "This plot is the cumulative projected direct jobs over time in your county. That is, the the total number of direct jobs that have been created each year since 2025.
                 <br><br> Hover your mouse over the points to see the number of direct jobs each year <br><br> 
