@@ -254,12 +254,13 @@ Each county expands rooftop solar capacity proportionally to meet California's 2
             # FF phaseout ---- 
         } else if (input$tabs == "phaseout" && !shown_tutorials$phaseout) {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b><br><br>
-                     In this tab, we report results from an emperical model built by Deshmukh et al. 
-                     to allow you to compare direct job loss by county under varying setback policies. <br><br>
-                     A setback policy is the required minimum distance between oil and gas drilling activities and certain
-                     sensitive areas, such as homes, schools, hospitals, and other public spaces.
-                     ", tooltipClass = "introjs-large"),
+                list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b>
+</br></br>
+This tab presents results from an empirical model by Deshmukh et al. that estimates direct job loss by county under different setback policies—minimum distance rules between oil wells and sensitive sites like homes or schools.
+</br></br>
+<b>The Challenge:</b> Phasing out fossil fuels will inevitably lead to job losses.
+</br>
+<b>The Solution:</b> Use this tool to identify at-risk crude oil workers on the Central Coast. This enables targeted retraining and support as we transition to clean energy.", tooltipClass = "introjs-large"),
                 list(element = "#phaseout_inputs_box", intro = "Start by selecting a county and setback policy. Default values are
                 a 3,200 foot setback distance applied to only new wells, which matches the state’s 
                 current setback policy distance.",
@@ -482,12 +483,14 @@ Each county reaches 50% of the full target.<br><br>
             # FF phaseout ----
         } else if (input$tabs == "phaseout") {
             introjs(session, options = list(steps = list(
-                list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b><br><br>
-                     In this tab, we report results from an emperical model built by Deshmukh et al. 
-                     to allow you to compare direct job loss by county under varying setback policies. <br><br>
-                     What's a setback policy? The required minimum distance between oil and gas drilling activities and certain
-                     sensitive areas, such as homes, schools, hospitals, and other public spaces.
-                     ", tooltipClass = "introjs-large"),
+                list(intro = "<b>👋 Welcome to the Crude Oil Phaseout tab!</b>
+</br></br>
+This tab presents results from an empirical model by Deshmukh et al. that estimates direct job loss by county under different setback policies—minimum distance rules between oil wells and sensitive sites like homes or schools.
+</br></br>
+<b>The Challenge:</b> Phasing out fossil fuels will inevitably lead to job losses.
+</br>
+<b>The Solution:</b> Use this tool to identify at-risk crude oil workers on the Central Coast. This enables targeted retraining and support as we transition to clean energy.", 
+                     tooltipClass = "introjs-large"),
                 list(element = "#phaseout_inputs_box", intro = "Start by selecting a county and setback policy. Default values are
                 a 3,200 foot setback distance applied to only new wells, which matches the state’s 
                 current setback policy distance.",
